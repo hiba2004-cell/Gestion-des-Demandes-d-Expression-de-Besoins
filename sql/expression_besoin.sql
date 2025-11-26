@@ -234,26 +234,26 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `nom`, `email`, `password`, `role`, `created_at`) VALUES
-(1, 'Admin System', 'admin@company.com', '$2y$10$bP9...', 'Administrateur', '2025-11-22 10:46:13'),
-(2, 'Chef Validateur', 'chef@company.com', '$2y$10$bP9...', 'Validateur', '2025-11-22 10:46:13'),
-(3, 'Frank Idrissi', 'frank.idrissi@solutions.net', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
-(4, 'Leila Smith', 'leila.smith@tech.org', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
-(5, 'Jack Miller', 'jack.miller@solutions.net', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
-(6, 'Henry Robinson', 'henry.robinson@solutions.net', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
-(7, 'Omar Brown', 'omar.brown@company.com', '$2y$10$bP9...', 'Validateur', '2025-11-22 10:46:13'),
-(8, 'Bob Thomas', 'bob.thomas@solutions.net', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
-(9, 'Karim Idrissi', 'karim.idrissi@solutions.net', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
-(10, 'Karim Cohen', 'karim.cohen@company.com', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
-(11, 'Nadia Thomas', 'nadia.thomas@company.com', '$2y$10$bP9...', 'Validateur', '2025-11-22 10:46:13'),
-(12, 'Alice Martinez', 'alice.martinez@company.com', '$2y$10$bP9...', 'Validateur', '2025-11-22 10:46:13'),
-(13, 'Leila Cohen', 'leila.cohen@tech.org', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
-(14, 'Alice Miller', 'alice.miller@company.com', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
-(15, 'Alice Benali', 'alice.benali@company.com', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
-(16, 'Grace Thomas', 'grace.thomas@company.com', '$2y$10$bP9...', 'Validateur', '2025-11-22 10:46:13'),
-(17, 'Charlie Benali', 'charlie.benali@tech.org', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
-(18, 'Ivy Martinez', 'ivy.martinez@solutions.net', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
-(19, 'Grace Idrissi', 'grace.idrissi@tech.org', '$2y$10$bP9...', 'Validateur', '2025-11-22 10:46:13'),
-(20, 'Emma Benali', 'emma.benali@tech.org', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13');
+(1, 'Admin System', 'admin@company.com', '12345', 'Administrateur', '2025-11-22 10:46:13'),
+(2, 'Chef Validateur', 'chef@company.com', '12345', 'Validateur', '2025-11-22 10:46:13'),
+(3, 'Frank Idrissi', 'frank.idrissi@solutions.net', '12345', 'Demandeur', '2025-11-22 10:46:13'),
+(4, 'Leila Smith', 'leila.smith@tech.org', '12345', 'Demandeur', '2025-11-22 10:46:13'),
+(5, 'Jack Miller', 'jack.miller@solutions.net', '12345', 'Demandeur', '2025-11-22 10:46:13'),
+(6, 'Henry Robinson', 'henry.robinson@solutions.net', '12345', 'Demandeur', '2025-11-22 10:46:13'),
+(7, 'Omar Brown', 'omar.brown@company.com', '12345', 'Validateur', '2025-11-22 10:46:13'),
+(8, 'Bob Thomas', 'bob.thomas@solutions.net', '12345', 'Demandeur', '2025-11-22 10:46:13'),
+(9, 'Karim Idrissi', 'karim.idrissi@solutions.net', '12345', 'Demandeur', '2025-11-22 10:46:13'),
+(10, 'Karim Cohen', 'karim.cohen@company.com', '12345', 'Demandeur', '2025-11-22 10:46:13'),
+(11, 'Nadia Thomas', 'nadia.thomas@company.com', '12345', 'Validateur', '2025-11-22 10:46:13'),
+(12, 'Alice Martinez', 'alice.martinez@company.com', '12345', 'Validateur', '2025-11-22 10:46:13'),
+(13, 'Leila Cohen', 'leila.cohen@tech.org', '12345', 'Demandeur', '2025-11-22 10:46:13'),
+(14, 'Alice Miller', 'alice.miller@company.com', '12345', 'Demandeur', '2025-11-22 10:46:13'),
+(15, 'Alice Benali', 'alice.benali@company.com', '12345', 'Demandeur', '2025-11-22 10:46:13'),
+(16, 'Grace Thomas', 'grace.thomas@company.com', '12345', 'Validateur', '2025-11-22 10:46:13'),
+(17, 'Charlie Benali', 'charlie.benali@tech.org', '12345', 'Demandeur', '2025-11-22 10:46:13'),
+(18, 'Ivy Martinez', 'ivy.martinez@solutions.net', '12345', 'Demandeur', '2025-11-22 10:46:13'),
+(19, 'Grace Idrissi', 'grace.idrissi@tech.org', '12345', 'Validateur', '2025-11-22 10:46:13'),
+(20, 'Emma Benali', 'emma.benali@tech.org', '12345', 'Demandeur', '2025-11-22 10:46:13');
 
 -- --------------------------------------------------------
 

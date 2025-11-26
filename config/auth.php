@@ -22,13 +22,14 @@ class Auth {
      * Connexion utilisateur
      */
     public function login($email, $password) {
-        $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = :email AND actif = 1");
+        $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = :email");
+        // $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = :email AND actif = 1");
         $stmt->bindParam(':email', $email);
         $stmt->execute();
         
         $user = $stmt->fetch();
         
-        if ($user && password_verify($password, $user['password'])) {
+        if ($user && $password === $user['password']) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_nom'] = $user['nom'];
             $_SESSION['user_prenom'] = $user['prenom'];
@@ -175,11 +176,11 @@ function requireRole($role) {
  */
 function redirectByRole($role) {
     switch($role) {
-        case 'demandeur':
+        case 'Demandeur':
             return 'dashboard-demandeur.php';
-        case 'validateur':
+        case 'Validateur':
             return 'dashboard-validateur.php';
-        case 'administrateur':
+        case 'Administrateur]':
             return 'dashboard-admin.php';
         default:
             return 'login.php';
