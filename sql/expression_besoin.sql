@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Nov 22, 2025 at 02:50 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Hôte : 127.0.0.1
+-- Généré le : mer. 26 nov. 2025 à 10:13
+-- Version du serveur : 10.4.32-MariaDB
+-- Version de PHP : 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,72 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `gestion_besoins`
+-- Base de données : `expression_besoin`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `demandes`
+-- Structure de la table `besoins`
+--
+
+CREATE TABLE `besoins` (
+  `id` int(11) NOT NULL,
+  `titre` varchar(200) NOT NULL,
+  `description` text NOT NULL,
+  `priorite` enum('faible','moyenne','haute','critique') NOT NULL DEFAULT 'moyenne',
+  `statut` enum('nouveau','en_cours','termine','rejete') NOT NULL DEFAULT 'nouveau',
+  `categorie` varchar(100) NOT NULL,
+  `demandeur_nom` varchar(100) NOT NULL,
+  `demandeur_email` varchar(150) NOT NULL,
+  `date_creation` timestamp NOT NULL DEFAULT current_timestamp(),
+  `date_modification` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `cout_estime` decimal(10,2) DEFAULT NULL,
+  `delai_souhaite` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `besoins`
+--
+
+INSERT INTO `besoins` (`id`, `titre`, `description`, `priorite`, `statut`, `categorie`, `demandeur_nom`, `demandeur_email`, `date_creation`, `date_modification`, `cout_estime`, `delai_souhaite`) VALUES
+(1, 'Développement d\'une application mobile', 'Création d\'une application mobile native pour iOS et Android permettant aux clients de consulter leurs commandes en temps réel.', 'haute', 'nouveau', 'Développement', 'Jean Dupont', 'jean.dupont@email.com', '2025-11-22 14:03:49', '2025-11-22 14:03:49', 25000.00, '2024-06-15'),
+(2, 'Mise à jour du site web', 'Refonte graphique du site web existant avec amélioration de l\'expérience utilisateur et optimisation SEO.', 'moyenne', 'en_cours', 'Web Design', 'Marie Martin', 'marie.martin@email.com', '2025-11-22 14:03:49', '2025-11-22 14:03:49', 8500.00, '2024-04-20'),
+(3, 'Système de gestion des stocks', 'Implémentation d\'un système automatisé de gestion des stocks avec alertes de rupture et prévisions.', 'critique', 'nouveau', 'ERP', 'Pierre Durand', 'pierre.durand@email.com', '2025-11-22 14:03:49', '2025-11-22 14:03:49', 35000.00, '2024-05-10'),
+(4, 'Formation équipe technique', 'Organisation de formations pour l\'équipe technique sur les nouvelles technologies cloud et DevOps.', 'faible', 'termine', 'Formation', 'Sophie Bernard', 'sophie.bernard@email.com', '2025-11-22 14:03:49', '2025-11-22 14:03:49', 3500.00, '2024-03-30'),
+(5, 'Migration vers le cloud', 'Migration de l\'infrastructure on-premise vers une solution cloud avec haute disponibilité.', 'haute', 'en_cours', 'Infrastructure', 'Laurent Petit', 'laurent.petit@email.com', '2025-11-22 14:03:49', '2025-11-22 14:03:49', 18000.00, '2024-07-01');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `categories`
+--
+
+CREATE TABLE `categories` (
+  `id` int(11) NOT NULL,
+  `nom` varchar(100) NOT NULL,
+  `description` text DEFAULT NULL,
+  `couleur` varchar(7) DEFAULT '#007bff',
+  `date_creation` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `categories`
+--
+
+INSERT INTO `categories` (`id`, `nom`, `description`, `couleur`, `date_creation`) VALUES
+(1, 'Développement', 'Projets de développement logiciel', '#007bff', '2025-11-22 14:03:49'),
+(2, 'Web Design', 'Projets de conception web et UX/UI', '#28a745', '2025-11-22 14:03:49'),
+(3, 'ERP', 'Systèmes de gestion d\'entreprise', '#dc3545', '2025-11-22 14:03:49'),
+(4, 'Formation', 'Projets de formation et développement des compétences', '#ffc107', '2025-11-22 14:03:49'),
+(5, 'Infrastructure', 'Projets d\'infrastructure IT', '#6c757d', '2025-11-22 14:03:49'),
+(6, 'Marketing', 'Projets marketing et communication', '#e83e8c', '2025-11-22 14:03:49'),
+(7, 'Support', 'Support technique et maintenance', '#fd7e14', '2025-11-22 14:03:49');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `demandes`
 --
 
 CREATE TABLE `demandes` (
@@ -38,7 +97,7 @@ CREATE TABLE `demandes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `demandes`
+-- Déchargement des données de la table `demandes`
 --
 
 INSERT INTO `demandes` (`id`, `user_id`, `type_besoin_id`, `description`, `urgence`, `statut`, `date_creation`) VALUES
@@ -99,7 +158,7 @@ INSERT INTO `demandes` (`id`, `user_id`, `type_besoin_id`, `description`, `urgen
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pieces_jointes`
+-- Structure de la table `pieces_jointes`
 --
 
 CREATE TABLE `pieces_jointes` (
@@ -111,7 +170,7 @@ CREATE TABLE `pieces_jointes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `pieces_jointes`
+-- Déchargement des données de la table `pieces_jointes`
 --
 
 INSERT INTO `pieces_jointes` (`id`, `demande_id`, `nom_fichier`, `chemin_fichier`, `date_ajout`) VALUES
@@ -137,7 +196,7 @@ INSERT INTO `pieces_jointes` (`id`, `demande_id`, `nom_fichier`, `chemin_fichier
 -- --------------------------------------------------------
 
 --
--- Table structure for table `types_besoins`
+-- Structure de la table `types_besoins`
 --
 
 CREATE TABLE `types_besoins` (
@@ -146,7 +205,7 @@ CREATE TABLE `types_besoins` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `types_besoins`
+-- Déchargement des données de la table `types_besoins`
 --
 
 INSERT INTO `types_besoins` (`id`, `libelle`) VALUES
@@ -158,7 +217,7 @@ INSERT INTO `types_besoins` (`id`, `libelle`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Structure de la table `users`
 --
 
 CREATE TABLE `users` (
@@ -171,35 +230,35 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `users`
+-- Déchargement des données de la table `users`
 --
 
 INSERT INTO `users` (`id`, `nom`, `email`, `password`, `role`, `created_at`) VALUES
-(1, 'Admin System', 'admin@company.com', '$2y$10$bP9...', 'Administrateur', '2025-11-22 11:46:13'),
-(2, 'Chef Validateur', 'chef@company.com', '$2y$10$bP9...', 'Validateur', '2025-11-22 11:46:13'),
-(3, 'Frank Idrissi', 'frank.idrissi@solutions.net', '$2y$10$bP9...', 'Demandeur', '2025-11-22 11:46:13'),
-(4, 'Leila Smith', 'leila.smith@tech.org', '$2y$10$bP9...', 'Demandeur', '2025-11-22 11:46:13'),
-(5, 'Jack Miller', 'jack.miller@solutions.net', '$2y$10$bP9...', 'Demandeur', '2025-11-22 11:46:13'),
-(6, 'Henry Robinson', 'henry.robinson@solutions.net', '$2y$10$bP9...', 'Demandeur', '2025-11-22 11:46:13'),
-(7, 'Omar Brown', 'omar.brown@company.com', '$2y$10$bP9...', 'Validateur', '2025-11-22 11:46:13'),
-(8, 'Bob Thomas', 'bob.thomas@solutions.net', '$2y$10$bP9...', 'Demandeur', '2025-11-22 11:46:13'),
-(9, 'Karim Idrissi', 'karim.idrissi@solutions.net', '$2y$10$bP9...', 'Demandeur', '2025-11-22 11:46:13'),
-(10, 'Karim Cohen', 'karim.cohen@company.com', '$2y$10$bP9...', 'Demandeur', '2025-11-22 11:46:13'),
-(11, 'Nadia Thomas', 'nadia.thomas@company.com', '$2y$10$bP9...', 'Validateur', '2025-11-22 11:46:13'),
-(12, 'Alice Martinez', 'alice.martinez@company.com', '$2y$10$bP9...', 'Validateur', '2025-11-22 11:46:13'),
-(13, 'Leila Cohen', 'leila.cohen@tech.org', '$2y$10$bP9...', 'Demandeur', '2025-11-22 11:46:13'),
-(14, 'Alice Miller', 'alice.miller@company.com', '$2y$10$bP9...', 'Demandeur', '2025-11-22 11:46:13'),
-(15, 'Alice Benali', 'alice.benali@company.com', '$2y$10$bP9...', 'Demandeur', '2025-11-22 11:46:13'),
-(16, 'Grace Thomas', 'grace.thomas@company.com', '$2y$10$bP9...', 'Validateur', '2025-11-22 11:46:13'),
-(17, 'Charlie Benali', 'charlie.benali@tech.org', '$2y$10$bP9...', 'Demandeur', '2025-11-22 11:46:13'),
-(18, 'Ivy Martinez', 'ivy.martinez@solutions.net', '$2y$10$bP9...', 'Demandeur', '2025-11-22 11:46:13'),
-(19, 'Grace Idrissi', 'grace.idrissi@tech.org', '$2y$10$bP9...', 'Validateur', '2025-11-22 11:46:13'),
-(20, 'Emma Benali', 'emma.benali@tech.org', '$2y$10$bP9...', 'Demandeur', '2025-11-22 11:46:13');
+(1, 'Admin System', 'admin@company.com', '$2y$10$bP9...', 'Administrateur', '2025-11-22 10:46:13'),
+(2, 'Chef Validateur', 'chef@company.com', '$2y$10$bP9...', 'Validateur', '2025-11-22 10:46:13'),
+(3, 'Frank Idrissi', 'frank.idrissi@solutions.net', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
+(4, 'Leila Smith', 'leila.smith@tech.org', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
+(5, 'Jack Miller', 'jack.miller@solutions.net', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
+(6, 'Henry Robinson', 'henry.robinson@solutions.net', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
+(7, 'Omar Brown', 'omar.brown@company.com', '$2y$10$bP9...', 'Validateur', '2025-11-22 10:46:13'),
+(8, 'Bob Thomas', 'bob.thomas@solutions.net', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
+(9, 'Karim Idrissi', 'karim.idrissi@solutions.net', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
+(10, 'Karim Cohen', 'karim.cohen@company.com', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
+(11, 'Nadia Thomas', 'nadia.thomas@company.com', '$2y$10$bP9...', 'Validateur', '2025-11-22 10:46:13'),
+(12, 'Alice Martinez', 'alice.martinez@company.com', '$2y$10$bP9...', 'Validateur', '2025-11-22 10:46:13'),
+(13, 'Leila Cohen', 'leila.cohen@tech.org', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
+(14, 'Alice Miller', 'alice.miller@company.com', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
+(15, 'Alice Benali', 'alice.benali@company.com', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
+(16, 'Grace Thomas', 'grace.thomas@company.com', '$2y$10$bP9...', 'Validateur', '2025-11-22 10:46:13'),
+(17, 'Charlie Benali', 'charlie.benali@tech.org', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
+(18, 'Ivy Martinez', 'ivy.martinez@solutions.net', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13'),
+(19, 'Grace Idrissi', 'grace.idrissi@tech.org', '$2y$10$bP9...', 'Validateur', '2025-11-22 10:46:13'),
+(20, 'Emma Benali', 'emma.benali@tech.org', '$2y$10$bP9...', 'Demandeur', '2025-11-22 10:46:13');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `validation`
+-- Structure de la table `validation`
 --
 
 CREATE TABLE `validation` (
@@ -212,7 +271,7 @@ CREATE TABLE `validation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `validation`
+-- Déchargement des données de la table `validation`
 --
 
 INSERT INTO `validation` (`id`, `demande_id`, `validateur_id`, `commentaire`, `statut_validation`, `date_validation`) VALUES
@@ -249,11 +308,28 @@ INSERT INTO `validation` (`id`, `demande_id`, `validateur_id`, `commentaire`, `s
 (31, 53, 2, 'Rejeté, voir avec le service IT avant.', 'Validée', '2024-09-15 15:45:36');
 
 --
--- Indexes for dumped tables
+-- Index pour les tables déchargées
 --
 
 --
--- Indexes for table `demandes`
+-- Index pour la table `besoins`
+--
+ALTER TABLE `besoins`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_priorite` (`priorite`),
+  ADD KEY `idx_statut` (`statut`),
+  ADD KEY `idx_categorie` (`categorie`),
+  ADD KEY `idx_date_creation` (`date_creation`);
+
+--
+-- Index pour la table `categories`
+--
+ALTER TABLE `categories`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nom` (`nom`);
+
+--
+-- Index pour la table `demandes`
 --
 ALTER TABLE `demandes`
   ADD PRIMARY KEY (`id`),
@@ -261,27 +337,27 @@ ALTER TABLE `demandes`
   ADD KEY `type_besoin_id` (`type_besoin_id`);
 
 --
--- Indexes for table `pieces_jointes`
+-- Index pour la table `pieces_jointes`
 --
 ALTER TABLE `pieces_jointes`
   ADD PRIMARY KEY (`id`),
   ADD KEY `demande_id` (`demande_id`);
 
 --
--- Indexes for table `types_besoins`
+-- Index pour la table `types_besoins`
 --
 ALTER TABLE `types_besoins`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `users`
+-- Index pour la table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`);
 
 --
--- Indexes for table `validation`
+-- Index pour la table `validation`
 --
 ALTER TABLE `validation`
   ADD PRIMARY KEY (`id`),
@@ -289,58 +365,70 @@ ALTER TABLE `validation`
   ADD KEY `validateur_id` (`validateur_id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT pour les tables déchargées
 --
 
 --
--- AUTO_INCREMENT for table `demandes`
+-- AUTO_INCREMENT pour la table `besoins`
+--
+ALTER TABLE `besoins`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT pour la table `categories`
+--
+ALTER TABLE `categories`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT pour la table `demandes`
 --
 ALTER TABLE `demandes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
--- AUTO_INCREMENT for table `pieces_jointes`
+-- AUTO_INCREMENT pour la table `pieces_jointes`
 --
 ALTER TABLE `pieces_jointes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
--- AUTO_INCREMENT for table `types_besoins`
+-- AUTO_INCREMENT pour la table `types_besoins`
 --
 ALTER TABLE `types_besoins`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT pour la table `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
--- AUTO_INCREMENT for table `validation`
+-- AUTO_INCREMENT pour la table `validation`
 --
 ALTER TABLE `validation`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
--- Constraints for dumped tables
+-- Contraintes pour les tables déchargées
 --
 
 --
--- Constraints for table `demandes`
+-- Contraintes pour la table `demandes`
 --
 ALTER TABLE `demandes`
   ADD CONSTRAINT `demandes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `demandes_ibfk_2` FOREIGN KEY (`type_besoin_id`) REFERENCES `types_besoins` (`id`);
 
 --
--- Constraints for table `pieces_jointes`
+-- Contraintes pour la table `pieces_jointes`
 --
 ALTER TABLE `pieces_jointes`
   ADD CONSTRAINT `pieces_jointes_ibfk_1` FOREIGN KEY (`demande_id`) REFERENCES `demandes` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `validation`
+-- Contraintes pour la table `validation`
 --
 ALTER TABLE `validation`
   ADD CONSTRAINT `validation_ibfk_1` FOREIGN KEY (`demande_id`) REFERENCES `demandes` (`id`) ON DELETE CASCADE,
