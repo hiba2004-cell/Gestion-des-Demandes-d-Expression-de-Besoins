@@ -320,7 +320,7 @@ try {
                             <span class="badge bg-danger ms-1"><?php echo $notificationsNonLues; ?></span>
                             <?php endif; ?>
                         </a>
-                        <a href="pages/profil.php" class="btn btn-outline-secondary hover-lift">
+                        <a href="/pages/profil.php" class="btn btn-outline-secondary hover-lift">
                             <i class="bi bi-person me-2"></i>
                             Mon Profil
                         </a>

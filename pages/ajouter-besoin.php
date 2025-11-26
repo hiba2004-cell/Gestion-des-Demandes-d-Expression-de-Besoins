@@ -91,14 +91,14 @@ $csrfToken = generateCSRFToken();
 
 <!-- Affichage des erreurs -->
 <?php if (!empty($errors)): ?>
-    <div class="alert alert-danger">
-        <h5><i class="bi bi-exclamation-triangle me-2"></i>Erreurs détectées :</h5>
-        <ul class="mb-0">
-            <?php foreach ($errors as $error): ?>
-                <li><?php echo htmlspecialchars($error); ?></li>
-            <?php endforeach; ?>
-        </ul>
-    </div>
+<div class="alert alert-danger">
+    <h5><i class="bi bi-exclamation-triangle me-2"></i>Erreurs détectées :</h5>
+    <ul class="mb-0">
+        <?php foreach ($errors as $error): ?>
+        <li><?php echo htmlspecialchars($error); ?></li>
+        <?php endforeach; ?>
+    </ul>
+</div>
 <?php endif; ?>
 
 <div class="row">
@@ -113,7 +113,7 @@ $csrfToken = generateCSRFToken();
             <div class="card-body">
                 <form method="POST" id="besoinForm" novalidate>
                     <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
-                    
+
                     <!-- Informations générales -->
                     <div class="row mb-4">
                         <div class="col-12">
@@ -122,36 +122,34 @@ $csrfToken = generateCSRFToken();
                                 Informations Générales
                             </h6>
                         </div>
-                        
+
                         <div class="col-md-12 mb-3">
                             <label for="titre" class="form-label">Titre du Besoin *</label>
-                            <input type="text" 
-                                   class="form-control" 
-                                   id="titre" 
-                                   name="titre" 
-                                   value="<?php echo htmlspecialchars($titre ?? ''); ?>"
-                                   required 
-                                   maxlength="200"
-                                   placeholder="Ex: Développement d'une application mobile">
+                            <input type="text" class="form-control" id="titre" name="titre"
+                                value="<?php echo htmlspecialchars($titre ?? ''); ?>" required maxlength="200"
+                                placeholder="Ex: Développement d'une application mobile">
                             <div class="invalid-feedback">
                                 Veuillez saisir un titre pour le besoin.
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6 mb-3">
                             <label for="priorite" class="form-label">Priorité *</label>
                             <select class="form-select" id="priorite" name="priorite" required>
                                 <option value="">Sélectionnez une priorité</option>
-                                <option value="faible" <?php echo (($priorite ?? '') === 'faible') ? 'selected' : ''; ?>>
+                                <option value="faible"
+                                    <?php echo (($priorite ?? '') === 'faible') ? 'selected' : ''; ?>>
                                     Faible
                                 </option>
-                                <option value="moyenne" <?php echo (($priorite ?? '') === 'moyenne') ? 'selected' : ''; ?>>
+                                <option value="moyenne"
+                                    <?php echo (($priorite ?? '') === 'moyenne') ? 'selected' : ''; ?>>
                                     Moyenne
                                 </option>
                                 <option value="haute" <?php echo (($priorite ?? '') === 'haute') ? 'selected' : ''; ?>>
                                     Haute
                                 </option>
-                                <option value="critique" <?php echo (($priorite ?? '') === 'critique') ? 'selected' : ''; ?>>
+                                <option value="critique"
+                                    <?php echo (($priorite ?? '') === 'critique') ? 'selected' : ''; ?>>
                                     Critique
                                 </option>
                             </select>
@@ -159,18 +157,12 @@ $csrfToken = generateCSRFToken();
                                 Veuillez sélectionner une priorité.
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6 mb-3">
                             <label for="categorie" class="form-label">Catégorie *</label>
-                            <input type="text" 
-                                   class="form-control" 
-                                   id="categorie" 
-                                   name="categorie" 
-                                   value="<?php echo htmlspecialchars($categorie ?? ''); ?>"
-                                   required 
-                                   maxlength="100"
-                                   placeholder="Ex: Développement, Web Design, ERP..."
-                                   list="categoriesList">
+                            <input type="text" class="form-control" id="categorie" name="categorie"
+                                value="<?php echo htmlspecialchars($categorie ?? ''); ?>" required maxlength="100"
+                                placeholder="Ex: Développement, Web Design, ERP..." list="categoriesList">
                             <datalist id="categoriesList">
                                 <option value="Développement">
                                 <option value="Web Design">
@@ -184,15 +176,11 @@ $csrfToken = generateCSRFToken();
                                 Veuillez saisir une catégorie.
                             </div>
                         </div>
-                        
+
                         <div class="col-12 mb-3">
                             <label for="description" class="form-label">Description Détaillée *</label>
-                            <textarea class="form-control" 
-                                      id="description" 
-                                      name="description" 
-                                      rows="5" 
-                                      required 
-                                      placeholder="Décrivez précisément votre besoin, les objectifs, les contraintes, les livrables attendus..."><?php echo htmlspecialchars($description ?? ''); ?></textarea>
+                            <textarea class="form-control" id="description" name="description" rows="5" required
+                                placeholder="Décrivez précisément votre besoin, les objectifs, les contraintes, les livrables attendus..."><?php echo htmlspecialchars($description ?? ''); ?></textarea>
                             <div class="form-text">
                                 Soyez aussi précis que possible pour faciliter l'analyse et la réalisation.
                             </div>
@@ -201,7 +189,7 @@ $csrfToken = generateCSRFToken();
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Informations demandeur -->
                     <div class="row mb-4">
                         <div class="col-12">
@@ -210,38 +198,28 @@ $csrfToken = generateCSRFToken();
                                 Informations du Demandeur
                             </h6>
                         </div>
-                        
+
                         <div class="col-md-6 mb-3">
                             <label for="demandeur_nom" class="form-label">Nom Complet *</label>
-                            <input type="text" 
-                                   class="form-control" 
-                                   id="demandeur_nom" 
-                                   name="demandeur_nom" 
-                                   value="<?php echo htmlspecialchars($demandeur_nom ?? ''); ?>"
-                                   required 
-                                   maxlength="100"
-                                   placeholder="Prénom NOM">
+                            <input type="text" class="form-control" id="demandeur_nom" name="demandeur_nom"
+                                value="<?php echo htmlspecialchars($demandeur_nom ?? ''); ?>" required maxlength="100"
+                                placeholder="Prénom NOM">
                             <div class="invalid-feedback">
                                 Veuillez saisir le nom du demandeur.
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6 mb-3">
                             <label for="demandeur_email" class="form-label">Adresse Email *</label>
-                            <input type="email" 
-                                   class="form-control" 
-                                   id="demandeur_email" 
-                                   name="demandeur_email" 
-                                   value="<?php echo htmlspecialchars($demandeur_email ?? ''); ?>"
-                                   required 
-                                   maxlength="150"
-                                   placeholder="email@exemple.com">
+                            <input type="email" class="form-control" id="demandeur_email" name="demandeur_email"
+                                value="<?php echo htmlspecialchars($demandeur_email ?? ''); ?>" required maxlength="150"
+                                placeholder="email@exemple.com">
                             <div class="invalid-feedback">
                                 Veuillez saisir une adresse email valide.
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Informations projet -->
                     <div class="row mb-4">
                         <div class="col-12">
@@ -250,36 +228,28 @@ $csrfToken = generateCSRFToken();
                                 Informations Projet
                             </h6>
                         </div>
-                        
+
                         <div class="col-md-6 mb-3">
                             <label for="cout_estime" class="form-label">Coût Estimé (€)</label>
-                            <input type="number" 
-                                   class="form-control" 
-                                   id="cout_estime" 
-                                   name="cout_estime" 
-                                   value="<?php echo htmlspecialchars($cout_estime ?? ''); ?>"
-                                   min="0" 
-                                   step="0.01"
-                                   placeholder="Ex: 15000.00">
+                            <input type="number" class="form-control" id="cout_estime" name="cout_estime"
+                                value="<?php echo htmlspecialchars($cout_estime ?? ''); ?>" min="0" step="0.01"
+                                placeholder="Ex: 15000.00">
                             <div class="form-text">
                                 Montant estimé en euros (optionnel)
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6 mb-3">
                             <label for="delai_souhaite" class="form-label">Délai Souhaité</label>
-                            <input type="date" 
-                                   class="form-control" 
-                                   id="delai_souhaite" 
-                                   name="delai_souhaite" 
-                                   value="<?php echo htmlspecialchars($delai_souhaite ?? ''); ?>"
-                                   min="<?php echo date('Y-m-d'); ?>">
+                            <input type="date" class="form-control" id="delai_souhaite" name="delai_souhaite"
+                                value="<?php echo htmlspecialchars($delai_souhaite ?? ''); ?>"
+                                min="<?php echo date('Y-m-d'); ?>">
                             <div class="form-text">
                                 Date limite souhaitée pour la réalisation (optionnel)
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Boutons d'action -->
                     <div class="row">
                         <div class="col-12">
@@ -306,7 +276,7 @@ $csrfToken = generateCSRFToken();
             </div>
         </div>
     </div>
-    
+
     <!-- Sidebar avec aide -->
     <div class="col-lg-4">
         <div class="card mb-4">
@@ -325,7 +295,7 @@ $csrfToken = generateCSRFToken();
                     <li>Précisez les livrables souhaités</li>
                     <li>Indiquez les utilisateurs cibles</li>
                 </ul>
-                
+
                 <h6 class="fw-bold">Niveaux de priorité :</h6>
                 <ul class="small mb-0">
                     <li><span class="badge bg-secondary">Faible</span> - Amélioration future</li>
@@ -335,7 +305,7 @@ $csrfToken = generateCSRFToken();
                 </ul>
             </div>
         </div>
-        
+
         <div class="card">
             <div class="card-header bg-warning text-dark">
                 <h6 class="card-title mb-0">
@@ -360,7 +330,7 @@ $csrfToken = generateCSRFToken();
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('besoinForm');
-    
+
     // Validation en temps réel
     form.addEventListener('submit', function(e) {
         if (!validateForm(this)) {
@@ -369,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         this.classList.add('was-validated');
     });
-    
+
     // Validation de l'email en temps réel
     const emailField = document.getElementById('demandeur_email');
     emailField.addEventListener('blur', function() {
@@ -379,7 +349,7 @@ document.addEventListener('DOMContentLoaded', function() {
             this.setCustomValidity('');
         }
     });
-    
+
     // Validation de la date
     const dateField = document.getElementById('delai_souhaite');
     dateField.addEventListener('change', function() {
@@ -387,7 +357,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const selectedDate = new Date(this.value);
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            
+
             if (selectedDate < today) {
                 this.setCustomValidity('La date ne peut pas être antérieure à aujourd\'hui');
             } else {
@@ -395,27 +365,27 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-    
+
     // Compteur de caractères pour la description
     const descriptionField = document.getElementById('description');
     const maxLength = 5000;
-    
+
     // Créer l'indicateur de compteur
     const counter = document.createElement('div');
     counter.className = 'form-text';
     counter.id = 'descriptionCounter';
     descriptionField.parentNode.appendChild(counter);
-    
+
     function updateCounter() {
         const remaining = maxLength - descriptionField.value.length;
         counter.textContent = `${descriptionField.value.length} / ${maxLength} caractères`;
-        
+
         if (remaining < 100) {
             counter.classList.add('text-warning');
         } else {
             counter.classList.remove('text-warning');
         }
-        
+
         if (remaining < 0) {
             counter.classList.add('text-danger');
             counter.classList.remove('text-warning');
@@ -423,10 +393,10 @@ document.addEventListener('DOMContentLoaded', function() {
             counter.classList.remove('text-danger');
         }
     }
-    
+
     descriptionField.addEventListener('input', updateCounter);
     updateCounter(); // Initialisation
-    
+
     // Sauvegarde automatique en brouillon (localStorage)
     const fields = form.querySelectorAll('input, select, textarea');
     fields.forEach(field => {
@@ -435,13 +405,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (savedValue && !field.value) {
             field.value = savedValue;
         }
-        
+
         // Sauvegarder à chaque changement
         field.addEventListener('input', function() {
             localStorage.setItem('besoin_' + this.name, this.value);
         });
     });
-    
+
     // Nettoyer le localStorage après soumission réussie
     form.addEventListener('submit', function() {
         if (this.checkValidity()) {
@@ -450,7 +420,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
-    
+
     // Auto-suggestion pour les catégories basée sur l'historique
     const categorieField = document.getElementById('categorie');
     categorieField.addEventListener('focus', function() {
