@@ -7,7 +7,7 @@ $auth = requireAuth();
 $user = $auth->getCurrentUser();
 
 // Redirection si pas le bon rôle
-if (!$auth->hasRole('demandeur')) {
+if (!$auth->hasRole('Demandeur')) {
     header("Location: " . redirectByRole($user['role']));
     exit();
 }
@@ -120,7 +120,7 @@ try {
                 </div>
             </div>
         </div>
-        
+
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="stats-card stats-card-success animate-card" data-delay="100">
                 <div class="card-body text-center">
@@ -130,12 +130,14 @@ try {
                     <h3 class="card-title counter" data-count="<?php echo $mesStats['traitees']; ?>">0</h3>
                     <p class="card-text">Demandes Traitées</p>
                     <div class="progress mt-2" style="height: 4px;">
-                        <div class="progress-bar bg-success" style="width: <?php echo $mesStats['total'] > 0 ? ($mesStats['traitees'] / $mesStats['total']) * 100 : 0; ?>%"></div>
+                        <div class="progress-bar bg-success"
+                            style="width: <?php echo $mesStats['total'] > 0 ? ($mesStats['traitees'] / $mesStats['total']) * 100 : 0; ?>%">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="stats-card stats-card-warning animate-card" data-delay="200">
                 <div class="card-body text-center">
@@ -145,12 +147,13 @@ try {
                     <h3 class="card-title counter" data-count="<?php echo $notificationsNonLues; ?>">0</h3>
                     <p class="card-text">Notifications</p>
                     <div class="progress mt-2" style="height: 4px;">
-                        <div class="progress-bar bg-warning" style="width: <?php echo min(100, $notificationsNonLues * 20); ?>%"></div>
+                        <div class="progress-bar bg-warning"
+                            style="width: <?php echo min(100, $notificationsNonLues * 20); ?>%"></div>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="stats-card stats-card-info animate-card" data-delay="300">
                 <div class="card-body text-center">
@@ -180,91 +183,91 @@ try {
                 </div>
                 <div class="card-body p-0">
                     <?php if (!empty($mesDemandesRecentes)): ?>
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Demande</th>
-                                        <th>Type</th>
-                                        <th>Statut</th>
-                                        <th>Validateur</th>
-                                        <th>Date</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($mesDemandesRecentes as $index => $demande): ?>
-                                        <tr class="table-row-animate" style="animation-delay: <?php echo $index * 100; ?>ms">
-                                            <td>
-                                                <div>
-                                                    <strong><?php echo htmlspecialchars($demande['titre']); ?></strong>
-                                                    <br>
-                                                    <small class="text-muted">
-                                                        <?php echo htmlspecialchars(substr($demande['description'], 0, 50)) . '...'; ?>
-                                                    </small>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span class="badge rounded-pill" style="background-color: <?php echo $demande['type_couleur']; ?>">
-                                                    <?php echo htmlspecialchars($demande['type_besoin']); ?>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span class="badge bg-<?php echo getStatusClass($demande['statut']); ?> status-badge">
-                                                    <?php echo getStatusLabel($demande['statut']); ?>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <?php if ($demande['validateur_nom']): ?>
-                                                    <small><?php echo htmlspecialchars($demande['validateur_nom']); ?></small>
-                                                <?php else: ?>
-                                                    <span class="text-muted">Non assigné</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td>
-                                                <small><?php echo formatDateTime($demande['date_creation']); ?></small>
-                                            </td>
-                                            <td>
-                                                <div class="btn-group btn-group-sm">
-                                                    <a href="pages/demandes/detail-demande.php?id=<?php echo $demande['id']; ?>" 
-                                                       class="btn btn-outline-primary btn-sm hover-lift"
-                                                       data-bs-toggle="tooltip" 
-                                                       title="Voir les détails">
-                                                        <i class="bi bi-eye"></i>
-                                                    </a>
-                                                    <?php if (in_array($demande['statut'], ['en_attente', 'rejetee'])): ?>
-                                                        <a href="pages/demandes/modifier-demande.php?id=<?php echo $demande['id']; ?>" 
-                                                           class="btn btn-outline-warning btn-sm hover-lift"
-                                                           data-bs-toggle="tooltip" 
-                                                           title="Modifier">
-                                                            <i class="bi bi-pencil"></i>
-                                                        </a>
-                                                    <?php endif; ?>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="card-footer text-center">
-                            <a href="pages/demandes/mes-demandes.php" class="btn btn-outline-primary">
-                                <i class="bi bi-arrow-right me-1"></i>
-                                Voir toutes mes demandes
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Demande</th>
+                                    <th>Type</th>
+                                    <th>Statut</th>
+                                    <th>Validateur</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($mesDemandesRecentes as $index => $demande): ?>
+                                <tr class="table-row-animate" style="animation-delay: <?php echo $index * 100; ?>ms">
+                                    <td>
+                                        <div>
+                                            <strong><?php echo htmlspecialchars($demande['titre']); ?></strong>
+                                            <br>
+                                            <small class="text-muted">
+                                                <?php echo htmlspecialchars(substr($demande['description'], 0, 50)) . '...'; ?>
+                                            </small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge rounded-pill"
+                                            style="background-color: <?php echo $demande['type_couleur']; ?>">
+                                            <?php echo htmlspecialchars($demande['type_besoin']); ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span
+                                            class="badge bg-<?php echo getStatusClass($demande['statut']); ?> status-badge">
+                                            <?php echo getStatusLabel($demande['statut']); ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <?php if ($demande['validateur_nom']): ?>
+                                        <small><?php echo htmlspecialchars($demande['validateur_nom']); ?></small>
+                                        <?php else: ?>
+                                        <span class="text-muted">Non assigné</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <small><?php echo formatDateTime($demande['date_creation']); ?></small>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="pages/demandes/detail-demande.php?id=<?php echo $demande['id']; ?>"
+                                                class="btn btn-outline-primary btn-sm hover-lift"
+                                                data-bs-toggle="tooltip" title="Voir les détails">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <?php if (in_array($demande['statut'], ['en_attente', 'rejetee'])): ?>
+                                            <a href="pages/demandes/modifier-demande.php?id=<?php echo $demande['id']; ?>"
+                                                class="btn btn-outline-warning btn-sm hover-lift"
+                                                data-bs-toggle="tooltip" title="Modifier">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <?php endif; ?>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="pages/demandes/mes-demandes.php" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-right me-1"></i>
+                            Voir toutes mes demandes
+                        </a>
+                    </div>
+                    <?php else: ?>
+                    <div class="text-center py-5">
+                        <div class="empty-state">
+                            <i class="bi bi-inbox display-1 text-muted animate__animated animate__bounceIn"></i>
+                            <h4 class="mt-3 text-muted">Aucune demande pour le moment</h4>
+                            <p class="text-muted">Créez votre première demande d'expression de besoin</p>
+                            <a href="pages/demandes/nouvelle-demande.php" class="btn btn-primary btn-lg mt-2">
+                                <i class="bi bi-plus-circle me-2"></i>
+                                Créer une Demande
                             </a>
                         </div>
-                    <?php else: ?>
-                        <div class="text-center py-5">
-                            <div class="empty-state">
-                                <i class="bi bi-inbox display-1 text-muted animate__animated animate__bounceIn"></i>
-                                <h4 class="mt-3 text-muted">Aucune demande pour le moment</h4>
-                                <p class="text-muted">Créez votre première demande d'expression de besoin</p>
-                                <a href="pages/demandes/nouvelle-demande.php" class="btn btn-primary btn-lg mt-2">
-                                    <i class="bi bi-plus-circle me-2"></i>
-                                    Créer une Demande
-                                </a>
-                            </div>
-                        </div>
+                    </div>
                     <?php endif; ?>
                 </div>
             </div>
@@ -282,12 +285,12 @@ try {
                 </div>
                 <div class="card-body">
                     <?php if (!empty($mesDemandesParStatut)): ?>
-                        <canvas id="mesDemandesChart" width="300" height="200"></canvas>
+                    <canvas id="mesDemandesChart" width="300" height="200"></canvas>
                     <?php else: ?>
-                        <div class="text-center py-3">
-                            <i class="bi bi-graph-up text-muted display-4"></i>
-                            <p class="text-muted mt-2 mb-0">Aucune donnée disponible</p>
-                        </div>
+                    <div class="text-center py-3">
+                        <i class="bi bi-graph-up text-muted display-4"></i>
+                        <p class="text-muted mt-2 mb-0">Aucune donnée disponible</p>
+                    </div>
                     <?php endif; ?>
                 </div>
             </div>
@@ -314,7 +317,7 @@ try {
                             <i class="bi bi-bell me-2"></i>
                             Notifications
                             <?php if ($notificationsNonLues > 0): ?>
-                                <span class="badge bg-danger ms-1"><?php echo $notificationsNonLues; ?></span>
+                            <span class="badge bg-danger ms-1"><?php echo $notificationsNonLues; ?></span>
                             <?php endif; ?>
                         </a>
                         <a href="pages/profil.php" class="btn btn-outline-secondary hover-lift">
@@ -369,6 +372,7 @@ try {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -381,13 +385,33 @@ try {
     animation: slideInCard 0.6s ease forwards;
 }
 
-.animate-card[data-delay="100"] { animation-delay: 0.1s; }
-.animate-card[data-delay="200"] { animation-delay: 0.2s; }
-.animate-card[data-delay="300"] { animation-delay: 0.3s; }
-.animate-card[data-delay="400"] { animation-delay: 0.4s; }
-.animate-card[data-delay="500"] { animation-delay: 0.5s; }
-.animate-card[data-delay="600"] { animation-delay: 0.6s; }
-.animate-card[data-delay="700"] { animation-delay: 0.7s; }
+.animate-card[data-delay="100"] {
+    animation-delay: 0.1s;
+}
+
+.animate-card[data-delay="200"] {
+    animation-delay: 0.2s;
+}
+
+.animate-card[data-delay="300"] {
+    animation-delay: 0.3s;
+}
+
+.animate-card[data-delay="400"] {
+    animation-delay: 0.4s;
+}
+
+.animate-card[data-delay="500"] {
+    animation-delay: 0.5s;
+}
+
+.animate-card[data-delay="600"] {
+    animation-delay: 0.6s;
+}
+
+.animate-card[data-delay="700"] {
+    animation-delay: 0.7s;
+}
 
 @keyframes slideInCard {
     to {
@@ -413,7 +437,7 @@ try {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
     transform: translateX(-100%);
     transition: transform 0.6s;
 }
@@ -424,7 +448,7 @@ try {
 
 .stats-card:hover {
     transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
 .stats-card-success {
@@ -452,7 +476,7 @@ try {
     transform: translate(-50%, -50%);
     width: 80px;
     height: 80px;
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 50%;
     z-index: 0;
 }
@@ -464,8 +488,15 @@ try {
 }
 
 @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
 }
 
 .counter {
@@ -477,14 +508,14 @@ try {
 .modern-card {
     border-radius: 15px;
     border: none;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     overflow: hidden;
     transition: all 0.3s ease;
 }
 
 .modern-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
 }
 
 .bg-gradient-primary {
@@ -523,7 +554,7 @@ try {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
     transition: left 0.5s;
 }
 
@@ -553,7 +584,7 @@ try {
 }
 
 .tip-item:hover {
-    background-color: rgba(0,0,0,0.05);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 .empty-state {
@@ -573,6 +604,7 @@ try {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -584,15 +616,15 @@ try {
 document.addEventListener('DOMContentLoaded', function() {
     // Animation des compteurs
     animateCounters();
-    
+
     // Animation des cartes au scroll
     observeElements();
-    
+
     // Graphique si données disponibles
     <?php if (!empty($mesDemandesParStatut)): ?>
-        createStatusChart();
+    createStatusChart();
     <?php endif; ?>
-    
+
     // Tooltips
     initializeTooltips();
 });
@@ -600,13 +632,13 @@ document.addEventListener('DOMContentLoaded', function() {
 // Animation des compteurs
 function animateCounters() {
     const counters = document.querySelectorAll('.counter');
-    
+
     counters.forEach(counter => {
         const target = parseInt(counter.getAttribute('data-count'));
         const duration = 2000;
         const step = target / (duration / 16);
         let current = 0;
-        
+
         const timer = setInterval(() => {
             current += step;
             if (current >= target) {
@@ -626,8 +658,10 @@ function observeElements() {
                 entry.target.classList.add('animate__fadeInUp');
             }
         });
-    }, { threshold: 0.1 });
-    
+    }, {
+        threshold: 0.1
+    });
+
     document.querySelectorAll('.animate-card').forEach(card => {
         observer.observe(card);
     });
@@ -635,10 +669,11 @@ function observeElements() {
 
 // Graphique des statuts
 <?php if (!empty($mesDemandesParStatut)): ?>
+
 function createStatusChart() {
     const ctx = document.getElementById('mesDemandesChart').getContext('2d');
     const data = <?php echo json_encode($mesDemandesParStatut); ?>;
-    
+
     new Chart(ctx, {
         type: 'doughnut',
         data: {
@@ -714,17 +749,22 @@ function createParticles(element) {
             pointer-events: none;
             z-index: 1000;
         `;
-        
+
         const rect = element.getBoundingClientRect();
         particle.style.left = (rect.left + Math.random() * rect.width) + 'px';
         particle.style.top = (rect.top + Math.random() * rect.height) + 'px';
-        
+
         document.body.appendChild(particle);
-        
+
         // Animation
-        particle.animate([
-            { transform: 'scale(0) translateY(0)', opacity: 1 },
-            { transform: 'scale(1) translateY(-20px)', opacity: 0 }
+        particle.animate([{
+                transform: 'scale(0) translateY(0)',
+                opacity: 1
+            },
+            {
+                transform: 'scale(1) translateY(-20px)',
+                opacity: 0
+            }
         ], {
             duration: 800,
             easing: 'ease-out'

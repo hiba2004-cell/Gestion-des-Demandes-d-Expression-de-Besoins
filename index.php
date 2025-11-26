@@ -1,365 +1,581 @@
 <?php
-$page_title = "Dashboard";
-include 'includes/header.php';
+require_once 'config/auth.php';
 
-// Récupération des statistiques
-try {
-    $stats = getStatistics();
-    $recentBesoins = getBesoins([], 5, 0);
-} catch (Exception $e) {
-    $stats = ['total' => 0, 'par_statut' => [], 'par_priorite' => [], 'cout_total' => 0];
-    $recentBesoins = ['besoins' => [], 'total' => 0];
-    setFlashMessage('error', 'Erreur de connexion à la base de données : ' . $e->getMessage());
+$auth = new Auth();
+
+// Si déjà connecté, rediriger
+// if ($auth->isLoggedIn()) {
+//     $user = $auth->getCurrentUser();
+//     header("Location: " . redirectByRole($user['role']));
+//     exit();
+// }
+if ($auth->isLoggedIn()) {
+    $user = $auth->getCurrentUser();
+    $redirectUrl = redirectByRole($user['role']);
+    
+    if ($redirectUrl) {
+        header("Location: $redirectUrl");
+        exit();
+    } else {
+        // echo "Rôle inconnu. Contactez l’administrateur.";
+        print_r($auth->get_current_user());
+        exit();
+    }
 }
+
+
+$error = '';
+$success = '';
+
+// Traitement de la connexion
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
+    
+    if (empty($email) || empty($password)) {
+        $error = 'Veuillez renseigner tous les champs.';
+    } else {
+        if ($auth->login($email, $password)) {
+            $user = $auth->getCurrentUser();
+            header("Location: " . redirectByRole($user['role']));
+            exit();
+        } else {
+            $error = 'Email ou mot de passe incorrect.';
+        }
+    }
+}
+
+// Déconnexion
+if (isset($_GET['logout'])) {
+    $auth->logout();
+    $success = 'Vous avez été déconnecté avec succès.';
+}
+
+// Génération du token CSRF
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+require_once 'includes/functions.php';
 ?>
+<!DOCTYPE html>
+<html lang="fr">
 
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">
-        <i class="bi bi-speedometer2 me-2 text-primary"></i>
-        Dashboard - Expression du Besoin
-    </h1>
-    <div class="btn-toolbar mb-2 mb-md-0">
-        <div class="btn-group me-2">
-            <a href="pages/ajouter-besoin.php" class="btn btn-primary">
-                <i class="bi bi-plus-circle me-1"></i>
-                Nouveau Besoin
-            </a>
-            <a href="pages/liste-besoins.php" class="btn btn-outline-primary">
-                <i class="bi bi-list-ul me-1"></i>
-                Voir Tout
-            </a>
-        </div>
-    </div>
-</div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - Expression du Besoin</title>
 
-<!-- Cartes de statistiques -->
-<div class="row mb-4">
-    <div class="col-md-3 mb-3">
-        <div class="card stats-card">
-            <div class="card-body text-center">
-                <i class="bi bi-clipboard-data display-4 mb-2"></i>
-                <h4 class="card-title"><?php echo $stats['total']; ?></h4>
-                <p class="card-text">Total des Besoins</p>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3 mb-3">
-        <div class="card stats-card success">
-            <div class="card-body text-center">
-                <i class="bi bi-check-circle display-4 mb-2"></i>
-                <h4 class="card-title">
-                    <?php 
-                    $termines = array_filter($stats['par_statut'], function($item) {
-                        return $item['statut'] === 'termine';
-                    });
-                    echo !empty($termines) ? reset($termines)['count'] : 0;
-                    ?>
-                </h4>
-                <p class="card-text">Besoins Terminés</p>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3 mb-3">
-        <div class="card stats-card warning">
-            <div class="card-body text-center">
-                <i class="bi bi-clock display-4 mb-2"></i>
-                <h4 class="card-title">
-                    <?php 
-                    $enCours = array_filter($stats['par_statut'], function($item) {
-                        return $item['statut'] === 'en_cours';
-                    });
-                    echo !empty($enCours) ? reset($enCours)['count'] : 0;
-                    ?>
-                </h4>
-                <p class="card-text">En Cours</p>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3 mb-3">
-        <div class="card stats-card info">
-            <div class="card-body text-center">
-                <i class="bi bi-currency-euro display-4 mb-2"></i>
-                <h4 class="card-title"><?php echo formatCurrency($stats['cout_total']); ?></h4>
-                <p class="card-text">Coût Total Estimé</p>
-            </div>
-        </div>
-    </div>
-</div>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet">
 
-<!-- Graphiques et tableaux -->
-<div class="row">
-    <!-- Graphique par statut -->
-    <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-pie-chart me-2"></i>
-                    Répartition par Statut
-                </h5>
-            </div>
-            <div class="card-body">
-                <canvas id="statutChart" width="400" height="300"></canvas>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Graphique par priorité -->
-    <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-header bg-success text-white">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-bar-chart me-2"></i>
-                    Répartition par Priorité
-                </h5>
-            </div>
-            <div class="card-body">
-                <canvas id="prioriteChart" width="400" height="300"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
+    <style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --success-gradient: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+        --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    }
 
-<!-- Tableau des besoins récents -->
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-clock-history me-2"></i>
-                    Besoins Récents
-                </h5>
-                <a href="pages/liste-besoins.php" class="btn btn-light btn-sm">
-                    Voir Tous
-                </a>
-            </div>
-            <div class="card-body p-0">
-                <?php if (!empty($recentBesoins['besoins'])): ?>
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Titre</th>
-                                    <th>Demandeur</th>
-                                    <th>Priorité</th>
-                                    <th>Statut</th>
-                                    <th>Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($recentBesoins['besoins'] as $besoin): ?>
-                                    <tr>
-                                        <td>
-                                            <strong><?php echo htmlspecialchars($besoin['titre']); ?></strong>
-                                            <br>
-                                            <small class="text-muted">
-                                                <?php echo htmlspecialchars(substr($besoin['description'], 0, 50)) . '...'; ?>
-                                            </small>
-                                        </td>
-                                        <td>
-                                            <?php echo htmlspecialchars($besoin['demandeur_nom']); ?>
-                                            <br>
-                                            <small class="text-muted"><?php echo htmlspecialchars($besoin['demandeur_email']); ?></small>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-<?php echo getPriorityClass($besoin['priorite']); ?>">
-                                                <?php echo getPriorityLabel($besoin['priorite']); ?>
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-<?php echo getStatusClass($besoin['statut']); ?>">
-                                                <?php echo getStatusLabel($besoin['statut']); ?>
-                                            </span>
-                                        </td>
-                                        <td><?php echo formatDate($besoin['date_creation']); ?></td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm">
-                                                <a href="pages/detail-besoin.php?id=<?php echo $besoin['id']; ?>" 
-                                                   class="btn btn-outline-primary btn-sm" 
-                                                   data-bs-toggle="tooltip" 
-                                                   title="Voir les détails">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                                <a href="pages/detail-besoin.php?id=<?php echo $besoin['id']; ?>&edit=1" 
-                                                   class="btn btn-outline-warning btn-sm"
-                                                   data-bs-toggle="tooltip" 
-                                                   title="Modifier">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                <?php else: ?>
-                    <div class="text-center py-5">
-                        <i class="bi bi-inbox display-1 text-muted"></i>
-                        <h4 class="mt-3 text-muted">Aucun besoin enregistré</h4>
-                        <p class="text-muted">Commencez par ajouter votre premier besoin</p>
-                        <a href="pages/ajouter-besoin.php" class="btn btn-primary">
-                            <i class="bi bi-plus-circle me-2"></i>
-                            Ajouter un Besoin
-                        </a>
-                    </div>
-                <?php endif; ?>
-            </div>
-        </div>
-    </div>
-</div>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-<!-- Alertes et notifications -->
-<div class="row mt-4">
-    <div class="col-md-6">
-        <div class="card border-warning">
-            <div class="card-header bg-warning text-dark">
-                <h6 class="card-title mb-0">
-                    <i class="bi bi-exclamation-triangle me-2"></i>
-                    Besoins Critiques
-                </h6>
-            </div>
-            <div class="card-body">
-                <?php
-                $critiques = getBesoins(['priorite' => 'critique'], 3, 0);
-                if (!empty($critiques['besoins'])):
-                ?>
-                    <ul class="list-unstyled mb-0">
-                        <?php foreach ($critiques['besoins'] as $critique): ?>
-                            <li class="mb-2">
-                                <a href="pages/detail-besoin.php?id=<?php echo $critique['id']; ?>" class="text-decoration-none">
-                                    <strong><?php echo htmlspecialchars($critique['titre']); ?></strong>
-                                </a>
-                                <br>
-                                <small class="text-muted">par <?php echo htmlspecialchars($critique['demandeur_nom']); ?></small>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                    <?php if ($critiques['total'] > 3): ?>
-                        <div class="mt-2">
-                            <a href="pages/liste-besoins.php?priorite=critique" class="btn btn-sm btn-outline-warning">
-                                Voir tous (<?php echo $critiques['total']; ?>)
-                            </a>
+    .login-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        animation: slideInUp 0.8s ease-out;
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .login-header {
+        background: var(--primary-gradient);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+        position: relative;
+    }
+
+    .login-header::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 20px;
+        background: white;
+        border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    }
+
+    .login-logo {
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        padding: 15px 20px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+        background: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-login {
+        background: var(--primary-gradient);
+        border: none;
+        border-radius: 15px;
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: white;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+
+    .btn-login:active {
+        transform: translateY(0);
+    }
+
+    .alert {
+        border: none;
+        border-radius: 15px;
+        padding: 1rem 1.5rem;
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, rgba(248, 215, 218, 0.8) 0%, rgba(245, 198, 203, 0.8) 100%);
+        color: #721c24;
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, rgba(212, 237, 218, 0.8) 0%, rgba(195, 230, 203, 0.8) 100%);
+        color: #155724;
+    }
+
+    .floating-shapes {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: -1;
+    }
+
+    .shape {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .shape:nth-child(1) {
+        width: 80px;
+        height: 80px;
+        top: 10%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .shape:nth-child(2) {
+        width: 120px;
+        height: 120px;
+        top: 20%;
+        right: 10%;
+        animation-delay: -2s;
+    }
+
+    .shape:nth-child(3) {
+        width: 60px;
+        height: 60px;
+        bottom: 10%;
+        left: 20%;
+        animation-delay: -4s;
+    }
+
+    .shape:nth-child(4) {
+        width: 100px;
+        height: 100px;
+        bottom: 20%;
+        right: 20%;
+        animation-delay: -1s;
+    }
+
+    @keyframes float {
+
+        0%,
+        100% {
+            transform: translateY(0) rotate(0deg);
+        }
+
+        50% {
+            transform: translateY(-20px) rotate(180deg);
+        }
+    }
+
+    .demo-accounts {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 1rem;
+        margin-top: 1rem;
+        color: white;
+    }
+
+    .demo-account {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 0.5rem;
+        margin: 0.5rem 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .demo-account:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateX(5px);
+    }
+
+    .input-group {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+
+    .input-group i {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        z-index: 10;
+        transition: color 0.3s ease;
+    }
+
+    .input-group .form-control {
+        padding-left: 55px;
+    }
+
+    .input-group .form-control:focus+i {
+        color: #667eea;
+    }
+
+   .password-toggle {
+        position: absolute;
+        right: 1px; 
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        z-index: 10;
+        color: #6c757d;
+        transition: color 0.3s ease;
+        width: 20px;
+        height: 20px;
+
+    }
+
+
+ 
+
+
+    .password-toggle:hover {
+        color: #667eea;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="login-container">
+                    <!-- Header -->
+                    <div class="login-header">
+                        <div class="login-logo">
+                            <i class="bi bi-clipboard-check display-4"></i>
                         </div>
-                    <?php endif; ?>
-                <?php else: ?>
-                    <p class="text-muted mb-0">Aucun besoin critique actuellement</p>
-                <?php endif; ?>
+                        <h2 class="fw-bold mb-0">Expression du Besoin</h2>
+                        <p class="mb-0 opacity-75">Connectez-vous à votre espace</p>
+                    </div>
+
+                    <!-- Formulaire -->
+                    <div class="p-4">
+                        <!-- Alertes -->
+                        <?php if ($error): ?>
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <?php echo htmlspecialchars($error); ?>
+                        </div>
+                        <?php endif; ?>
+
+                        <?php if ($success): ?>
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle me-2"></i>
+                            <?php echo htmlspecialchars($success); ?>
+                        </div>
+                        <?php endif; ?>
+
+                        <form method="POST" id="loginForm">
+                            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
+                            <div class="input-group">
+                                <input type="email" class="form-control" id="email" name="email"
+                                    placeholder="Adresse email" required
+                                    value="<?php echo htmlspecialchars($email ?? ''); ?>">
+                                <i class="bi bi-envelope-fill"></i>
+                            </div>
+
+                            <div class="input-group">
+                                <div class="position-relative w-100">
+                                    <input type="password" class="form-control" id="password" name="password"
+                                    placeholder="Mot de passe" required>
+                                <i class="bi bi-lock-fill"></i>
+                                <!-- <i class="bi bi-eye password-toggle right-0" onclick="togglePassword()"></i> -->
+                           </div>
+                            </div>
+
+
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="remember">
+                                <label class="form-check-label" for="remember">
+                                    Se souvenir de moi
+                                </label>
+                            </div>
+
+                            <button type="submit" name="login" class="btn btn-login">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>
+                                Se connecter
+                            </button>
+                        </form>
+
+                        <!-- Comptes de démonstration -->
+                        <div class="demo-accounts">
+                            <h6 class="fw-bold mb-2">
+                                <i class="bi bi-info-circle me-2"></i>
+                                Comptes de démonstration
+                            </h6>
+                            <div class="demo-account" onclick="fillCredentials('admin@entreprise.com', 'password123')">
+                                <strong>Administrateur:</strong> admin@entreprise.com
+                            </div>
+                            <div class="demo-account"
+                                onclick="fillCredentials('j.martin@entreprise.com', 'password123')">
+                                <strong>Validateur:</strong> j.martin@entreprise.com
+                            </div>
+                            <div class="demo-account"
+                                onclick="fillCredentials('m.dubois@entreprise.com', 'password123')">
+                                <strong>Demandeur:</strong> m.dubois@entreprise.com
+                            </div>
+                            <small class="text-white-50 d-block mt-2">
+                                Mot de passe pour tous: password123
+                            </small>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    
-    <div class="col-md-6">
-        <div class="card border-info">
-            <div class="card-header bg-info text-white">
-                <h6 class="card-title mb-0">
-                    <i class="bi bi-info-circle me-2"></i>
-                    Informations Système
-                </h6>
-            </div>
-            <div class="card-body">
-                <ul class="list-unstyled mb-0">
-                    <li><strong>Version PHP:</strong> <?php echo PHP_VERSION; ?></li>
-                    <li><strong>Total Besoins:</strong> <?php echo $stats['total']; ?></li>
-                    <li><strong>Dernière Mise à Jour:</strong> <?php echo date('d/m/Y H:i'); ?></li>
-                    <li><strong>Base de Données:</strong> 
-                        <?php 
-                        try {
-                            $db = getDatabase();
-                            echo $db->testConnection() ? '<span class="text-success">Connectée</span>' : '<span class="text-danger">Erreur</span>';
-                        } catch (Exception $e) {
-                            echo '<span class="text-danger">Erreur</span>';
-                        }
-                        ?>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Graphique des statuts
-    const statutCtx = document.getElementById('statutChart').getContext('2d');
-    const statutData = <?php echo json_encode($stats['par_statut']); ?>;
-    
-    new Chart(statutCtx, {
-        type: 'doughnut',
-        data: {
-            labels: statutData.map(item => {
-                switch(item.statut) {
-                    case 'nouveau': return 'Nouveau';
-                    case 'en_cours': return 'En Cours';
-                    case 'termine': return 'Terminé';
-                    case 'rejete': return 'Rejeté';
-                    default: return item.statut;
-                }
-            }),
-            datasets: [{
-                data: statutData.map(item => item.count),
-                backgroundColor: ['#0d6efd', '#ffc107', '#198754', '#dc3545'],
-                borderWidth: 2,
-                borderColor: '#fff'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                }
-            }
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+    // Animation au chargement
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animation des éléments
+        const elements = document.querySelectorAll('.input-group, .btn-login, .demo-accounts');
+        elements.forEach((element, index) => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+
+            setTimeout(() => {
+                element.style.transition = 'all 0.6s ease';
+                element.style.opacity = '1';
+                element.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+
+        // Effet de focus amélioré
+        const inputs = document.querySelectorAll('.form-control');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentNode.style.transform = 'scale(1.02)';
+            });
+
+            input.addEventListener('blur', function() {
+                this.parentNode.style.transform = 'scale(1)';
+            });
+        });
+
+        // Auto-masquage des alertes
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 5000);
+    });
+
+    // Basculer visibilité mot de passe
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const toggleIcon = document.querySelector('.password-toggle');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.replace('bi-eye', 'bi-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.replace('bi-eye-slash', 'bi-eye');
+        }
+    }
+
+    // Remplir les credentials de démo
+    function fillCredentials(email, password) {
+        document.getElementById('email').value = email;
+        document.getElementById('password').value = password;
+
+        // Animation de remplissage
+        const inputs = [document.getElementById('email'), document.getElementById('password')];
+        inputs.forEach((input, index) => {
+            setTimeout(() => {
+                input.style.background = '#e3f2fd';
+                setTimeout(() => {
+                    input.style.background = '';
+                }, 500);
+            }, index * 100);
+        });
+    }
+
+    // Validation du formulaire
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        if (!email || !password) {
+            e.preventDefault();
+
+            // Secouer le formulaire
+            this.style.animation = 'shake 0.5s ease-in-out';
+            setTimeout(() => {
+                this.style.animation = '';
+            }, 500);
         }
     });
-    
-    // Graphique des priorités
-    const prioriteCtx = document.getElementById('prioriteChart').getContext('2d');
-    const prioriteData = <?php echo json_encode($stats['par_priorite']); ?>;
-    
-    new Chart(prioriteCtx, {
-        type: 'bar',
-        data: {
-            labels: prioriteData.map(item => {
-                switch(item.priorite) {
-                    case 'critique': return 'Critique';
-                    case 'haute': return 'Haute';
-                    case 'moyenne': return 'Moyenne';
-                    case 'faible': return 'Faible';
-                    default: return item.priorite;
-                }
-            }),
-            datasets: [{
-                label: 'Nombre de Besoins',
-                data: prioriteData.map(item => item.count),
-                backgroundColor: ['#dc3545', '#ffc107', '#0dcaf0', '#6c757d'],
-                borderColor: ['#dc3545', '#ffc107', '#0dcaf0', '#6c757d'],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 1
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false
-                }
-            }
-        }
-    });
-});
-</script>
 
-<?php include 'includes/footer.php'; ?>
+    // Animation de secousse
+    const shakeCSS = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                75% { transform: translateX(5px); }
+            }
+        `;
+    const style = document.createElement('style');
+    style.textContent = shakeCSS;
+    document.head.appendChild(style);
+
+    // Particules flottantes interactives
+    document.addEventListener('mousemove', function(e) {
+        const shapes = document.querySelectorAll('.shape');
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+
+        shapes.forEach((shape, index) => {
+            const speed = (index + 1) * 0.5;
+            const xMove = (x - 0.5) * speed;
+            const yMove = (y - 0.5) * speed;
+
+            shape.style.transform = `translate(${xMove}px, ${yMove}px)`;
+        });
+    });
+
+    // Effet de frappe pour le titre
+    const title = document.querySelector('.login-header h2');
+    const originalText = title.textContent;
+    title.textContent = '';
+
+    let i = 0;
+    const typeWriter = () => {
+        if (i < originalText.length) {
+            title.textContent += originalText.charAt(i);
+            i++;
+            setTimeout(typeWriter, 100);
+        }
+    };
+
+    setTimeout(typeWriter, 500);
+    </script>
+</body>
+
+</html>

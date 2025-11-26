@@ -153,7 +153,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <!-- Navigation principale -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/besoins/index.php">
+            <a class="navbar-brand" href="/besoins/dashboard-admin.php">
                 <i class="bi bi-clipboard-data me-2"></i>
                 Expression du Besoin
             </a>
@@ -204,7 +204,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <a class="nav-link <?php echo ($current_page == 'index.php') ? 'active' : ''; ?>"
-                                href="/besoins/index.php">
+                                href="/besoins/dashboard-admin.php">
                                 <i class="bi bi-speedometer2 me-2"></i>
                                 Dashboard
                             </a>
