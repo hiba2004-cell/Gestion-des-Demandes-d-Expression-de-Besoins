@@ -220,6 +220,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link <?php echo ($current_page == 'liste-utilisateurs.php') ? 'active' : ''; ?>"
+                                href="/besoins/pages/liste-utilisateurs.php">
+                                <i class="bi bi-people me-2"></i>
+                                Liste Utilisateurs
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link <?php echo ($current_page == 'ajouter-besoin.php') ? 'active' : ''; ?>"
                                 href="/besoins/pages/ajouter-besoin.php">
                                 <i class="bi bi-plus-circle me-2"></i>
