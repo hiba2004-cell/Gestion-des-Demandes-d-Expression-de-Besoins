@@ -132,7 +132,7 @@ try {
     <div class="col-lg-3 col-md-6 mb-3">
         <div class="card stats-card info">
             <div class="card-body text-center">
-                <i class="bi bi-currency-euro display-4 mb-2"></i>
+                <i class="bi bi-cash-stack display-4 mb-2"></i>
                 <h3 class="card-title"><?php echo formatCurrency($stats['cout_total']); ?></h3>
                 <p class="card-text">Budget Total</p>
                 <div class="mt-2">

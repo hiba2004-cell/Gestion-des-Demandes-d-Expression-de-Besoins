@@ -230,12 +230,12 @@ $csrfToken = generateCSRFToken();
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label for="cout_estime" class="form-label">Coût Estimé (€)</label>
+                            <label for="cout_estime" class="form-label">Coût Estimé (DH)</label>
                             <input type="number" class="form-control" id="cout_estime" name="cout_estime"
                                 value="<?php echo htmlspecialchars($cout_estime ?? ''); ?>" min="0" step="0.01"
-                                placeholder="Ex: 15000.00">
+                                placeholder="Ex: 150.00">
                             <div class="form-text">
-                                Montant estimé en euros (optionnel)
+                                Montant estimé en DH
                             </div>
                         </div>
 
@@ -298,10 +298,10 @@ $csrfToken = generateCSRFToken();
 
                 <h6 class="fw-bold">Niveaux de priorité :</h6>
                 <ul class="small mb-0">
-                    <li><span class="badge bg-secondary">Faible</span> - Amélioration future</li>
-                    <li><span class="badge bg-info">Moyenne</span> - Important mais pas urgent</li>
-                    <li><span class="badge bg-warning">Haute</span> - Urgent et important</li>
-                    <li><span class="badge bg-danger">Critique</span> - Bloquant pour l'activité</li>
+                    <li><span class="badge mt-2 bg-secondary">Faible</span> - Amélioration future</li>
+                    <li><span class="badge mt-2 bg-info">Moyenne</span> - Important mais pas urgent</li>
+                    <li><span class="badge mt-2 bg-warning">Haute</span> - Urgent et important</li>
+                    <li><span class="badge mt-2 bg-danger">Critique</span> - Bloquant pour l'activité</li>
                 </ul>
             </div>
         </div>

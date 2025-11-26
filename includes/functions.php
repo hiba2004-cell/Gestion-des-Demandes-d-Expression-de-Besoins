@@ -51,7 +51,7 @@ function formatDateTime($datetime, $format = 'd/m/Y H:i') {
  */
 function formatCurrency($amount) {
     if (empty($amount)) return '';
-    return number_format($amount, 2, ',', ' ') . ' €';
+    return number_format($amount, 2) . ' DH';
 }
 
 /**

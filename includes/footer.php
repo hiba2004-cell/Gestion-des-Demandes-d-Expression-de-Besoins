@@ -173,10 +173,21 @@
         var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
             return new bootstrap.Popover(popoverTriggerEl);
         });
+
+        const collapseEl = document.getElementById('mainNavbar');
+        const myToggleNavBar = document.getElementById('my-toggler');
+        myToggleNavBar.addEventListener("click", function () {
+            // console.log(collapseEl.style.display);
+            if (collapseEl.style.display === "none" || collapseEl.style.display == "") {
+                collapseEl.style.display = "block";
+            } else {
+                collapseEl.style.display = "none";
+            }
+        });
     </script>
 
     <!-- Footer -->
-    <footer class="bg-light text-center text-muted py-3 mt-5">
+    <footer class="bg-light text-center text-muted py-3">
         <div class="container">
             <p class="mb-0">
                 &copy; 2024 Système d'Expression du Besoin - 

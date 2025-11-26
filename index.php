@@ -278,7 +278,7 @@ require_once 'includes/functions.php';
     }
 
     .demo-accounts {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.7);
         border-radius: 15px;
         padding: 1rem;
         margin-top: 1rem;
@@ -423,19 +423,19 @@ require_once 'includes/functions.php';
                                 <i class="bi bi-info-circle me-2"></i>
                                 Comptes de démonstration
                             </h6>
-                            <div class="demo-account" onclick="fillCredentials('admin@entreprise.com', 'password123')">
-                                <strong>Administrateur:</strong> admin@entreprise.com
+                            <div class="demo-account" onclick="fillCredentials('admin@admin.com', '12345')">
+                                <strong>Administrateur:</strong> admin@admin.com
                             </div>
                             <div class="demo-account"
-                                onclick="fillCredentials('j.martin@entreprise.com', 'password123')">
-                                <strong>Validateur:</strong> j.martin@entreprise.com
+                                onclick="fillCredentials('chef@company.com', '12345')">
+                                <strong>Validateur:</strong> chef@company.com
                             </div>
                             <div class="demo-account"
-                                onclick="fillCredentials('m.dubois@entreprise.com', 'password123')">
-                                <strong>Demandeur:</strong> m.dubois@entreprise.com
+                                onclick="fillCredentials('leila.smith@tech.org', '12345')">
+                                <strong>Demandeur:</strong> leila.smith@tech.org
                             </div>
                             <small class="text-white-50 d-block mt-2">
-                                Mot de passe pour tous: password123
+                                Mot de passe pour tous: 12345
                             </small>
                         </div>
                     </div>

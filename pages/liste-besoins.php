@@ -231,15 +231,13 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                                         <span class="text-muted">N/A</span>
                                     <?php endif; ?>
                                 </td>
-                                <td>
-                                    <small>
-                                        <?php echo formatDate($besoin['date_creation']); ?>
-                                        <?php if ($besoin['delai_souhaite']): ?>
-                                            <br><span class="text-warning">
-                                                <i class="bi bi-clock"></i> <?php echo formatDate($besoin['delai_souhaite']); ?>
-                                            </span>
-                                        <?php endif; ?>
-                                    </small>
+                               <td>
+                                <?php echo formatDate($besoin['date_creation']); ?>
+                                    <!-- <small>
+                                        <?php echo formatDate($besoin['date_creation']); ?><?php if ($besoin['delai_souhaite']): ?><span class="text-warning ms-2">
+                                            | <i class="bi bi-clock me-1"></i> <?php echo formatDate($besoin['delai_souhaite']); ?>
+                                        </span><?php endif; ?>
+                                    </small> -->
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm">

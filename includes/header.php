@@ -153,14 +153,17 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <!-- Navigation principale -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/besoins/dashboard-admin.php">
-                <i class="bi bi-clipboard-data me-2"></i>
-                Expression du Besoin
-            </a>
+            <div class="navbar-brand flex align-items-center">
+                <!-- <i class="bi bi-clipboard-data me-2"></i> -->
+                <i id="my-toggler" class="bi bi-clipboard-data me-2" style="cursor: pointer; font-size: 1.25rem;"></i>
+                <a class="navbar-brand" href="/besoins/dashboard-admin.php">
+                    Expression du Besoin
+                </a>
+            </div>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
-            </button>
+            </button> -->
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
@@ -199,7 +202,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+            <nav id="mainNavbar" class="col-md-3 col-lg-2 sidebar">
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
                         <li class="nav-item">
@@ -231,10 +234,10 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             </a>
                         </li>
                         <li class="nav-item mt-3">
-                            <h6
-                                class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+                            <h6 class="text-white sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-uppercase">
                                 <span>Filtres Rapides</span>
                             </h6>
+
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/besoins/pages/liste-besoins.php?statut=nouveau">
@@ -260,7 +263,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
             </nav>
 
             <!-- Contenu principal -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <main class="col-md-9 ms-sm-auto mx-auto col-lg-10 px-md-4">
                 <div class="pt-3 pb-2 mb-3">
                     <?php 
                     // Affichage des messages flash
