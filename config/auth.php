@@ -180,10 +180,10 @@ function redirectByRole($role) {
             return 'dashboard-demandeur.php';
         case 'Validateur':
             return 'dashboard-validateur.php';
-        case 'Administrateur]':
+        case 'Administrateur':
             return 'dashboard-admin.php';
         default:
-            return 'login.php';
+            return null;
     }
 }
 

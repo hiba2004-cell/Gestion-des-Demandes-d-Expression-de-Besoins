@@ -4,11 +4,25 @@ require_once 'config/auth.php';
 $auth = new Auth();
 
 // Si déjà connecté, rediriger
+// if ($auth->isLoggedIn()) {
+//     $user = $auth->getCurrentUser();
+//     header("Location: " . redirectByRole($user['role']));
+//     exit();
+// }
 if ($auth->isLoggedIn()) {
     $user = $auth->getCurrentUser();
-    header("Location: " . redirectByRole($user['role']));
-    exit();
+    $redirectUrl = redirectByRole($user['role']);
+    
+    if ($redirectUrl) {
+        header("Location: $redirectUrl");
+        exit();
+    } else {
+        // echo "Rôle inconnu. Contactez l’administrateur.";
+        print_r($auth->get_current_user());
+        exit();
+    }
 }
+
 
 $error = '';
 $success = '';
@@ -308,16 +322,23 @@ require_once 'includes/functions.php';
         color: #667eea;
     }
 
-    .password-toggle {
+   .password-toggle {
         position: absolute;
-        right: 20px;
+        right: 1px; 
         top: 50%;
         transform: translateY(-50%);
         cursor: pointer;
         z-index: 10;
         color: #6c757d;
         transition: color 0.3s ease;
+        width: 20px;
+        height: 20px;
+
     }
+
+
+ 
+
 
     .password-toggle:hover {
         color: #667eea;
@@ -374,11 +395,14 @@ require_once 'includes/functions.php';
                             </div>
 
                             <div class="input-group">
-                                <input type="password" class="form-control" id="password" name="password"
+                                <div class="position-relative w-100">
+                                    <input type="password" class="form-control" id="password" name="password"
                                     placeholder="Mot de passe" required>
                                 <i class="bi bi-lock-fill"></i>
-                                <i class="bi bi-eye password-toggle" onclick="togglePassword()"></i>
+                                <!-- <i class="bi bi-eye password-toggle right-0" onclick="togglePassword()"></i> -->
+                           </div>
                             </div>
+
 
                             <div class="mb-3 form-check">
                                 <input type="checkbox" class="form-check-input" id="remember">
