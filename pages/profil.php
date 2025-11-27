@@ -1,8 +1,8 @@
 <?php
 $page_title = "Mon Profil";
-require_once '/config/auth.php';
+require_once '../config/auth.php';
 require_once '../includes/functions.php';
-require_once '../includes/header-dashboard.php';
+//require_once '../includes/header-dashboard.php';
 
 // Vérification authentification
 $auth = requireAuth();
@@ -65,10 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="container my-4">
     <h1 class="mb-4"><i class="bi bi-person-circle me-2"></i>Mon Profil</h1>
 
-    <?php displayFlashMessage(); ?>
-
-    <?php if (!empty($errors)): ?>
-    <div class="alert alert-danger">
+    <?php if (!empty($errors)): ?> <div class="alert alert-danger">
         <ul class="mb-0">
             <?php foreach ($errors as $err): ?>
             <li><?php echo htmlspecialchars($err); ?></li>
@@ -95,3 +92,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="mb-3">
             <label for="poste" class="form-label">Poste</label>
+            <input type="poste" class="form-control" id="poste" name="poste"
+                value="<?php echo htmlspecialchars($user['poste']); ?>" required>
