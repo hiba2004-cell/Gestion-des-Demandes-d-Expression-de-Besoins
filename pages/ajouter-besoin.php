@@ -16,8 +16,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = sanitize($_POST['description'] ?? '');
     $priorite = sanitize($_POST['priorite'] ?? '');
     $categorie = sanitize($_POST['categorie'] ?? '');
-    $demandeur_nom = sanitize($_POST['demandeur_nom'] ?? '');
-    $demandeur_email = sanitize($_POST['demandeur_email'] ?? '');
+
+    $demandeur_nom = sanitize($_SESSION['user_nom'] ?? '');
+    $demandeur_email = sanitize($_SESSION['user_email'] ?? '');
+
     $cout_estime = sanitize($_POST['cout_estime'] ?? '');
     $delai_souhaite = sanitize($_POST['delai_souhaite'] ?? '');
     
@@ -186,36 +188,6 @@ $csrfToken = generateCSRFToken();
                             </div>
                             <div class="invalid-feedback">
                                 Veuillez fournir une description détaillée.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Informations demandeur -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h6 class="text-muted text-uppercase fw-bold mb-3">
-                                <i class="bi bi-person me-2"></i>
-                                Informations du Demandeur
-                            </h6>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="demandeur_nom" class="form-label">Nom Complet *</label>
-                            <input type="text" class="form-control" id="demandeur_nom" name="demandeur_nom"
-                                value="<?php echo htmlspecialchars($demandeur_nom ?? ''); ?>" required maxlength="100"
-                                placeholder="Prénom NOM">
-                            <div class="invalid-feedback">
-                                Veuillez saisir le nom du demandeur.
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="demandeur_email" class="form-label">Adresse Email *</label>
-                            <input type="email" class="form-control" id="demandeur_email" name="demandeur_email"
-                                value="<?php echo htmlspecialchars($demandeur_email ?? ''); ?>" required maxlength="150"
-                                placeholder="email@exemple.com">
-                            <div class="invalid-feedback">
-                                Veuillez saisir une adresse email valide.
                             </div>
                         </div>
                     </div>

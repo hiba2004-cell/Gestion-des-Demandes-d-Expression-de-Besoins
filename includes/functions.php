@@ -194,6 +194,49 @@ function getUsers(array $filters, int $limit, int $offset): array {
 }
 
 
+function updateUser(int $id, array $userData): bool {
+    $pdo = getConnection();
+
+    // 1. Vérifier que l'email est unique (sauf pour l'utilisateur actuel)
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE email = :email AND id != :id");
+    $stmt->execute([
+        ':email' => $userData['email'],
+        ':id'    => $id
+    ]);
+    $count = (int) $stmt->fetchColumn();
+    if ($count > 0) {
+        throw new Exception("Cet email est déjà utilisé par un autre utilisateur.");
+    }
+
+    // 2. Préparer les champs à mettre à jour
+    $params = [
+        ':nom'   => $userData['nom'],
+        ':email' => $userData['email'],
+        ':role'  => $userData['role'],
+        ':id'    => $id
+    ];
+
+    // Si le mot de passe est fourni, le hacher
+    $sqlPassword = "";
+    if (!empty($userData['password'])) {
+        $passwordHash = password_hash($userData['password'], PASSWORD_DEFAULT);
+        if ($passwordHash === false) {
+            throw new Exception("Erreur lors du hashage du mot de passe.");
+        }
+        $sqlPassword = ", password = :password";
+        $params[':password'] = $passwordHash;
+    }
+
+    // 3. Exécuter la mise à jour SQL
+    $sql = "UPDATE users SET nom = :nom, email = :email, role = :role $sqlPassword WHERE id = :id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+
+    return true;
+}
+
+
+
 /**
  * Obtient tous les besoins avec filtres
  */
@@ -297,16 +340,17 @@ function deleteUser(int $id): bool {
 }
 
 function getUserById(int $id): ?array {
-    // Logique de requête SQL (SELECT * FROM users WHERE id = :id)
+    $pdo = getConnection();
 
-    // Simulation de données récupérées
-    $usersData = [
-        1 => ['id' => 1, 'nom' => 'Alice Dupont', 'email' => 'alice@example.com', 'role' => 'admin', 'created_at' => '2023-10-01 10:00:00'],
-        2 => ['id' => 2, 'nom' => 'Bob Martin', 'email' => 'bob@example.com', 'role' => 'editeur', 'created_at' => '2023-10-05 14:20:00'],
-    ];
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :id");
+    $stmt->execute([':id' => $id]);
 
-    return $usersData[$id] ?? null;
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Return null if no user found
+    return $user ?: null;
 }
+
 
 
 /**

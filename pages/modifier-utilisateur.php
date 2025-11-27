@@ -1,30 +1,14 @@
 <?php
 $page_title = "Modifier l'Utilisateur";
-include '../includes/header.php';
-
-
-/**
- * Met à jour les données d'un utilisateur existant.
- * @param int $id ID de l'utilisateur.
- * @param array $userData Données à mettre à jour (nom, email, role, password_hash optionnel).
- * @return bool True si la mise à jour réussit.
- * @throws Exception En cas d'erreur BDD (ex: email déjà existant par un autre utilisateur).
- */
-function updateUser(int $id, array $userData): bool {
-    // 1. Logique de vérification (email unique, sauf pour l'utilisateur actuel)
-    // 2. Hashage du mot de passe si fourni
-    // 3. Mise à jour SQL (UPDATE users SET nom = :nom, ... WHERE id = :id)
-    return true; 
-}
+require_once '../includes/header.php';
 
 // J'assume que sanitize(), redirect(), setFlashMessage() existent.
 // J'assume que la liste des rôles $roles existe (définie ici pour la complétude)
 $roles = [
-    'membre' => 'Membre standard',
-    'editeur' => 'Éditeur de contenu',
-    'admin' => 'Administrateur (Accès complet)',
+    'Demandeur' => 'Membre standard',
+    'Validateur' => 'Validateur de contenu',
+    'Administrateur' => 'Administrateur (Accès complet)',
 ];
-
 // --- 1. Vérification de l'ID et chargement des données ---
 $userId = intval($_GET['id'] ?? 0);
 
@@ -155,13 +139,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div class="col-md-6">
-                <label for="email" class="form-label">Adresse Email <span class="text-danger">*</span></label>
+                <label for="email" class="form-label">Adresse Email</label>
                 <input type="email" 
                        class="form-control <?php echo isset($errors['email']) ? 'is-invalid' : ''; ?>" 
                        id="email" 
                        name="email" 
                        value="<?php echo htmlspecialchars($formData['email']); ?>"
-                       required>
+                       readonly>
                 <?php if (isset($errors['email'])): ?>
                     <div class="invalid-feedback"><?php echo $errors['email']; ?></div>
                 <?php endif; ?>

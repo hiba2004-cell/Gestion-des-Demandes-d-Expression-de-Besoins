@@ -36,16 +36,12 @@ class Auth {
 
         $hashedPassword = $user['password'];
         
-        if (password_verify($password, $hashedPassword)) {
+        // if (password_verify($password, $hashedPassword)) {
+        if ($password == $hashedPassword) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_nom'] = $user['nom'];
-            $_SESSION['user_prenom'] = $user['prenom'];
             $_SESSION['user_email'] = $user['email'];
             $_SESSION['user_role'] = $user['role'];
-            $_SESSION['user_service'] = $user['service'];
-            $_SESSION['user_poste'] = $user['poste'];
-            $_SESSION['user_chef_id'] = $user['chef_id'];
-            $_SESSION['last_activity'] = time();
             
             return true;
         }
@@ -184,11 +180,11 @@ function requireRole($role) {
 function redirectByRole($role) {
     switch($role) {
         case 'Demandeur':
-            return 'dashboard-demandeur.php';
+            return '/besoins/dashboard-demandeur.php';
         case 'Validateur':
-            return 'dashboard-validateur.php';
+            return '/besoins/dashboard-validateur.php';
         case 'Administrateur':
-            return 'dashboard-admin.php';
+            return '/besoins/dashboard-admin.php';
         default:
             return null;
     }
