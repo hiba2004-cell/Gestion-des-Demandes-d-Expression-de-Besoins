@@ -28,8 +28,15 @@ class Auth {
         $stmt->execute();
         
         $user = $stmt->fetch();
+
+        if (!$user) {
+            // pas d'utilisateur avec cet email
+            return false;
+        }
+
+        $hashedPassword = $user['password'];
         
-        if ($user && $password === $user['password']) {
+        if (password_verify($password, $hashedPassword)) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_nom'] = $user['nom'];
             $_SESSION['user_prenom'] = $user['prenom'];

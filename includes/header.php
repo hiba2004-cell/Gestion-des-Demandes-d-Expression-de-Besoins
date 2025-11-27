@@ -1,4 +1,5 @@
 <?php
+ob_start();
 session_start();
 require_once __DIR__ . '/functions.php';
 
@@ -146,6 +147,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
         border-radius: 12px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
     }
+
+    .me-custom {
+        /* Adjust this value (e.g., 10px, 12px, 15px, etc.) */
+        margin-right: 45px !important; 
+    }
     </style>
 </head>
 
@@ -173,25 +179,34 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../pages/ajouter-besoin.php">
+                        <a class="nav-link" href="/besoins/pages/ajouter-besoin.php">
                             <i class="bi bi-plus-circle me-1"></i> Nouveau Besoin
                         </a>
                     </li>
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown me-custom">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown">
                             <i class="bi bi-gear me-1"></i> Options
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="../pages/statistiques.php">
-                                    <i class="bi bi-bar-chart me-2"></i> Statistiques
+                            <li><a class="dropdown-item" href="/besoins/pages/statistiques.php">
+                                    <i class="bi bi-bar-chart me-1"></i> Statistiques
                                 </a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
                             <li><a class="dropdown-item" href="#" onclick="exportData()">
-                                    <i class="bi bi-download me-2"></i> Exporter
-                                </a></li>
+                                    <i class="bi bi-download me-1"></i> Exporter
+                                </a>
+                            </li>
+                            <li><a class="dropdown-item" href="#" onclick="exportData()">
+                                    <i class="bi bi-download me-1"></i> Profil
+                                </a>
+                            </li>
+                            <li><a class="dropdown-item bg-danger" href="#" onclick="exportData()">
+                                    <i class="bi bi-download me-1"></i> Deconnection
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 </ul>

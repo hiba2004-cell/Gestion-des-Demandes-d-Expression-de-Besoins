@@ -172,6 +172,28 @@ function paginate($totalItems, $itemsPerPage = 10, $currentPage = 1) {
     ];
 }
 
+function getUsers(array $filters, int $limit, int $offset): array {
+
+    $conn = getConnection();
+    // Récupération de tous les utilisateurs
+    $stmt = $conn->query("SELECT * FROM users");
+    $allUsers = $stmt->fetchAll();
+
+    $filteredUsers = array_filter($allUsers, function($user) use ($filters) {
+        $matchSearch = empty($filters['search']) || 
+                       stripos($user['nom'], $filters['search']) !== false || 
+                       stripos($user['email'], $filters['search']) !== false;
+        $matchRole = empty($filters['role']) || $user['role'] === $filters['role'];
+        return $matchSearch && $matchRole;
+    });
+
+    $total = count($filteredUsers);
+    $paginatedUsers = array_slice($filteredUsers, $offset, $limit);
+
+    return ['utilisateurs' => $paginatedUsers, 'total' => $total];
+}
+
+
 /**
  * Obtient tous les besoins avec filtres
  */
@@ -262,6 +284,32 @@ function createBesoin($data) {
 }
 
 /**
+ * Supprime un utilisateur par ID.
+ */
+function deleteUser(int $id): bool {
+    // Logique de suppression de BDD (ex: DELETE FROM users WHERE id = :id)
+    // Pour cet exemple, on retourne juste true
+    $pdo = getConnection();
+    $stmt = $pdo->prepare("DELETE FROM users WHERE id = :id");
+    $stmt->execute([':id' => $id]);
+
+    return true; 
+}
+
+function getUserById(int $id): ?array {
+    // Logique de requête SQL (SELECT * FROM users WHERE id = :id)
+
+    // Simulation de données récupérées
+    $usersData = [
+        1 => ['id' => 1, 'nom' => 'Alice Dupont', 'email' => 'alice@example.com', 'role' => 'admin', 'created_at' => '2023-10-01 10:00:00'],
+        2 => ['id' => 2, 'nom' => 'Bob Martin', 'email' => 'bob@example.com', 'role' => 'editeur', 'created_at' => '2023-10-05 14:20:00'],
+    ];
+
+    return $usersData[$id] ?? null;
+}
+
+
+/**
  * Met à jour un besoin
  */
 function updateBesoin($id, $data) {
@@ -297,6 +345,39 @@ function deleteBesoin($id) {
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     return $stmt->execute();
 }
+
+function createUser(array $userData): bool {
+    $pdo = getConnection();
+    // 1. Vérifier que l'email est unique
+    $stmt = $pdo->prepare('SELECT COUNT(*) FROM users WHERE email = :email');
+    $stmt->execute([':email' => $userData['email']]);
+    $count = (int) $stmt->fetchColumn();
+    if ($count > 0) {
+        // email déjà utilisé
+        throw new Exception("Cet email est déjà utilisé.");
+    }
+
+    // 2. Hasher le mot de passe
+    $passwordHash = password_hash($userData['password'], PASSWORD_DEFAULT);
+    if ($passwordHash === false) {
+        throw new Exception("Erreur de hashage du mot de passe.");
+    }
+
+    // 3. Insérer l’utilisateur
+    $insert = $pdo->prepare('
+        INSERT INTO users (nom, email, password, role, created_at)
+        VALUES (:nom, :email, :password, :role, NOW())
+    ');
+    $success = $insert->execute([
+        ':nom'      => $userData['nom'],
+        ':email'    => $userData['email'],
+        ':password' => $passwordHash,
+        ':role'     => $userData['role'],
+    ]);
+
+    return $success;
+}
+
 
 /**
  * Obtient les statistiques
