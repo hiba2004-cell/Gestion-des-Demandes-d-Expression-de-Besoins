@@ -1,17 +1,13 @@
 <?php
-session_start();
+
 $page_title = "Suivi des statuts";
 include 'includes/header.php';
 require_once 'config/database.php';
 
-if (!isset($_SESSION['user_id'])) {
-    die("Vous devez être connecté pour suivre vos demandes.");
-}
-
 $user_id = $_SESSION['user_id'];
 
 try {
-    $stmt = $conn->prepare("SELECT demandes, COUNT(*) as total FROM expression_besoin WHERE user_id = :user_id GROUP BY statut");
+    $stmt = $user_id->prepare("SELECT demandes, COUNT(*) as total FROM expression_besoin WHERE user_id = :user_id GROUP BY statut");
     $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
     $stmt->execute();
     $stats = $stmt->fetchAll(PDO::FETCH_ASSOC);

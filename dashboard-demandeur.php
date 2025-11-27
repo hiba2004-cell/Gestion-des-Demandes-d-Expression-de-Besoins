@@ -1,18 +1,9 @@
 <?php
-//session_start();
+
 $page_title = "Dashboard Demandeur";
 include 'includes/header.php';
 require_once 'config/database.php';
 
-// Vérifier la connexion
-//if ($conn === null) {
-  //  die("Erreur : la connexion à la base de données n'a pas été établie.");
-//}
-
-// Vérifier que l'utilisateur est connecté
-if (!isset($_SESSION['user_id'])) {
-    die("Vous devez être connecté pour accéder à cette page.");
-}
 
 $user_id = $_SESSION['user_id'];
 ?>
@@ -23,13 +14,14 @@ $user_id = $_SESSION['user_id'];
 
     <div class="mb-4">
         <!-- Bouton pour créer une nouvelle demande -->
-        <a href="pages/ajouter-besoin.php" class="btn btn-primary">Créer une demande</a>
+        <a href="create_demande.php" class="btn btn-primary">Créer une demande</a>
         <!-- Bouton pour consulter l'historique -->
         <a href="historique_demande.php" class="btn btn-secondary">Historique des demandes</a>
         <!-- Bouton pour suivre les statuts -->
         <a href="suivi_statut.php" class="btn btn-info">Suivi des statuts</a>
         <!-- Bouton pour modifier une demande (sera actif seulement pour les demandes non validées) -->
         <a href="modifier_demande.php" class="btn btn-warning">Modifier une demande</a>
+        <a href="logout.php" class="btn btn-danger">Déconnexion</a>
     </div>
 
     <h4>Vos demandes récentes</h4>
@@ -37,7 +29,7 @@ $user_id = $_SESSION['user_id'];
     <?php
     // Récupérer les demandes de l'utilisateur
     try {
-        $stmt = $conn->prepare("SELECT * FROM besoins WHERE user_id = :user_id ORDER BY id DESC LIMIT 2");
+        $stmt = $user_id->prepare("SELECT * FROM besoins WHERE user_id = :user_id ORDER BY id DESC LIMIT 10");
         $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         $stmt->execute();
         $besoins = $stmt->fetchAll(PDO::FETCH_ASSOC);

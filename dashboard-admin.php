@@ -13,6 +13,7 @@ try {
 }
 ?>
 
+
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">
         <i class="bi bi-speedometer2 me-2 text-primary"></i>
@@ -43,7 +44,7 @@ try {
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-3 mb-3">
         <div class="card stats-card success">
             <div class="card-body text-center">
@@ -60,7 +61,7 @@ try {
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-3 mb-3">
         <div class="card stats-card warning">
             <div class="card-body text-center">
@@ -77,7 +78,7 @@ try {
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-3 mb-3">
         <div class="card stats-card info">
             <div class="card-body text-center">
@@ -105,7 +106,7 @@ try {
             </div>
         </div>
     </div>
-    
+
     <!-- Graphique par priorité -->
     <div class="col-md-6 mb-4">
         <div class="card">
@@ -137,75 +138,74 @@ try {
             </div>
             <div class="card-body p-0">
                 <?php if (!empty($recentBesoins['besoins'])): ?>
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Titre</th>
-                                    <th>Demandeur</th>
-                                    <th>Priorité</th>
-                                    <th>Statut</th>
-                                    <th>Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($recentBesoins['besoins'] as $besoin): ?>
-                                    <tr>
-                                        <td>
-                                            <strong><?php echo htmlspecialchars($besoin['titre']); ?></strong>
-                                            <br>
-                                            <small class="text-muted">
-                                                <?php echo htmlspecialchars(substr($besoin['description'], 0, 50)) . '...'; ?>
-                                            </small>
-                                        </td>
-                                        <td>
-                                            <?php echo htmlspecialchars($besoin['demandeur_nom']); ?>
-                                            <br>
-                                            <small class="text-muted"><?php echo htmlspecialchars($besoin['demandeur_email']); ?></small>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-<?php echo getPriorityClass($besoin['priorite']); ?>">
-                                                <?php echo getPriorityLabel($besoin['priorite']); ?>
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-<?php echo getStatusClass($besoin['statut']); ?>">
-                                                <?php echo getStatusLabel($besoin['statut']); ?>
-                                            </span>
-                                        </td>
-                                        <td><?php echo formatDate($besoin['date_creation']); ?></td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm">
-                                                <a href="pages/detail-besoin.php?id=<?php echo $besoin['id']; ?>" 
-                                                   class="btn btn-outline-primary btn-sm" 
-                                                   data-bs-toggle="tooltip" 
-                                                   title="Voir les détails">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                                <a href="pages/detail-besoin.php?id=<?php echo $besoin['id']; ?>&edit=1" 
-                                                   class="btn btn-outline-warning btn-sm"
-                                                   data-bs-toggle="tooltip" 
-                                                   title="Modifier">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Titre</th>
+                                <th>Demandeur</th>
+                                <th>Priorité</th>
+                                <th>Statut</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($recentBesoins['besoins'] as $besoin): ?>
+                            <tr>
+                                <td>
+                                    <strong><?php echo htmlspecialchars($besoin['titre']); ?></strong>
+                                    <br>
+                                    <small class="text-muted">
+                                        <?php echo htmlspecialchars(substr($besoin['description'], 0, 50)) . '...'; ?>
+                                    </small>
+                                </td>
+                                <td>
+                                    <?php echo htmlspecialchars($besoin['demandeur_nom']); ?>
+                                    <br>
+                                    <small
+                                        class="text-muted"><?php echo htmlspecialchars($besoin['demandeur_email']); ?></small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-<?php echo getPriorityClass($besoin['priorite']); ?>">
+                                        <?php echo getPriorityLabel($besoin['priorite']); ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-<?php echo getStatusClass($besoin['statut']); ?>">
+                                        <?php echo getStatusLabel($besoin['statut']); ?>
+                                    </span>
+                                </td>
+                                <td><?php echo formatDate($besoin['date_creation']); ?></td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="pages/detail-besoin.php?id=<?php echo $besoin['id']; ?>"
+                                            class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip"
+                                            title="Voir les détails">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="pages/detail-besoin.php?id=<?php echo $besoin['id']; ?>&edit=1"
+                                            class="btn btn-outline-warning btn-sm" data-bs-toggle="tooltip"
+                                            title="Modifier">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
                 <?php else: ?>
-                    <div class="text-center py-5">
-                        <i class="bi bi-inbox display-1 text-muted"></i>
-                        <h4 class="mt-3 text-muted">Aucun besoin enregistré</h4>
-                        <p class="text-muted">Commencez par ajouter votre premier besoin</p>
-                        <a href="pages/ajouter-besoin.php" class="btn btn-primary">
-                            <i class="bi bi-plus-circle me-2"></i>
-                            Ajouter un Besoin
-                        </a>
-                    </div>
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox display-1 text-muted"></i>
+                    <h4 class="mt-3 text-muted">Aucun besoin enregistré</h4>
+                    <p class="text-muted">Commencez par ajouter votre premier besoin</p>
+                    <a href="pages/ajouter-besoin.php" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        Ajouter un Besoin
+                    </a>
+                </div>
                 <?php endif; ?>
             </div>
         </div>
@@ -227,31 +227,33 @@ try {
                 $critiques = getBesoins(['priorite' => 'critique'], 3, 0);
                 if (!empty($critiques['besoins'])):
                 ?>
-                    <ul class="list-unstyled mb-0">
-                        <?php foreach ($critiques['besoins'] as $critique): ?>
-                            <li class="mb-2">
-                                <a href="pages/detail-besoin.php?id=<?php echo $critique['id']; ?>" class="text-decoration-none">
-                                    <strong><?php echo htmlspecialchars($critique['titre']); ?></strong>
-                                </a>
-                                <br>
-                                <small class="text-muted">par <?php echo htmlspecialchars($critique['demandeur_nom']); ?></small>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                    <?php if ($critiques['total'] > 3): ?>
-                        <div class="mt-2">
-                            <a href="pages/liste-besoins.php?priorite=critique" class="btn btn-sm btn-outline-warning">
-                                Voir tous (<?php echo $critiques['total']; ?>)
-                            </a>
-                        </div>
-                    <?php endif; ?>
+                <ul class="list-unstyled mb-0">
+                    <?php foreach ($critiques['besoins'] as $critique): ?>
+                    <li class="mb-2">
+                        <a href="pages/detail-besoin.php?id=<?php echo $critique['id']; ?>"
+                            class="text-decoration-none">
+                            <strong><?php echo htmlspecialchars($critique['titre']); ?></strong>
+                        </a>
+                        <br>
+                        <small class="text-muted">par
+                            <?php echo htmlspecialchars($critique['demandeur_nom']); ?></small>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+                <?php if ($critiques['total'] > 3): ?>
+                <div class="mt-2">
+                    <a href="pages/liste-besoins.php?priorite=critique" class="btn btn-sm btn-outline-warning">
+                        Voir tous (<?php echo $critiques['total']; ?>)
+                    </a>
+                </div>
+                <?php endif; ?>
                 <?php else: ?>
-                    <p class="text-muted mb-0">Aucun besoin critique actuellement</p>
+                <p class="text-muted mb-0">Aucun besoin critique actuellement</p>
                 <?php endif; ?>
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-6">
         <div class="card border-info">
             <div class="card-header bg-info text-white">
@@ -265,7 +267,7 @@ try {
                     <li><strong>Version PHP:</strong> <?php echo PHP_VERSION; ?></li>
                     <li><strong>Total Besoins:</strong> <?php echo $stats['total']; ?></li>
                     <li><strong>Dernière Mise à Jour:</strong> <?php echo date('d/m/Y H:i'); ?></li>
-                    <li><strong>Base de Données:</strong> 
+                    <li><strong>Base de Données:</strong>
                         <?php 
                         try {
                             $db = getDatabase();
@@ -286,17 +288,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // Graphique des statuts
     const statutCtx = document.getElementById('statutChart').getContext('2d');
     const statutData = <?php echo json_encode($stats['par_statut']); ?>;
-    
+
     new Chart(statutCtx, {
         type: 'doughnut',
         data: {
             labels: statutData.map(item => {
-                switch(item.statut) {
-                    case 'nouveau': return 'Nouveau';
-                    case 'en_cours': return 'En Cours';
-                    case 'termine': return 'Terminé';
-                    case 'rejete': return 'Rejeté';
-                    default: return item.statut;
+                switch (item.statut) {
+                    case 'nouveau':
+                        return 'Nouveau';
+                    case 'en_cours':
+                        return 'En Cours';
+                    case 'termine':
+                        return 'Terminé';
+                    case 'rejete':
+                        return 'Rejeté';
+                    default:
+                        return item.statut;
                 }
             }),
             datasets: [{
@@ -316,21 +323,26 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-    
+
     // Graphique des priorités
     const prioriteCtx = document.getElementById('prioriteChart').getContext('2d');
     const prioriteData = <?php echo json_encode($stats['par_priorite']); ?>;
-    
+
     new Chart(prioriteCtx, {
         type: 'bar',
         data: {
             labels: prioriteData.map(item => {
-                switch(item.priorite) {
-                    case 'critique': return 'Critique';
-                    case 'haute': return 'Haute';
-                    case 'moyenne': return 'Moyenne';
-                    case 'faible': return 'Faible';
-                    default: return item.priorite;
+                switch (item.priorite) {
+                    case 'critique':
+                        return 'Critique';
+                    case 'haute':
+                        return 'Haute';
+                    case 'moyenne':
+                        return 'Moyenne';
+                    case 'faible':
+                        return 'Faible';
+                    default:
+                        return item.priorite;
                 }
             }),
             datasets: [{

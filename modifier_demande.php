@@ -1,12 +1,8 @@
 <?php
-//session_start();
+
 $page_title = "Modifier une demande";
 include 'includes/header.php';
 require_once 'config/database.php';
-
-if (!isset($_SESSION['user_id'])) {
-    die("Vous devez être connecté pour modifier une demande.");
-}
 
 $user_id = $_SESSION['user_id'];
 $id = $_GET['id'] ?? null;
@@ -16,7 +12,7 @@ if (!$id) {
 }
 
 // Vérifier que la demande appartient à l'utilisateur et n'est pas validée/rejetée
-$stmt = $conn->prepare("SELECT * FROM besoins WHERE id = :id AND user_id = :user_id AND statut NOT IN ('Validée','Rejetée')");
+$stmt = $user_id->prepare("SELECT * FROM besoins WHERE id = :id AND user_id = :user_id AND statut NOT IN ('Validée','Rejetée')");
 $stmt->execute([':id' => $id, ':user_id' => $user_id]);
 $besoin = $stmt->fetch(PDO::FETCH_ASSOC);
 
