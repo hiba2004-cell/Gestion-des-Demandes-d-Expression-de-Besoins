@@ -1,17 +1,12 @@
 <?php
-session_start();
 $page_title = "Historique des demandes";
 include 'includes/header.php';
-require_once 'database.php';
-
-if (!isset($_SESSION['user_id'])) {
-    die("Vous devez être connecté pour accéder à l'historique.");
-}
+require_once 'config/database.php';
 
 $user_id = $_SESSION['user_id'];
 
 try {
-    $stmt = $conn->prepare("SELECT * FROM besoins WHERE user_id = :user_id ORDER BY id DESC");
+    $stmt =$user_id->prepare("SELECT * FROM besoins WHERE user_id = :user_id ORDER BY id DESC");
     $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
     $stmt->execute();
     $besoins = $stmt->fetchAll(PDO::FETCH_ASSOC);
