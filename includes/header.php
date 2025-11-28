@@ -150,7 +150,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
     .me-custom {
         /* Adjust this value (e.g., 10px, 12px, 15px, etc.) */
-        margin-right: 45px !important; 
+        margin-right: 45px !important;
     }
     </style>
 </head>
@@ -178,11 +178,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             <i class="bi bi-house me-1"></i> Accueil
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/besoins/pages/ajouter-besoin.php">
-                            <i class="bi bi-plus-circle me-1"></i> Nouveau Besoin
-                        </a>
-                    </li>
+
                     <li class="nav-item dropdown me-custom">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown">
@@ -215,4 +211,3 @@ $current_page = basename($_SERVER['PHP_SELF']);
     </nav>
 
     <div class="container-fluid">
-       
