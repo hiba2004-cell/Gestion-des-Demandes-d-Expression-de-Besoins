@@ -34,6 +34,7 @@ function savePieceJointe(int $demandId, string $filePath) {
 }
 
 
+
 /**
  * Valide une adresse email
  */
@@ -161,6 +162,7 @@ function setFlashMessage($type, $message) {
         'message' => $message
     ];
 }
+
 
 /**
  * Récupère et efface le message flash
