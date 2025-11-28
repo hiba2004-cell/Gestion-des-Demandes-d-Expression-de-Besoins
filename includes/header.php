@@ -156,7 +156,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 </head>
 
 <body>
-    
+
     <!-- Navigation principale -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container-fluid">
@@ -186,7 +186,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             <i class="bi bi-gear me-1"></i> Options
                         </a>
                         <ul class="dropdown-menu">
-                           <li>
+                            <li>
                                 <a class="dropdown-item" href="/besoins/pages/profil.php">
                                     <i class="bi bi-person-circle me-1"></i> Mon Profil
                                 </a>
@@ -205,10 +205,10 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
     <div class="container-fluid">
 
-     <div class="row">
-     <!-- Sidebar -->
-          <?php if($_SESSION['user_role'] == 'Administrateur'): ?>
-              <nav id="mainNavbar" class="col-md-3 col-lg-2 sidebar">
+        <div class="row">
+            <!-- Sidebar -->
+            <?php if($_SESSION['user_role'] == 'Administrateur'): ?>
+            <nav id="mainNavbar" class="col-md-3 col-lg-2 sidebar">
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
                         <li class="nav-item">
@@ -247,7 +247,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             </a>
                         </li>
                         <li class="nav-item mt-3">
-                            <h6 class="text-white sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-uppercase">
+                            <h6
+                                class="text-white sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-uppercase">
                                 <span>Filtres Rapides</span>
                             </h6>
 
@@ -274,5 +275,5 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     </ul>
                 </div>
             </nav>
-          <?php endif;?>
-        <main class="col-md-9 ms-sm-auto mx-auto col-lg-10 px-md-4">
+            <?php endif;?>
+            <main class="col-md-9 ms-sm-auto mx-auto col-lg-10 px-md-4">

@@ -192,10 +192,10 @@ $csrfToken = generateCSRFToken();
 
     <form action="" method="POST" novalidate enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
-      
+
         <div class="mb-3">
             <label for="titre" class="form-label">Titre</label>
-            <input name="titre" id="titre" class="form-control" required/>
+            <input name="titre" id="titre" class="form-control" required />
         </div>
 
         <div class="mb-3">
@@ -240,10 +240,10 @@ $csrfToken = generateCSRFToken();
                 </div>
             </div>
         </div>
-    </div>
+</div>
 
-        <button type="submit" class="btn btn-primary">Créer la demande</button>
-    </form>
+<button type="submit" class="btn btn-primary">Créer la demande</button>
+</form>
 </div>
 
 <?php include 'includes/footer.php'; ?>
