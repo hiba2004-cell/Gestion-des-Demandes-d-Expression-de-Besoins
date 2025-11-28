@@ -4,12 +4,29 @@ include 'includes/header.php';
 require_once 'config/database.php';
 
 $user_id = $_SESSION['user_id'];
+$conn = getConnection();
 
 try {
-    $stmt =$user_id->prepare("SELECT * FROM besoins WHERE user_id = :user_id ORDER BY id DESC");
+    // Requête avec LEFT JOIN pour récupérer les fichiers liés
+    $stmt = $conn->prepare("
+        SELECT 
+            d.id,
+            d.type_besoin_id,
+            d.description,
+            d.urgence,
+            d.statut,
+            GROUP_CONCAT(pj.nom_fichier SEPARATOR '||') AS fichiers
+        FROM demandes d
+        LEFT JOIN pieces_jointes pj ON pj.demande_id = d.id
+        WHERE d.user_id = :user_id
+        GROUP BY d.id
+        ORDER BY d.id DESC
+    ");
+    
     $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
     $stmt->execute();
     $besoins = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 } catch (PDOException $e) {
     die("Erreur : " . $e->getMessage());
 }
@@ -27,20 +44,22 @@ try {
                 <th>Description</th>
                 <th>Urgence</th>
                 <th>Statut</th>
-                <th>Fichier</th>
+                <th>Fichier(s)</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($besoins as $b): ?>
             <tr>
-                <td><?php echo $b['id']; ?></td>
-                <td><?php echo htmlspecialchars($b['type']); ?></td>
-                <td><?php echo htmlspecialchars($b['description']); ?></td>
-                <td><?php echo htmlspecialchars($b['urgence']); ?></td>
-                <td><?php echo htmlspecialchars($b['statut']); ?></td>
+                <td><?= $b['id']; ?></td>
+                <td><?= htmlspecialchars($b['type_besoin_id']); ?></td>
+                <td><?= htmlspecialchars($b['description']); ?></td>
+                <td><?= htmlspecialchars($b['urgence']); ?></td>
+                <td><?= htmlspecialchars($b['statut']); ?></td>
                 <td>
-                    <?php if ($b['fichier']): ?>
-                    <a href="<?php echo $b['fichier']; ?>" target="_blank">Voir</a>
+                    <?php if (!empty($b['fichiers'])): ?>
+                    <?php foreach (explode('||', $b['fichiers']) as $file): ?>
+                    <a href="<?= htmlspecialchars($file); ?>" target="_blank">Voir</a><br>
+                    <?php endforeach; ?>
                     <?php else: ?>
                     -
                     <?php endif; ?>

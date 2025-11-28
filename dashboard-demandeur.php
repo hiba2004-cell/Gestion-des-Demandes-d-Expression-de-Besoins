@@ -4,7 +4,7 @@ $page_title = "Dashboard Demandeur";
 include 'includes/header.php';
 require_once 'config/database.php';
 
-
+$conn = getConnection();
 $user_id = $_SESSION['user_id'];
 ?>
 
@@ -13,23 +13,24 @@ $user_id = $_SESSION['user_id'];
     <h3>Gestion de vos demandes</h3>
 
     <div class="mb-4">
-        <!-- Bouton pour créer une nouvelle demande -->
         <a href="create_demande.php" class="btn btn-primary">Créer une demande</a>
-        <!-- Bouton pour consulter l'historique -->
         <a href="historique_demande.php" class="btn btn-secondary">Historique des demandes</a>
-        <!-- Bouton pour suivre les statuts -->
         <a href="suivi_statut.php" class="btn btn-info">Suivi des statuts</a>
-        <!-- Bouton pour modifier une demande (sera actif seulement pour les demandes non validées) -->
-        <a href="modifier_demande.php" class="btn btn-warning">Modifier une demande</a>
         <a href="logout.php" class="btn btn-danger">Déconnexion</a>
     </div>
 
     <h4>Vos demandes récentes</h4>
 
     <?php
-    // Récupérer les demandes de l'utilisateur
     try {
-        $stmt = $user_id->prepare("SELECT * FROM besoins WHERE user_id = :user_id ORDER BY id DESC LIMIT 10");
+        $stmt = $conn->prepare("
+            SELECT d.*, t.libelle AS type_besoin 
+            FROM demandes d
+            JOIN types_besoins t ON d.type_besoin_id = t.id
+            WHERE d.user_id = :user_id 
+            ORDER BY d.date_creation DESC 
+            LIMIT 10
+        ");
         $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         $stmt->execute();
         $besoins = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -39,37 +40,48 @@ $user_id = $_SESSION['user_id'];
     ?>
 
     <?php if (count($besoins) > 0): ?>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Type</th>
-                <th>Description</th>
-                <th>Urgence</th>
-                <th>Statut</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($besoins as $besoin): ?>
-            <tr>
-                <td><?php echo $besoin['id']; ?></td>
-                <td><?php echo htmlspecialchars($besoin['type']); ?></td>
-                <td><?php echo htmlspecialchars($besoin['description']); ?></td>
-                <td><?php echo htmlspecialchars($besoin['urgence']); ?></td>
-                <td><?php echo htmlspecialchars($besoin['statut']); ?></td>
-                <td>
-                    <?php if ($besoin['statut'] !== 'Validée' && $besoin['statut'] !== 'Rejetée'): ?>
-                    <a href="modifier_demande.php?id=<?php echo $besoin['id']; ?>"
-                        class="btn btn-sm btn-warning">Modifier</a>
+    <div class="row">
+        <?php foreach ($besoins as $besoin): ?>
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header">
+                    Demande #<?php echo $besoin['id']; ?> - <?= htmlspecialchars($besoin['type_besoin']) ?>
+                </div>
+                <div class="card-body">
+                    <p><strong>Description :</strong> <?= htmlspecialchars($besoin['description']) ?></p>
+                    <p><strong>Urgence :</strong> <?= htmlspecialchars($besoin['urgence']) ?></p>
+                    <p><strong>Statut :</strong> <?= htmlspecialchars($besoin['statut']) ?></p>
+                    <?php
+                            // Récupérer fichiers joints
+                            $stmtFiles = $conn->prepare("SELECT * FROM pieces_jointes WHERE demande_id = :demande_id");
+                            $stmtFiles->execute([':demande_id' => $besoin['id']]);
+                            $fichiers = $stmtFiles->fetchAll(PDO::FETCH_ASSOC);
+                            ?>
+                    <p><strong>Fichiers :</strong>
+                        <?php if ($fichiers): ?>
+                    <ul>
+                        <?php foreach ($fichiers as $f): ?>
+                        <li><a href="<?= htmlspecialchars($f['fichier']) ?>" target="_blank">Voir</a></li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <?php else: ?>
+                    Aucun fichier
+                    <?php endif; ?>
+                    </p>
+                </div>
+                <div class="card-footer text-end">
+                    <?php if (!in_array($besoin['statut'], ['Validée','Rejetée'])): ?>
+                    <a href="modifier_demande.php?id=<?= $besoin['id'] ?>" class="btn btn-sm btn-warning">
+                        <i class="bi bi-pencil-square"></i> Modifier
+                    </a>
                     <?php else: ?>
                     <span class="text-muted">Non modifiable</span>
                     <?php endif; ?>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+                </div>
+            </div>
+        </div>
+        <?php endforeach; ?>
+    </div>
     <?php else: ?>
     <p>Vous n'avez encore créé aucune demande.</p>
     <?php endif; ?>
