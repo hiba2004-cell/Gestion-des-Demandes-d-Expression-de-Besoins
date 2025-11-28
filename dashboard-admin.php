@@ -1,7 +1,7 @@
 <?php
 $page_title = "Dashboard";
 include 'includes/header.php';
-include 'includes/sidebar-admin.php';
+// include 'includes/sidebar-admin.php';
 
 
 // Récupération des statistiques
@@ -13,12 +13,8 @@ try {
     $recentBesoins = ['besoins' => [], 'total' => 0];
     setFlashMessage('error', 'Erreur de connexion à la base de données : ' . $e->getMessage());
 }
-?>
-
-
-        
+?>        
             <!-- Contenu principal -->
-            <main class="col-md-9 ms-sm-auto mx-auto col-lg-10 px-md-4">
                 <div class="pt-3 pb-2 mb-3">
                     <?php 
                     // Affichage des messages flash
