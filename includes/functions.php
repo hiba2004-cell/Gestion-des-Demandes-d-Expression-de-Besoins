@@ -13,6 +13,28 @@ function sanitize($data) {
     return htmlspecialchars(strip_tags(trim($data)), ENT_QUOTES, 'UTF-8');
 }
 
+
+function savePieceJointe(int $demandId, string $filePath) {
+    $db = getConnection();
+    
+    // Assurez-vous d'utiliser une requête préparée pour éviter les injections SQL
+    $sql = "INSERT INTO pieces_jointes (demande_id, chemin_fichier) VALUES (:demande_id, :chemin_fichier)";
+    
+    try {
+        $stmt = $db->prepare($sql);
+        return $stmt->execute([
+            'demande_id' => $demandId,
+            'chemin_fichier' => $filePath
+        ]);
+    } catch (Exception $e) {
+        // Enregistrement d'erreur ou gestion de l'exception
+        error_log("Erreur lors de l'insertion de la pièce jointe: " . $e->getMessage());
+        return false;
+    }
+}
+
+
+
 /**
  * Valide une adresse email
  */
@@ -140,6 +162,7 @@ function setFlashMessage($type, $message) {
         'message' => $message
     ];
 }
+
 
 /**
  * Récupère et efface le message flash
@@ -307,24 +330,44 @@ function getBesoinById($id) {
 /**
  * Crée un nouveau besoin
  */
-function createBesoin($data) {
+function createBesoin(array $data) {
     $conn = getConnection();
-    $stmt = $conn->prepare("
-        INSERT INTO besoins (titre, description, priorite, categorie, demandeur_nom, demandeur_email, cout_estime, delai_souhaite)
-        VALUES (:titre, :description, :priorite, :categorie, :demandeur_nom, :demandeur_email, :cout_estime, :delai_souhaite)
-    ");
-    
-    return $stmt->execute([
-        'titre' => $data['titre'],
-        'description' => $data['description'],
-        'priorite' => $data['priorite'],
-        'categorie' => $data['categorie'],
-        'demandeur_nom' => $data['demandeur_nom'],
-        'demandeur_email' => $data['demandeur_email'],
-        'cout_estime' => !empty($data['cout_estime']) ? $data['cout_estime'] : null,
-        'delai_souhaite' => !empty($data['delai_souhaite']) ? $data['delai_souhaite'] : null
-    ]);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $sql = "
+        INSERT INTO besoins (
+            titre, description, priorite, categorie,
+            demandeur_nom, demandeur_email,
+            cout_estime, delai_souhaite
+        ) VALUES (
+            :titre, :description, :priorite, :categorie,
+            :demandeur_nom, :demandeur_email,
+            :cout_estime, :delai_souhaite
+        )
+    ";
+
+    try {
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([
+            'titre'             => $data['titre'],
+            'description'       => $data['description'],
+            'priorite'          => $data['priorite'],
+            'categorie'         => $data['categorie'],
+            'demandeur_nom'     => $data['demandeur_nom'],
+            'demandeur_email'   => $data['demandeur_email'],
+            'cout_estime'       => !empty($data['cout_estime']) ? $data['cout_estime'] : null,
+            'delai_souhaite'    => !empty($data['delai_souhaite']) ? $data['delai_souhaite'] : null
+        ]);
+
+        return $conn->lastInsertId();
+    } catch (PDOException $e) {
+        // Ici tu peux logger $e->getMessage() ou gérer l'erreur comme tu veux
+        // Par exemple :
+        error_log("Error inserting besoin: " . $e->getMessage());
+        return false;
+    }
 }
+
 
 /**
  * Supprime un utilisateur par ID.
