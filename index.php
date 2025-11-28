@@ -322,9 +322,9 @@ require_once 'includes/functions.php';
         color: #667eea;
     }
 
-   .password-toggle {
+    .password-toggle {
         position: absolute;
-        right: 1px; 
+        right: 1px;
         top: 50%;
         transform: translateY(-50%);
         cursor: pointer;
@@ -337,7 +337,7 @@ require_once 'includes/functions.php';
     }
 
 
- 
+
 
 
     .password-toggle:hover {
@@ -397,10 +397,10 @@ require_once 'includes/functions.php';
                             <div class="input-group">
                                 <div class="position-relative w-100">
                                     <input type="password" class="form-control" id="password" name="password"
-                                    placeholder="Mot de passe" required>
-                                <i class="bi bi-lock-fill"></i>
-                                <!-- <i class="bi bi-eye password-toggle right-0" onclick="togglePassword()"></i> -->
-                           </div>
+                                        placeholder="Mot de passe" required>
+                                    <i class="bi bi-lock-fill"></i>
+                                    <!-- <i class="bi bi-eye password-toggle right-0" onclick="togglePassword()"></i> -->
+                                </div>
                             </div>
 
 
@@ -426,12 +426,10 @@ require_once 'includes/functions.php';
                             <div class="demo-account" onclick="fillCredentials('admin@admin.com', '12345')">
                                 <strong>Administrateur:</strong> admin@admin.com
                             </div>
-                            <div class="demo-account"
-                                onclick="fillCredentials('chef@company.com', '12345')">
+                            <div class="demo-account" onclick="fillCredentials('chef@company.com', '12345')">
                                 <strong>Validateur:</strong> chef@company.com
                             </div>
-                            <div class="demo-account"
-                                onclick="fillCredentials('leila.smith@tech.org', '12345')">
+                            <div class="demo-account" onclick="fillCredentials('leila.smith@tech.org', '12345')">
                                 <strong>Demandeur:</strong> leila.smith@tech.org
                             </div>
                             <small class="text-white-50 d-block mt-2">
