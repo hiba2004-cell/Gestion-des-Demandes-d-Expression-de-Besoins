@@ -14,10 +14,14 @@ try {
             d.type_besoin_id,
             d.description,
             d.urgence,
-            d.statut,
-            GROUP_CONCAT(pj.nom_fichier SEPARATOR '||') AS fichiers
+            CASE 
+                WHEN v.demande_id IS NULL THEN d.statut
+                WHEN v.demande_id IS NOT NULL THEN v.statut_validation
+            END AS statut,
+            pj.chemin_fichier as fichiers
         FROM demandes d
         LEFT JOIN pieces_jointes pj ON pj.demande_id = d.id
+        LEFT JOIN validation v ON v.demande_id = d.id 
         WHERE d.user_id = :user_id
         GROUP BY d.id
         ORDER BY d.id DESC

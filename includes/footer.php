@@ -9,6 +9,7 @@
                 <!-- JavaScript personnalisé -->
                 <script src="assets/js/script.js"></script>
 
+
                 <script>
 // Animation au chargement
 document.addEventListener('DOMContentLoaded', function() {

@@ -9,7 +9,7 @@ try {
     $stats = getStatistics();
     $recentBesoins = getBesoins([], 5, 0);
 } catch (Exception $e) {
-    $stats = ['total' => 0, 'par_statut' => [], 'par_priorite' => [], 'cout_total' => 0];
+    $stats = ['total' => 0, 'par_statut' => [], 'par_priorite' => []];
     $recentBesoins = ['besoins' => [], 'total' => 0];
     setFlashMessage('error', 'Erreur de connexion à la base de données : ' . $e->getMessage());
 }
@@ -65,12 +65,12 @@ try {
                         <h4 class="card-title">
                             <?php 
                         $termines = array_filter($stats['par_statut'], function($item) {
-                            return $item['statut'] === 'termine';
+                            return $item['statut_final'] === 'Validée';
                         });
                         echo !empty($termines) ? reset($termines)['count'] : 0;
                         ?>
                         </h4>
-                        <p class="card-text">Besoins Terminés</p>
+                        <p class="card-text">Besoins Validée</p>
                     </div>
                 </div>
             </div>
@@ -82,7 +82,7 @@ try {
                         <h4 class="card-title">
                             <?php 
                         $enCours = array_filter($stats['par_statut'], function($item) {
-                            return $item['statut'] === 'en_cours';
+                            return $item['statut_final'] === 'En attente' || $item['statut_final'] === 'En cours de validation' || $item['statut_final'] === 'Traitée';
                         });
                         echo !empty($enCours) ? reset($enCours)['count'] : 0;
                         ?>
@@ -92,15 +92,24 @@ try {
                 </div>
             </div>
 
+
             <div class="col-md-3 mb-3">
-                <div class="card stats-card info">
+                <div class="card stats-card success">
                     <div class="card-body text-center">
-                        <i class="bi bi-wallet2 display-4 mb-2"></i>
-                        <h4 class="card-title"><?php echo formatCurrency($stats['cout_total']); ?></h4>
-                        <p class="card-text">Coût Total Estimé</p>
+                        <i class="fa-solid fa-school-circle-xmark display-4 mb-2"></i>
+                        <h4 class="card-title">
+                            <?php 
+                        $termines = array_filter($stats['par_statut'], function($item) {
+                            return $item['statut_final'] === 'Rejetée';
+                        });
+                        echo !empty($termines) ? reset($termines)['count'] : 0;
+                        ?>
+                        </h4>
+                        <p class="card-text">Besoins Rejetée</p>
                     </div>
                 </div>
             </div>
+
         </div>
 
         <!-- Graphiques et tableaux -->
@@ -155,7 +164,7 @@ try {
                             <table class="table table-hover mb-0">
                                 <thead>
                                     <tr>
-                                        <th>Titre</th>
+                                        <th>Description</th>
                                         <th>Demandeur</th>
                                         <th>Priorité</th>
                                         <th>Statut</th>
@@ -167,11 +176,11 @@ try {
                                     <?php foreach ($recentBesoins['besoins'] as $besoin): ?>
                                     <tr>
                                         <td>
-                                            <strong><?php echo htmlspecialchars($besoin['titre']); ?></strong>
+                                            <strong><?php echo htmlspecialchars($besoin['description']); ?></strong>
                                             <br>
-                                            <small class="text-muted">
+                                            <!-- <small class="text-muted">
                                                 <?php echo htmlspecialchars(substr($besoin['description'], 0, 50)) . '...'; ?>
-                                            </small>
+                                            </small> -->
                                         </td>
                                         <td>
                                             <?php echo htmlspecialchars($besoin['demandeur_nom']); ?>
@@ -180,13 +189,13 @@ try {
                                                 class="text-muted"><?php echo htmlspecialchars($besoin['demandeur_email']); ?></small>
                                         </td>
                                         <td>
-                                            <span class="badge bg-<?php echo getPriorityClass($besoin['priorite']); ?>">
-                                                <?php echo getPriorityLabel($besoin['priorite']); ?>
+                                            <span class="badge bg-<?php echo getPriorityClass($besoin['urgence']); ?>">
+                                                <?php echo $besoin['urgence']; ?>
                                             </span>
                                         </td>
                                         <td>
-                                            <span class="badge bg-<?php echo getStatusClass($besoin['statut']); ?>">
-                                                <?php echo getStatusLabel($besoin['statut']); ?>
+                                            <span class="badge bg-<?php echo getPriorityClass($besoin['statut_final']); ?>">
+                                                <?php echo $besoin['statut_final']; ?>
                                             </span>
                                         </td>
                                         <td><?php echo formatDate($besoin['date_creation']); ?></td>
@@ -237,7 +246,7 @@ try {
                     </div>
                     <div class="card-body">
                         <?php
-                    $critiques = getBesoins(['priorite' => 'critique'], 3, 0);
+                    $critiques = getBesoins(['urgence' => 'Urgente'], 1, 0);
                     if (!empty($critiques['besoins'])):
                     ?>
                         <ul class="list-unstyled mb-0">
@@ -245,7 +254,7 @@ try {
                             <li class="mb-2">
                                 <a href="pages/detail-besoin.php?id=<?php echo $critique['id']; ?>"
                                     class="text-decoration-none">
-                                    <strong><?php echo htmlspecialchars($critique['titre']); ?></strong>
+                                    <strong><?php echo htmlspecialchars($critique['description']); ?></strong>
                                 </a>
                                 <br>
                                 <small class="text-muted">par
@@ -305,20 +314,7 @@ try {
             new Chart(statutCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: statutData.map(item => {
-                        switch (item.statut) {
-                            case 'nouveau':
-                                return 'Nouveau';
-                            case 'en_cours':
-                                return 'En Cours';
-                            case 'termine':
-                                return 'Terminé';
-                            case 'rejete':
-                                return 'Rejeté';
-                            default:
-                                return item.statut;
-                        }
-                    }),
+                    labels: statutData.map(item => item.statut_final),
                     datasets: [{
                         data: statutData.map(item => item.count),
                         backgroundColor: ['#0d6efd', '#ffc107', '#198754', '#dc3545'],
@@ -344,25 +340,12 @@ try {
             new Chart(prioriteCtx, {
                 type: 'bar',
                 data: {
-                    labels: prioriteData.map(item => {
-                        switch (item.priorite) {
-                            case 'critique':
-                                return 'Critique';
-                            case 'haute':
-                                return 'Haute';
-                            case 'moyenne':
-                                return 'Moyenne';
-                            case 'faible':
-                                return 'Faible';
-                            default:
-                                return item.priorite;
-                        }
-                    }),
+                    labels: prioriteData.map(item => item.urgence),
                     datasets: [{
                         label: 'Nombre de Besoins',
                         data: prioriteData.map(item => item.count),
-                        backgroundColor: ['#dc3545', '#ffc107', '#0dcaf0', '#6c757d'],
-                        borderColor: ['#dc3545', '#ffc107', '#0dcaf0', '#6c757d'],
+                        backgroundColor: ['#ffc107', '#0dcaf0','#dc3545', '#6c757d'],
+                        borderColor: ['#ffc107', '#0dcaf0','#dc3545', '#6c757d'],
                         borderWidth: 1
                     }]
                 },
