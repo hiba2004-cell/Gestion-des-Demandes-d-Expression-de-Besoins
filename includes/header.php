@@ -186,22 +186,14 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             <i class="bi bi-gear me-1"></i> Options
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/besoins/pages/statistiques.php">
-                                    <i class="bi bi-bar-chart me-1"></i> Statistiques
-                                </a></li>
+                           <li>
+                                <a class="dropdown-item" href="/besoins/pages/profil.php">
+                                    <i class="bi bi-person-circle me-1"></i> Mon Profil
+                                </a>
+                            </li>
                             <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#" onclick="exportData()">
-                                    <i class="bi bi-download me-1"></i> Exporter
-                                </a>
-                            </li>
-                            <li><a class="dropdown-item" href="#" onclick="exportData()">
-                                    <i class="bi bi-download me-1"></i> Profil
-                                </a>
-                            </li>
-                            <li><a class="dropdown-item bg-danger" href="#" onclick="exportData()">
-                                    <i class="bi bi-download me-1"></i> Deconnection
+                                <a class="dropdown-item bg-danger text-white" href="/besoins/logout.php">
+                                    <i class="bi bi-box-arrow-right me-1"></i> Déconnexion
                                 </a>
                             </li>
                         </ul>
@@ -215,7 +207,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
      <div class="row">
      <!-- Sidebar -->
-            <nav id="mainNavbar" class="col-md-3 col-lg-2 sidebar">
+          <?php if($_SESSION['user_role'] == 'Administrateur'): ?>
+              <nav id="mainNavbar" class="col-md-3 col-lg-2 sidebar">
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
                         <li class="nav-item">
@@ -281,4 +274,5 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     </ul>
                 </div>
             </nav>
+          <?php endif;?>
         <main class="col-md-9 ms-sm-auto mx-auto col-lg-10 px-md-4">

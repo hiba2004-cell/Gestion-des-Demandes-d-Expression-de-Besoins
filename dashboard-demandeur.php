@@ -16,7 +16,7 @@ $user_id = $_SESSION['user_id'];
         <a href="create_demande.php" class="btn btn-primary">Créer une demande</a>
         <a href="historique_demande.php" class="btn btn-secondary">Historique des demandes</a>
         <a href="suivi_statut.php" class="btn btn-info">Suivi des statuts</a>
-        <a href="logout.php" class="btn btn-danger">Déconnexion</a>
+        <!-- <a href="logout.php" class="btn btn-danger">Déconnexion</a> -->
     </div>
 
     <h4>Vos demandes récentes</h4>

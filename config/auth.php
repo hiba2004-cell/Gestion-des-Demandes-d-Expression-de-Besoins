@@ -103,14 +103,14 @@ class Auth {
      * Vérifier si l'utilisateur peut valider (est chef)
      */
     public function canValidate() {
-        return $this->hasRole('validateur') || $this->hasRole('administrateur');
+        return $this->hasRole('Validateur') || $this->hasRole('Administrateur');
     }
     
     /**
      * Vérifier si l'utilisateur est administrateur
      */
     public function isAdmin() {
-        return $this->hasRole('administrateur');
+        return $this->hasRole('Administrateur');
     }
     
     /**
