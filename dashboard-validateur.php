@@ -50,16 +50,25 @@ if (!empty($selected_date)) {
 
 // Récupération des demandes
 $query = "
-  SELECT d.*, t.libelle AS type_besoin, u.nom AS demandeur, u.email AS demandeur_email
-  FROM demandes d
-  LEFT JOIN types_besoins t ON d.type_besoin_id = t.id
-  LEFT JOIN users u ON d.user_id = u.id
+    SELECT d.*, t.libelle AS type_besoin, u.nom AS demandeur, u.email AS demandeur_email
+    FROM demandes d
+    LEFT JOIN types_besoins t ON d.type_besoin_id = t.id
+    LEFT JOIN users u ON d.user_id = u.id
+    LEFT JOIN validation v ON v.demande_id = d.id
+    WHERE v.demande_id IS NULL
 ";
+// $query = "
+//   SELECT d.*, t.libelle AS type_besoin, u.nom AS demandeur, u.email AS demandeur_email
+//   FROM demandes d
+//   LEFT JOIN types_besoins t ON d.type_besoin_id = t.id
+//   LEFT JOIN users u ON d.user_id = u.id
+// ";
 
 if ($where) {
   $query .= " WHERE " . implode(" AND ", $where);
 }
 
+$error_message = null;
 // Par défaut, le validateur devrait voir en premier les demandes 'En attente'
 // Si aucun filtre n'est appliqué, on priorise la validation.
 $query .= " ORDER BY 
@@ -82,7 +91,14 @@ try {
     $demandes = [];
     $total_demandes = 0;
 }
-
+$success_message = null;
+if(isset($_SESSION['action_result']['error'])){
+  $error_message .= '<br>' . $_SESSION['action_result']['error'];
+  
+}else if(isset($_SESSION['action_result']['success'])){
+  $success_message = $_SESSION['action_result'];
+}
+$_SESSION['action_result'] = null;
 ?>
 
 <!DOCTYPE html>
@@ -154,8 +170,11 @@ try {
                 <i class="bi bi-exclamation-triangle-fill me-2"></i>
                 <?php echo htmlspecialchars($error_message); ?>
             </div>
+        <?php elseif ($success_message): ?>
+            <div class="alert alert-<?php echo $success_message['color'];?>" role="alert">
+                <?php echo htmlspecialchars($success_message['success']); ?>
+            </div>
         <?php endif; ?>
-
 
         <div class="card shadow-sm mb-4">
       <div class="card-header bg-dark text-white">
@@ -246,25 +265,18 @@ try {
                                         </td>
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group">
-                                                <a href="detail-demande.php?id=<?php echo $demande['id']; ?>" class="btn btn-info text-white" title="Voir les détails">
-                                                    <i class="bi bi-eye"></i> Détails
-                                                </a>
-                                                
-                                                <?php 
-                                                // Boutons d'action rapide pour les demandes en attente
-                                                if ($demande['statut'] === 'En attente' || $demande['statut'] === 'En cours de validation'): 
-                                                ?>
-                                                    <a href="action-demande.php?id=<?php echo $demande['id']; ?>&action=valider" 
+                                               <a href="./pages/action-demande.php?id=<?php echo $demande['id']; ?>&action=valider" 
                                                        class="btn btn-success" 
                                                        title="Valider la demande">
                                                         <i class="bi bi-check-lg"></i>
-                                                    </a>
-                                                    <a href="action-demande.php?id=<?php echo $demande['id']; ?>&action=rejeter" 
-                                                       class="btn btn-danger" 
-                                                       title="Rejeter la demande">
-                                                        <i class="bi bi-x-lg"></i>
-                                                    </a>
-                                                <?php endif; ?>
+                                                </a>
+                                                <a href="./pages/action-demande.php?id=<?php echo $demande['id']; ?>&action=rejeter" 
+                                                    class="btn btn-danger" 
+                                                    title="Rejeter la demande">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </a>
+
+
                                             </div>
                                         </td>
                                     </tr>

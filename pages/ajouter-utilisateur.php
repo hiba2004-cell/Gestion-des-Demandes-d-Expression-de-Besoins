@@ -1,6 +1,7 @@
 <?php
 $page_title = "Ajouter un Nouvel Utilisateur";
 include '../includes/header.php';
+include '../includes/sidebar-admin.php';
 
 
 // J'assume que la fonction sanitize() et redirect() existent déjà dans un fichier inclus.
