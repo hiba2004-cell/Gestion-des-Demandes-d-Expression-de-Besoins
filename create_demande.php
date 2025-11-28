@@ -9,6 +9,14 @@ $conn = getConnection();
 $errors = [];
 $success = "";
 
+// Définition du chemin d'upload (à adapter selon votre structure)
+define('UPLOAD_DIR', __DIR__ . '/../uploads/pieces_jointes/');
+// Taille maximale autorisée en octets (ex: 5 Mo)
+define('MAX_FILE_SIZE', 5 * 1024 * 1024);
+// Extensions autorisées
+define('ALLOWED_EXTENSIONS', ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png']);
+
+
 // Récupération des types de besoins depuis la table types_besoins
 try {
     $stmtTypes = $conn->query("SELECT id, libelle FROM types_besoins ORDER BY libelle ASC");
@@ -17,65 +25,156 @@ try {
     die("Erreur : " . $e->getMessage());
 }
 
+// Traitement du formulaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $errors = [];
+    $uploaded_files_paths = [];
     
-    $type_besoin = isset($_POST['type_besoin']) ? (int)$_POST['type_besoin'] : 0;
-    $description = $_POST['description'] ?? '';
-    $urgence = $_POST['urgence'] ?? '';
-
-    if ($type_besoin <= 0) $errors[] = "Le type de besoin est obligatoire.";
-    if (empty($description)) $errors[] = "La description est obligatoire.";
-    if (empty($urgence)) $errors[] = "L'urgence est obligatoire.";
-
-    // Vérifier que l'id existe dans la table types_besoins
-    if ($type_besoin > 0) {
-        $stmtCheck = $conn->prepare("SELECT COUNT(*) FROM types_besoins WHERE id = :id");
-        $stmtCheck->bindParam(':id', $type_besoin, PDO::PARAM_INT);
-        $stmtCheck->execute();
-        if ($stmtCheck->fetchColumn() == 0) {
-            $errors[] = "Le type de besoin sélectionné n'existe pas.";
-        }
+    // Validation CSRF
+    if (!verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+        $errors[] = "Token de sécurité invalide.";
     }
+    
+    // Validation des champs
+    $titre = sanitize($_POST['titre'] ?? '');
+    $description = sanitize($_POST['description'] ?? '');
+    $priorite = sanitize($_POST['priorite'] ?? '');
+    $categorie = sanitize($_POST['categorie'] ?? '');
 
+    $demandeur_nom = sanitize($_SESSION['user_nom'] ?? '');
+    $demandeur_email = sanitize($_SESSION['user_email'] ?? '');
+
+    $cout_estime = sanitize($_POST['cout_estime'] ?? '');
+    $delai_souhaite = sanitize($_POST['delai_souhaite'] ?? '');
+    
+    // Validation des champs obligatoires
+    if (empty($titre)) $errors[] = "Le titre est obligatoire.";
+    if (empty($description)) $errors[] = "La description est obligatoire.";
+    if (empty($priorite)) $errors[] = "La priorité est obligatoire.";
+    if (empty($categorie)) $errors[] = "La catégorie est obligatoire.";
+    
+    if (empty($demandeur_nom)) $errors[] = "Le nom du demandeur est obligatoire.";
+    if (empty($demandeur_email)) $errors[] = "L'email du demandeur est obligatoire.";
+    
+    // Validation de l'email
+    if (!empty($demandeur_email) && !validateEmail($demandeur_email)) {
+        $errors[] = "L'adresse email n'est pas valide.";
+    }
+    
+    // Validation de la date
+    if (!empty($delai_souhaite) && !validateDate($delai_souhaite)) {
+        $errors[] = "La date souhaitée n'est pas valide.";
+    }
+    
+    // Validation du coût
+    if (!empty($cout_estime) && (!is_numeric($cout_estime) || $cout_estime < 0)) {
+        $errors[] = "Le coût estimé doit être un nombre positif.";
+    }
+    
+    // Si pas d'erreurs, enregistrer
     if (empty($errors)) {
         try {
-            $stmt = $conn->prepare("
-                INSERT INTO demandes (user_id, type_besoin_id, description, urgence, statut, date_creation)
-                VALUES (:user_id, :type_besoin, :description, :urgence, 'En attente', NOW())
-            ");
-            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-            $stmt->bindParam(':type_besoin', $type_besoin, PDO::PARAM_INT);
-            $stmt->bindParam(':description', $description, PDO::PARAM_STR);
-            $stmt->bindParam(':urgence', $urgence, PDO::PARAM_STR);
-            $stmt->execute();
-
-            $demande_id = $conn->lastInsertId();
-
-            // Gestion des fichiers uploadés
+            $data = [
+                'titre' => $titre,
+                'description' => $description,
+                'priorite' => $priorite,
+                'categorie' => $categorie,
+                'demandeur_nom' => $demandeur_nom,
+                'demandeur_email' => $demandeur_email,
+                'cout_estime' => $cout_estime,
+                'delai_souhaite' => $delai_souhaite
+            ];
+            
+            $besoin_id = createBesoin($data);
+           if ($besoin_id) {
+            $demand_id = $_SESSION['user_id'];
+            // 2. Traitement des Fichiers Joints
             if (!empty($_FILES['fichiers']['name'][0])) {
-                $uploadDir = 'uploads/';
-                foreach ($_FILES['fichiers']['tmp_name'] as $index => $tmpName) {
-                    $filename = basename($_FILES['fichiers']['name'][$index]);
-                    $targetFile = $uploadDir . time() . '_' . $filename;
-                    if (move_uploaded_file($tmpName, $targetFile)) {
-                        $stmtFile = $conn->prepare("
-                            INSERT INTO pieces_jointes (demande_id, fichier) 
-                            VALUES (:demande_id, :fichier)
-                        ");
-                        $stmtFile->bindParam(':demande_id', $demande_id, PDO::PARAM_INT);
-                        $stmtFile->bindParam(':fichier', $targetFile, PDO::PARAM_STR);
-                        $stmtFile->execute();
+                
+                // On s'assure que le répertoire d'upload existe
+                if (!is_dir(UPLOAD_DIR)) {
+                    mkdir(UPLOAD_DIR, 0777, true);
+                }
+
+                // Boucle sur les fichiers (fichiers[] est un tableau)
+                foreach ($_FILES['fichiers']['name'] as $key => $name) {
+                    // Vérification de l'upload et des erreurs PHP
+                    if ($_FILES['fichiers']['error'][$key] === UPLOAD_ERR_OK) {
+                        $tmp_name = $_FILES['fichiers']['tmp_name'][$key];
+                        $file_size = $_FILES['fichiers']['size'][$key];
+                        $file_ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+
+                        // Validation du fichier
+                        if ($file_size > MAX_FILE_SIZE) {
+                            $errors[] = "Le fichier " . htmlspecialchars($name) . " est trop volumineux (Max " . (MAX_FILE_SIZE / 1024 / 1024) . " Mo).";
+                            continue;
+                        }
+                        if (!in_array($file_ext, ALLOWED_EXTENSIONS)) {
+                            $errors[] = "Le format du fichier " . htmlspecialchars($name) . " n'est pas autorisé.";
+                            continue;
+                        }
+
+                        // Génération d'un nom de fichier unique et sécurisé
+                        $new_file_name = uniqid('pj_') . '.' . $file_ext;
+                        $target_file = UPLOAD_DIR . $new_file_name;
+                        
+                        // Déplacement du fichier temporaire
+                        if (move_uploaded_file($tmp_name, $target_file)) {
+                            // Enregistrement dans la table pieces_jointes
+                            $file_path_for_db = '/besoins/uploads/pieces_jointes/' . $new_file_name; // Chemin relatif pour la DB
+                            
+                            if (savePieceJointe($demand_id, $file_path_for_db)) {
+                                $uploaded_files_paths[] = $target_file; // Ajout pour le nettoyage si erreur DB
+                            } else {
+                                $errors[] = "Erreur lors de l'enregistrement du chemin du fichier " . htmlspecialchars($name) . " en base de données.";
+                                // Le fichier est sur le disque, mais pas dans la DB. À gérer (Nettoyage à la fin)
+                            }
+                        } else {
+                            $errors[] = "Erreur lors du déplacement du fichier " . htmlspecialchars($name) . " sur le serveur.";
+                        }
+                    } elseif ($_FILES['fichiers']['error'][$key] !== UPLOAD_ERR_NO_FILE) {
+                         // Gérer d'autres erreurs d'upload (taille php.ini, etc.)
+                        $errors[] = "Erreur d'upload PHP pour le fichier " . htmlspecialchars($name) . ": Code " . $_FILES['fichiers']['error'][$key];
                     }
                 }
             }
+            
+            // Finalisation : Vérifier si des erreurs d'upload/DB ont été ajoutées
+            if (empty($errors)) {
+                // Tout est OK : Succès + Redirection
+                setFlashMessage('success', 'Le besoin et ses pièces jointes ont été ajoutés avec succès !');
+                redirect('dashboard-demandeur.php');
+            } else {
+                 // S'il y a des erreurs dans les pièces jointes, il faut annuler
+                 // la création du besoin principal et supprimer les fichiers déjà uploadés (Gestion de transaction)
+                 
+                 // 3. Gestion de l'échec et nettoyage
+                 
+                 // Suppression des fichiers déjà uploadés
+                 foreach ($uploaded_files_paths as $path) {
+                     if (file_exists($path)) {
+                         unlink($path);
+                     }
+                 }
+                 
+                 // NOTE D'EXPERT : Idéalement, si la fonction createBesoin supporte les transactions PDO, 
+                 // vous devriez faire un $db->rollBack() ici pour annuler la création du besoin dans la table principale aussi.
+                 // Si createBesoin a réussi, mais les PJ ont échoué, vous devez soit supprimer le besoin, soit le marquer comme incomplet.
+                 $errors[] = "Le besoin a été créé, mais certaines pièces jointes n'ont pas pu être enregistrées. Veuillez modifier le besoin pour les ajouter.";
+            }
 
-            $success = "Demande créée avec succès !";
-
-        } catch (PDOException $e) {
-            $errors[] = "Erreur : " . $e->getMessage();
+        } else {
+            // Échec de la création du besoin principal
+            $errors[] = "Erreur lors de l'enregistrement du besoin principal.";
+        }
+        } catch (Exception $e) {
+            $errors[] = "Erreur de base de données : " . $e->getMessage();
         }
     }
 }
+
+// Générer le token CSRF
+$csrfToken = generateCSRFToken();
 ?>
 
 <div class="container mt-4">
@@ -91,10 +190,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="alert alert-success"><?= $success ?></div>
     <?php endif; ?>
 
-    <form action="" method="POST" enctype="multipart/form-data">
+    <form action="" method="POST" novalidate enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
+      
         <div class="mb-3">
-            <label for="type_besoin" class="form-label">Type de besoin</label>
-            <select name="type_besoin" id="type_besoin" class="form-select" required>
+            <label for="titre" class="form-label">Titre</label>
+            <input name="titre" id="titre" class="form-control" required/>
+        </div>
+
+        <div class="mb-3">
+            <label for="categorie" class="form-label">Type de besoin</label>
+            <select name="categorie" id="categorie" class="form-select" required>
                 <option value="">-- Sélectionnez un type --</option>
                 <?php foreach ($types_besoins as $type): ?>
                 <option value="<?= $type['id'] ?>"><?= htmlspecialchars($type['libelle']) ?></option>
@@ -108,8 +214,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <div class="mb-3">
-            <label for="urgence" class="form-label">Urgence</label>
-            <select name="urgence" id="urgence" class="form-select" required>
+            <label for="priorite" class="form-label">Urgence</label>
+            <select name="priorite" id="priorite" class="form-select" required>
                 <option value="">-- Sélectionnez --</option>
                 <option value="Faible">Faible</option>
                 <option value="Moyenne">Moyenne</option>
@@ -117,10 +223,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </select>
         </div>
 
-        <div class="mb-3">
-            <label for="fichiers" class="form-label">Fichier(s) (optionnel)</label>
-            <input type="file" name="fichiers[]" id="fichiers" class="form-control" multiple>
+        <div class="row mb-4">
+            <div class="col-12">
+                <h6 class="text-muted text-uppercase fw-bold mb-3">
+                    <i class="bi bi-paperclip me-2"></i>
+                    Pièces Jointes (Optionnel)
+                </h6>
+            </div>
+
+            <div class="col-md-12 mb-3">
+                <label for="fichiers" class="form-label">Sélectionner des Fichiers (Max 5Mo)</label>
+                <input type="file" class="form-control" id="fichiers" name="fichiers[]" multiple
+                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                <div class="form-text">
+                    Formats acceptés : PDF, images (JPG, PNG), documents (DOC/DOCX).
+                </div>
+            </div>
         </div>
+    </div>
 
         <button type="submit" class="btn btn-primary">Créer la demande</button>
     </form>

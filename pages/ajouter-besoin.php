@@ -2,9 +2,20 @@
 $page_title = "Ajouter un Besoin";
 include '../includes/header.php';
 
+
+// Définition du chemin d'upload (à adapter selon votre structure)
+define('UPLOAD_DIR', __DIR__ . '/../uploads/pieces_jointes/');
+// Taille maximale autorisée en octets (ex: 5 Mo)
+define('MAX_FILE_SIZE', 5 * 1024 * 1024);
+// Extensions autorisées
+define('ALLOWED_EXTENSIONS', ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png']);
+
+
+
 // Traitement du formulaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors = [];
+    $uploaded_files_paths = [];
     
     // Validation CSRF
     if (!verifyCSRFToken($_POST['csrf_token'] ?? '')) {
@@ -60,12 +71,88 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'delai_souhaite' => $delai_souhaite
             ];
             
-            if (createBesoin($data)) {
-                setFlashMessage('success', 'Le besoin a été ajouté avec succès !');
+            $besoin_id = createBesoin($data);
+           if ($besoin_id) {
+            $demand_id = $_SESSION['user_id'];
+            // 2. Traitement des Fichiers Joints
+            if (!empty($_FILES['fichiers']['name'][0])) {
+                
+                // On s'assure que le répertoire d'upload existe
+                if (!is_dir(UPLOAD_DIR)) {
+                    mkdir(UPLOAD_DIR, 0777, true);
+                }
+
+                // Boucle sur les fichiers (fichiers[] est un tableau)
+                foreach ($_FILES['fichiers']['name'] as $key => $name) {
+                    // Vérification de l'upload et des erreurs PHP
+                    if ($_FILES['fichiers']['error'][$key] === UPLOAD_ERR_OK) {
+                        $tmp_name = $_FILES['fichiers']['tmp_name'][$key];
+                        $file_size = $_FILES['fichiers']['size'][$key];
+                        $file_ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+
+                        // Validation du fichier
+                        if ($file_size > MAX_FILE_SIZE) {
+                            $errors[] = "Le fichier " . htmlspecialchars($name) . " est trop volumineux (Max " . (MAX_FILE_SIZE / 1024 / 1024) . " Mo).";
+                            continue;
+                        }
+                        if (!in_array($file_ext, ALLOWED_EXTENSIONS)) {
+                            $errors[] = "Le format du fichier " . htmlspecialchars($name) . " n'est pas autorisé.";
+                            continue;
+                        }
+
+                        // Génération d'un nom de fichier unique et sécurisé
+                        $new_file_name = uniqid('pj_') . '.' . $file_ext;
+                        $target_file = UPLOAD_DIR . $new_file_name;
+                        
+                        // Déplacement du fichier temporaire
+                        if (move_uploaded_file($tmp_name, $target_file)) {
+                            // Enregistrement dans la table pieces_jointes
+                            $file_path_for_db = '/besoins/uploads/pieces_jointes/' . $new_file_name; // Chemin relatif pour la DB
+                            
+                            if (savePieceJointe($demand_id, $file_path_for_db)) {
+                                $uploaded_files_paths[] = $target_file; // Ajout pour le nettoyage si erreur DB
+                            } else {
+                                $errors[] = "Erreur lors de l'enregistrement du chemin du fichier " . htmlspecialchars($name) . " en base de données.";
+                                // Le fichier est sur le disque, mais pas dans la DB. À gérer (Nettoyage à la fin)
+                            }
+                        } else {
+                            $errors[] = "Erreur lors du déplacement du fichier " . htmlspecialchars($name) . " sur le serveur.";
+                        }
+                    } elseif ($_FILES['fichiers']['error'][$key] !== UPLOAD_ERR_NO_FILE) {
+                         // Gérer d'autres erreurs d'upload (taille php.ini, etc.)
+                        $errors[] = "Erreur d'upload PHP pour le fichier " . htmlspecialchars($name) . ": Code " . $_FILES['fichiers']['error'][$key];
+                    }
+                }
+            }
+            
+            // Finalisation : Vérifier si des erreurs d'upload/DB ont été ajoutées
+            if (empty($errors)) {
+                // Tout est OK : Succès + Redirection
+                setFlashMessage('success', 'Le besoin et ses pièces jointes ont été ajoutés avec succès !');
                 redirect('liste-besoins.php');
             } else {
-                $errors[] = "Erreur lors de l'enregistrement du besoin.";
+                 // S'il y a des erreurs dans les pièces jointes, il faut annuler
+                 // la création du besoin principal et supprimer les fichiers déjà uploadés (Gestion de transaction)
+                 
+                 // 3. Gestion de l'échec et nettoyage
+                 
+                 // Suppression des fichiers déjà uploadés
+                 foreach ($uploaded_files_paths as $path) {
+                     if (file_exists($path)) {
+                         unlink($path);
+                     }
+                 }
+                 
+                 // NOTE D'EXPERT : Idéalement, si la fonction createBesoin supporte les transactions PDO, 
+                 // vous devriez faire un $db->rollBack() ici pour annuler la création du besoin dans la table principale aussi.
+                 // Si createBesoin a réussi, mais les PJ ont échoué, vous devez soit supprimer le besoin, soit le marquer comme incomplet.
+                 $errors[] = "Le besoin a été créé, mais certaines pièces jointes n'ont pas pu être enregistrées. Veuillez modifier le besoin pour les ajouter.";
             }
+
+        } else {
+            // Échec de la création du besoin principal
+            $errors[] = "Erreur lors de l'enregistrement du besoin principal.";
+        }
         } catch (Exception $e) {
             $errors[] = "Erreur de base de données : " . $e->getMessage();
         }
@@ -113,7 +200,7 @@ $csrfToken = generateCSRFToken();
                 </h5>
             </div>
             <div class="card-body">
-                <form method="POST" id="besoinForm" novalidate>
+                <form method="POST" id="besoinForm" novalidate enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
 
                     <!-- Informations générales -->
@@ -222,6 +309,25 @@ $csrfToken = generateCSRFToken();
                         </div>
                     </div>
 
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-muted text-uppercase fw-bold mb-3">
+                                <i class="bi bi-paperclip me-2"></i>
+                                Pièces Jointes (Optionnel)
+                            </h6>
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <label for="fichiers" class="form-label">Sélectionner des Fichiers (Max 5Mo)</label>
+                            <input type="file" class="form-control" id="fichiers" name="fichiers[]" multiple
+                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            <div class="form-text">
+                                Formats acceptés : PDF, images (JPG, PNG), documents (DOC/DOCX).
+                            </div>
+                            </div>
+                        </div>
+
+
                     <!-- Boutons d'action -->
                     <div class="row">
                         <div class="col-12">
@@ -244,6 +350,8 @@ $csrfToken = generateCSRFToken();
                             </div>
                         </div>
                     </div>
+
+                    
                 </form>
             </div>
         </div>
