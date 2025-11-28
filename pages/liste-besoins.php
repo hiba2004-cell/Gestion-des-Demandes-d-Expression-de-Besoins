@@ -265,19 +265,19 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                 <div class="row">
                     <?php foreach ($besoins as $besoin): ?>
                         <div class="col-lg-6 mb-3">
-                            <div class="card h-100 border-start border-<?php echo getPriorityClass($besoin['priorite']); ?> border-3">
+                            <div class="card h-100 border-start border-<?php echo getPriorityClass($besoin['urgence']); ?> border-3">
                                 <div class="card-header d-flex justify-content-between align-items-start">
                                     <div>
-                                        <h6 class="card-title mb-1"><?php echo htmlspecialchars($besoin['titre']); ?></h6>
-                                        <small class="text-muted"><?php echo htmlspecialchars($besoin['categorie']); ?></small>
+                                        <h6 class="card-title mb-1"><?php echo htmlspecialchars($besoin['description']); ?></h6>
+                                        <small class="text-muted"><?php echo htmlspecialchars($besoin['type_besoin']); ?></small>
                                     </div>
                                     <div class="text-end">
-                                        <span class="badge bg-<?php echo getPriorityClass($besoin['priorite']); ?> mb-1">
-                                            <?php echo getPriorityLabel($besoin['priorite']); ?>
+                                        <span class="badge bg-<?php echo getPriorityClass($besoin['urgence']); ?> mb-1">
+                                            <?php echo $besoin['urgence']; ?>
                                         </span>
                                         <br>
-                                        <span class="badge bg-<?php echo getPriorityClass($besoin['statut']); ?>">
-                                            <?php echo getStatusLabel($besoin['statut']); ?>
+                                        <span class="badge bg-<?php echo getPriorityClass($besoin['statut_final']); ?>">
+                                            <?php echo $besoin['statut_final']; ?>
                                         </span>
                                     </div>
                                 </div>
@@ -293,9 +293,6 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                                         <div class="col-6 text-end">
                                             <strong>Date:</strong><br>
                                             <?php echo formatDate($besoin['date_creation']); ?>
-                                            <?php if ($besoin['cout_estime']): ?>
-                                                <br><strong><?php echo formatCurrency($besoin['cout_estime']); ?></strong>
-                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>

@@ -23,29 +23,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     // Validation des champs
-    $titre = sanitize($_POST['titre'] ?? '');
     $description = sanitize($_POST['description'] ?? '');
     $priorite = sanitize($_POST['priorite'] ?? '');
     $categorie = sanitize($_POST['categorie'] ?? '');
 
-    $demandeur_nom = sanitize($_SESSION['user_nom'] ?? '');
-    $demandeur_email = sanitize($_SESSION['user_email'] ?? '');
+    $demandeur_id = sanitize($_SESSION['user_id'] ?? '');
 
     $cout_estime = sanitize($_POST['cout_estime'] ?? '');
     $delai_souhaite = sanitize($_POST['delai_souhaite'] ?? '');
     
     // Validation des champs obligatoires
-    if (empty($titre)) $errors[] = "Le titre est obligatoire.";
     if (empty($description)) $errors[] = "La description est obligatoire.";
     if (empty($priorite)) $errors[] = "La priorité est obligatoire.";
     if (empty($categorie)) $errors[] = "La catégorie est obligatoire.";
-    if (empty($demandeur_nom)) $errors[] = "Le nom du demandeur est obligatoire.";
-    if (empty($demandeur_email)) $errors[] = "L'email du demandeur est obligatoire.";
-    
-    // Validation de l'email
-    if (!empty($demandeur_email) && !validateEmail($demandeur_email)) {
-        $errors[] = "L'adresse email n'est pas valide.";
-    }
+
     
     // Validation de la date
     if (!empty($delai_souhaite) && !validateDate($delai_souhaite)) {
@@ -61,14 +52,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         try {
             $data = [
-                'titre' => $titre,
                 'description' => $description,
                 'priorite' => $priorite,
                 'categorie' => $categorie,
-                'demandeur_nom' => $demandeur_nom,
-                'demandeur_email' => $demandeur_email,
-                'cout_estime' => $cout_estime,
-                'delai_souhaite' => $delai_souhaite
+                'demandeur_id' => $demandeur_id,
             ];
             
             $besoin_id = createBesoin($data);
@@ -212,34 +199,20 @@ $csrfToken = generateCSRFToken();
                             </h6>
                         </div>
 
-                        <div class="col-md-12 mb-3">
-                            <label for="titre" class="form-label">Titre du Besoin *</label>
-                            <input type="text" class="form-control" id="titre" name="titre"
-                                value="<?php echo htmlspecialchars($titre ?? ''); ?>" required maxlength="200"
-                                placeholder="Ex: Développement d'une application mobile">
-                            <div class="invalid-feedback">
-                                Veuillez saisir un titre pour le besoin.
-                            </div>
-                        </div>
-
                         <div class="col-md-6 mb-3">
                             <label for="priorite" class="form-label">Priorité *</label>
                             <select class="form-select" id="priorite" name="priorite" required>
                                 <option value="">Sélectionnez une priorité</option>
-                                <option value="faible"
-                                    <?php echo (($priorite ?? '') === 'faible') ? 'selected' : ''; ?>>
+                                <option value="Faible"
+                                    <?php echo (($priorite ?? '') === 'Faible') ? 'selected' : ''; ?>>
                                     Faible
                                 </option>
-                                <option value="moyenne"
-                                    <?php echo (($priorite ?? '') === 'moyenne') ? 'selected' : ''; ?>>
+                                <option value="Moyenne"
+                                    <?php echo (($priorite ?? '') === 'Moyenne') ? 'selected' : ''; ?>>
                                     Moyenne
                                 </option>
-                                <option value="haute" <?php echo (($priorite ?? '') === 'haute') ? 'selected' : ''; ?>>
-                                    Haute
-                                </option>
-                                <option value="critique"
-                                    <?php echo (($priorite ?? '') === 'critique') ? 'selected' : ''; ?>>
-                                    Critique
+                                <option value="Urgente" <?php echo (($priorite ?? '') === 'Urgente') ? 'selected' : ''; ?>>
+                                    Urgente
                                 </option>
                             </select>
                             <div class="invalid-feedback">
@@ -249,18 +222,24 @@ $csrfToken = generateCSRFToken();
 
                         <div class="col-md-6 mb-3">
                             <label for="categorie" class="form-label">Catégorie *</label>
-                            <input type="text" class="form-control" id="categorie" name="categorie"
-                                value="<?php echo htmlspecialchars($categorie ?? ''); ?>" required maxlength="100"
-                                placeholder="Ex: Développement, Web Design, ERP..." list="categoriesList">
-                            <datalist id="categoriesList">
-                                <option value="Développement">
-                                <option value="Web Design">
-                                <option value="ERP">
-                                <option value="Formation">
-                                <option value="Infrastructure">
-                                <option value="Marketing">
-                                <option value="Support">
-                            </datalist>
+                            <select class="form-select" id="categorie" name="categorie" required>
+                                <option value="">Sélectionnez une catégorie</option>
+                                <option value="1"
+                                    <?php echo (($categorie ?? '') == '1') ? 'selected' : ''; ?>>
+                                    Matériel
+                                </option>
+                                <option value="2"
+                                    <?php echo (($categorie ?? '') == '2') ? 'selected' : ''; ?>>
+                                    Logiciel
+                                </option>
+                                <option value="3" <?php echo (($categorie ?? '') == '3') ? 'selected' : ''; ?>>
+                                    Service
+                                </option>
+                                <option value="4"
+                                    <?php echo (($categorie ?? '') === '4') ? 'selected' : ''; ?>>
+                                    Autre
+                                </option>
+                            </select>
                             <div class="invalid-feedback">
                                 Veuillez saisir une catégorie.
                             </div>
@@ -275,36 +254,6 @@ $csrfToken = generateCSRFToken();
                             </div>
                             <div class="invalid-feedback">
                                 Veuillez fournir une description détaillée.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Informations projet -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h6 class="text-muted text-uppercase fw-bold mb-3">
-                                <i class="bi bi-calendar-check me-2"></i>
-                                Informations Projet
-                            </h6>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="cout_estime" class="form-label">Coût Estimé (DH)</label>
-                            <input type="number" class="form-control" id="cout_estime" name="cout_estime"
-                                value="<?php echo htmlspecialchars($cout_estime ?? ''); ?>" min="0" step="0.01"
-                                placeholder="Ex: 150.00">
-                            <div class="form-text">
-                                Montant estimé en DH
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="delai_souhaite" class="form-label">Délai Souhaité</label>
-                            <input type="date" class="form-control" id="delai_souhaite" name="delai_souhaite"
-                                value="<?php echo htmlspecialchars($delai_souhaite ?? ''); ?>"
-                                min="<?php echo date('Y-m-d'); ?>">
-                            <div class="form-text">
-                                Date limite souhaitée pour la réalisation (optionnel)
                             </div>
                         </div>
                     </div>
@@ -380,8 +329,7 @@ $csrfToken = generateCSRFToken();
                 <ul class="small mb-0">
                     <li><span class="badge mt-2 bg-secondary">Faible</span> - Amélioration future</li>
                     <li><span class="badge mt-2 bg-info">Moyenne</span> - Important mais pas urgent</li>
-                    <li><span class="badge mt-2 bg-warning">Haute</span> - Urgent et important</li>
-                    <li><span class="badge mt-2 bg-danger">Critique</span> - Bloquant pour l'activité</li>
+                    <li><span class="badge mt-2 bg-danger">Urgence</span> - Bloquant pour l'activité</li>
                 </ul>
             </div>
         </div>
@@ -418,32 +366,6 @@ document.addEventListener('DOMContentLoaded', function() {
             e.stopPropagation();
         }
         this.classList.add('was-validated');
-    });
-
-    // Validation de l'email en temps réel
-    const emailField = document.getElementById('demandeur_email');
-    emailField.addEventListener('blur', function() {
-        if (this.value && !isValidEmail(this.value)) {
-            this.setCustomValidity('Adresse email invalide');
-        } else {
-            this.setCustomValidity('');
-        }
-    });
-
-    // Validation de la date
-    const dateField = document.getElementById('delai_souhaite');
-    dateField.addEventListener('change', function() {
-        if (this.value) {
-            const selectedDate = new Date(this.value);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            if (selectedDate < today) {
-                this.setCustomValidity('La date ne peut pas être antérieure à aujourd\'hui');
-            } else {
-                this.setCustomValidity('');
-            }
-        }
     });
 
     // Compteur de caractères pour la description
