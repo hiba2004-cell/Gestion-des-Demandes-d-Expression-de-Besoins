@@ -9,14 +9,29 @@ $user_id = $_SESSION['user_id'];
 ?>
 
 <div class="container mt-4">
-    <h1>Bonjour, <?php echo htmlspecialchars($_SESSION['username'] ?? 'Demandeur'); ?> !</h1>
+    <h1>Bonjour, <?php echo htmlspecialchars($_SESSION['user_nom']); ?> </h1>
     <h3>Gestion de vos demandes</h3>
 
     <div class="mb-4">
+<<<<<<< HEAD
+        <a href="create_demande.php" class="btn btn-primary me-2">
+            <i class="bi bi-plus-circle me-1"></i> Créer une demande
+        </a>
+        <a href="historique_demande.php" class="btn btn-secondary me-2">
+            <i class="bi bi-clock-history me-1"></i> Historique des demandes
+        </a>
+        <a href="suivi_statut.php" class="btn btn-info me-2">
+            <i class="bi bi-eye me-1"></i> Suivi des statuts
+        </a>
+        <a href="logout.php" class="btn btn-danger">
+            <i class="bi bi-box-arrow-right me-1"></i> Déconnexion
+        </a>
+=======
         <a href="create_demande.php" class="btn btn-primary">Créer une demande</a>
         <a href="historique_demande.php" class="btn btn-secondary">Historique des demandes</a>
         <a href="suivi_statut.php" class="btn btn-info">Suivi des statuts</a>
         <!-- <a href="logout.php" class="btn btn-danger">Déconnexion</a> -->
+>>>>>>> f2eb261c10839111337ab9f30a65f416de679905
     </div>
 
     <h4>Vos demandes récentes</h4>
@@ -52,11 +67,10 @@ $user_id = $_SESSION['user_id'];
                     <p><strong>Urgence :</strong> <?= htmlspecialchars($besoin['urgence']) ?></p>
                     <p><strong>Statut :</strong> <?= htmlspecialchars($besoin['statut']) ?></p>
                     <?php
-                            // Récupérer fichiers joints
-                            $stmtFiles = $conn->prepare("SELECT * FROM pieces_jointes WHERE demande_id = :demande_id");
-                            $stmtFiles->execute([':demande_id' => $besoin['id']]);
-                            $fichiers = $stmtFiles->fetchAll(PDO::FETCH_ASSOC);
-                            ?>
+                        $stmtFiles = $conn->prepare("SELECT * FROM pieces_jointes WHERE demande_id = :demande_id");
+                        $stmtFiles->execute([':demande_id' => $besoin['id']]);
+                        $fichiers = $stmtFiles->fetchAll(PDO::FETCH_ASSOC);
+                    ?>
                     <p><strong>Fichiers :</strong>
                         <?php if ($fichiers): ?>
                     <ul>
@@ -72,7 +86,7 @@ $user_id = $_SESSION['user_id'];
                 <div class="card-footer text-end">
                     <?php if (!in_array($besoin['statut'], ['Validée','Rejetée'])): ?>
                     <a href="modifier_demande.php?id=<?= $besoin['id'] ?>" class="btn btn-sm btn-warning">
-                        <i class="bi bi-pencil-square"></i> Modifier
+                        <i class="bi bi-pencil-square me-1"></i> Modifier
                     </a>
                     <?php else: ?>
                     <span class="text-muted">Non modifiable</span>
