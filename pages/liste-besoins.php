@@ -52,7 +52,8 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
 ?>
 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">
+    <?php include '../includes/sidebar-admin.php'; ?>
+<h1 class="h2">
         <i class="bi bi-list-ul me-2 text-primary"></i>
         Liste des Besoins
         <span class="badge bg-secondary ms-2"><?php echo $totalBesoins; ?></span>

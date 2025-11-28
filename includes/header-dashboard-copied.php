@@ -1,10 +1,9 @@
 <?php
-if (!isset($auth)) {
-    require_once 'config/auth.php';
-    $auth = requireAuth();
-}
+require 'config/auth.php';
 
+$auth = getAuth();
 $user = $auth->getCurrentUser();
+
 require_once 'includes/functions.php';
 
 // Génération du token CSRF si pas déjà fait
@@ -333,7 +332,7 @@ try {
 
             <!-- Navigation -->
             <div class="navbar-nav d-none d-lg-flex flex-row ms-auto me-3">
-                <?php if ($auth->hasRole('demandeur')): ?>
+                <?php if ($auth->hasRole('Demandeur')): ?>
                 <a class="nav-link" href="dashboard-demandeur.php">
                     <i class="bi bi-house me-1"></i> Accueil
                 </a>
@@ -343,7 +342,7 @@ try {
                 <a class="nav-link" href="pages/demandes/mes-demandes.php">
                     <i class="bi bi-list-ul me-1"></i> Mes Demandes
                 </a>
-                <?php elseif ($auth->hasRole('validateur')): ?>
+                <?php elseif ($auth->hasRole('Validateur')): ?>
                 <a class="nav-link" href="dashboard-validateur.php">
                     <i class="bi bi-house me-1"></i> Accueil
                 </a>
@@ -353,7 +352,7 @@ try {
                 <a class="nav-link" href="pages/validation/historique.php">
                     <i class="bi bi-clock-history me-1"></i> Historique
                 </a>
-                <?php elseif ($auth->hasRole('administrateur')): ?>
+                <?php elseif ($auth->hasRole('Administrateur')): ?>
                 <a class="nav-link" href="dashboard-admin.php">
                     <i class="bi bi-house me-1"></i> Accueil
                 </a>
@@ -401,18 +400,18 @@ try {
                 <a class="dropdown-toggle text-decoration-none user-dropdown text-dark" href="#" id="userDropdown"
                     role="button" data-bs-toggle="dropdown">
                     <div class="user-avatar">
-                        <?php echo strtoupper(substr($user['prenom'], 0, 1) . substr($user['nom'], 0, 1)); ?>
+                        <?php echo strtoupper(substr($user['nom'], 0, 1)); ?>
                     </div>
                     <span class="d-none d-sm-inline">
-                        <?php echo htmlspecialchars($user['prenom'] . ' ' . $user['nom']); ?>
+                        <?php echo htmlspecialchars($user['nom']); ?>
                     </span>
                     <i class="bi bi-chevron-down ms-2"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li class="dropdown-header">
-                        <strong><?php echo htmlspecialchars($user['prenom'] . ' ' . $user['nom']); ?></strong><br>
+                        <strong><?php echo htmlspecialchars($user['nom']); ?></strong><br>
                         <small
-                            class="text-muted"><?php echo htmlspecialchars($user['service'] . ' - ' . ucfirst($user['role'])); ?></small>
+                            class="text-muted"><?php echo htmlspecialchars(ucfirst($user['role'])); ?></small>
                     </li>
                     <li>
                         <hr class="dropdown-divider">
@@ -440,306 +439,4 @@ try {
         </div>
     </nav>
 
-    <!-- Sidebar -->
-    <nav class="sidebar" id="sidebar">
-        <div class="p-3">
-            <h6 class="text-white-50 text-uppercase small mb-3">Navigation</h6>
-            <ul class="nav flex-column">
-                <?php if ($auth->hasRole('demandeur')): ?>
-                <li class="nav-item">
-                    <a class="nav-link" href="dashboard-demandeur.php">
-                        <i class="bi bi-speedometer2"></i>
-                        Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="pages/demandes/nouvelle-demande.php">
-                        <i class="bi bi-plus-circle"></i>
-                        Nouvelle Demande
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="pages/demandes/mes-demandes.php">
-                        <i class="bi bi-list-ul"></i>
-                        Mes Demandes
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="pages/demandes/brouillons.php">
-                        <i class="bi bi-file-earmark"></i>
-                        Brouillons
-                    </a>
-                </li>
-                <?php elseif ($auth->hasRole('validateur')): ?>
-                <li class="nav-item">
-                    <a class="nav-link" href="dashboard-validateur.php">
-                        <i class="bi bi-speedometer2"></i>
-                        Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="pages/validation/demandes-a-valider.php">
-                        <i class="bi bi-check-circle"></i>
-                        À Valider
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="pages/validation/mon-equipe.php">
-                        <i class="bi bi-people"></i>
-                        Mon Équipe
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="pages/validation/historique.php">
-                        <i class="bi bi-clock-history"></i>
-                        Historique
-                    </a>
-                </li>
-                <?php elseif ($auth->hasRole('administrateur')): ?>
-                <li class="nav-item">
-                    <a class="nav-link" href="dashboard-admin.php">
-                        <i class="bi bi-speedometer2"></i>
-                        Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="pages/admin/gestion-demandes.php">
-                        <i class="bi bi-clipboard-data"></i>
-                        Gestion Demandes
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="pages/admin/gestion-utilisateurs.php">
-                        <i class="bi bi-people"></i>
-                        Utilisateurs
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="pages/admin/types-besoins.php">
-                        <i class="bi bi-tags"></i>
-                        Types de Besoins
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="pages/admin/rapports.php">
-                        <i class="bi bi-graph-up"></i>
-                        Rapports
-                    </a>
-                </li>
-                <?php endif; ?>
-            </ul>
-
-            <hr class="my-3" style="border-color: rgba(255,255,255,0.2);">
-
-            <h6 class="text-white-50 text-uppercase small mb-3">Outils</h6>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link" href="pages/notifications.php">
-                        <i class="bi bi-bell"></i>
-                        Notifications
-                        <?php if ($notificationsCount > 0): ?>
-                        <span class="badge bg-danger ms-auto"><?php echo $notificationsCount; ?></span>
-                        <?php endif; ?>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="pages/profil.php">
-                        <i class="bi bi-person"></i>
-                        Mon Profil
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="pages/aide.php">
-                        <i class="bi bi-question-circle"></i>
-                        Aide
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <!-- Overlay pour mobile -->
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-
-    <!-- Contenu principal -->
-    <div class="main-content" id="mainContent">
-        <div class="container-fluid">
-            <!-- Messages flash -->
-            <?php 
-            $flash = getFlashMessage();
-            if ($flash): 
-            ?>
-            <div class="alert alert-<?php echo ($flash['type'] == 'error') ? 'danger' : $flash['type']; ?> alert-dismissible fade show"
-                role="alert">
-                <i
-                    class="bi bi-<?php echo $flash['type'] == 'success' ? 'check-circle' : ($flash['type'] == 'error' ? 'exclamation-triangle' : 'info-circle'); ?> me-2"></i>
-                <?php echo htmlspecialchars($flash['message']); ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-            <?php endif; ?>
-
-            <!-- Breadcrumb (optionnel) -->
-            <?php if (isset($breadcrumbs) && !empty($breadcrumbs)): ?>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <?php foreach ($breadcrumbs as $index => $breadcrumb): ?>
-                    <?php if ($index === count($breadcrumbs) - 1): ?>
-                    <li class="breadcrumb-item active" aria-current="page">
-                        <?php echo htmlspecialchars($breadcrumb['title']); ?>
-                    </li>
-                    <?php else: ?>
-                    <li class="breadcrumb-item">
-                        <a href="<?php echo htmlspecialchars($breadcrumb['url']); ?>">
-                            <?php echo htmlspecialchars($breadcrumb['title']); ?>
-                        </a>
-                    </li>
-                    <?php endif; ?>
-                    <?php endforeach; ?>
-                </ol>
-            </nav>
-            <?php endif; ?>
-
-            <script>
-            // Gestion du sidebar
-            function toggleSidebar() {
-                const sidebar = document.getElementById('sidebar');
-                const overlay = document.getElementById('sidebarOverlay');
-                const mainContent = document.getElementById('mainContent');
-
-                if (window.innerWidth >= 992) {
-                    // Desktop: slide content
-                    sidebar.classList.toggle('show');
-                    mainContent.classList.toggle('shifted');
-                } else {
-                    // Mobile: overlay
-                    sidebar.classList.toggle('show');
-                    overlay.classList.toggle('show');
-                }
-            }
-
-            function closeSidebar() {
-                document.getElementById('sidebar').classList.remove('show');
-                document.getElementById('sidebarOverlay').classList.remove('show');
-            }
-
-            // Gestion responsive
-            window.addEventListener('resize', function() {
-                if (window.innerWidth >= 992) {
-                    document.getElementById('sidebarOverlay').classList.remove('show');
-                }
-            });
-
-            // Chargement des notifications
-            document.addEventListener('DOMContentLoaded', function() {
-                loadNotifications();
-
-                // Actualiser les notifications toutes les 30 secondes
-                setInterval(loadNotifications, 30000);
-
-                // Marquer comme active le lien actuel
-                markActiveNavLink();
-            });
-
-            // Chargement des notifications
-            function loadNotifications() {
-                fetch('api/get-notifications.php')
-                    .then(response => response.json())
-                    .then(data => {
-                        const container = document.getElementById('notificationsList');
-                        if (data.success && data.notifications) {
-                            if (data.notifications.length === 0) {
-                                container.innerHTML =
-                                    '<div class="dropdown-item-text text-center text-muted py-3">Aucune notification</div>';
-                            } else {
-                                container.innerHTML = data.notifications.map(notification =>
-                                    `<a class="dropdown-item ${!notification.lu ? 'bg-light' : ''}" href="pages/demandes/detail-demande.php?id=${notification.demande_id}">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0 me-2">
-                                    <i class="bi bi-${getNotificationIcon(notification.type)} text-${getNotificationColor(notification.type)}"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1 small">${notification.titre}</h6>
-                                    <p class="mb-1 small text-muted">${notification.message}</p>
-                                    <small class="text-muted">${formatDate(notification.date_creation)}</small>
-                                </div>
-                            </div>
-                        </a>`
-                                ).join('');
-                            }
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Erreur lors du chargement des notifications:', error);
-                        document.getElementById('notificationsList').innerHTML =
-                            '<div class="dropdown-item-text text-center text-danger py-3">Erreur de chargement</div>';
-                    });
-            }
-
-            // Icônes pour les types de notifications
-            function getNotificationIcon(type) {
-                const icons = {
-                    'nouvelle_demande': 'plus-circle',
-                    'validation_requise': 'check-circle',
-                    'demande_validee': 'check-circle-fill',
-                    'demande_rejetee': 'x-circle',
-                    'demande_traitee': 'check-all'
-                };
-                return icons[type] || 'bell';
-            }
-
-            // Couleurs pour les types de notifications
-            function getNotificationColor(type) {
-                const colors = {
-                    'nouvelle_demande': 'primary',
-                    'validation_requise': 'warning',
-                    'demande_validee': 'success',
-                    'demande_rejetee': 'danger',
-                    'demande_traitee': 'success'
-                };
-                return colors[type] || 'primary';
-            }
-
-            // Formatage de date simple
-            function formatDate(dateString) {
-                const date = new Date(dateString);
-                const now = new Date();
-                const diffTime = Math.abs(now - date);
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-                if (diffDays === 1) {
-                    return 'Hier';
-                } else if (diffDays < 7) {
-                    return `Il y a ${diffDays} jours`;
-                } else {
-                    return date.toLocaleDateString('fr-FR');
-                }
-            }
-
-            // Marquer le lien actif
-            function markActiveNavLink() {
-                const currentPath = window.location.pathname;
-                const navLinks = document.querySelectorAll('.sidebar .nav-link');
-
-                navLinks.forEach(link => {
-                    if (link.getAttribute('href') && currentPath.includes(link.getAttribute('href'))) {
-                        link.classList.add('active');
-                    } else {
-                        link.classList.remove('active');
-                    }
-                });
-            }
-
-            // Auto-hide des alertes
-            setTimeout(function() {
-                const alerts = document.querySelectorAll('.alert:not(.alert-permanent)');
-                alerts.forEach(alert => {
-                    alert.style.transition = 'opacity 0.5s ease';
-                    alert.style.opacity = '0';
-                    setTimeout(() => {
-                        if (alert.parentNode) {
-                            alert.remove();
-                        }
-                    }, 500);
-                });
-            }, 5000);
-            </script>
+  

@@ -87,12 +87,8 @@ class Auth {
         return [
             'id' => $_SESSION['user_id'],
             'nom' => $_SESSION['user_nom'],
-            'prenom' => $_SESSION['user_prenom'],
             'email' => $_SESSION['user_email'],
             'role' => $_SESSION['user_role'],
-            'service' => $_SESSION['user_service'],
-            'poste' => $_SESSION['user_poste'],
-            'chef_id' => $_SESSION['user_chef_id']
         ];
     }
     

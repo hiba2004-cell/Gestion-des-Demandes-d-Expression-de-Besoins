@@ -1,6 +1,7 @@
 <?php
 $page_title = "Modifier l'Utilisateur";
 require_once '../includes/header.php';
+include '../includes/sidebar-admin.php';
 
 // J'assume que sanitize(), redirect(), setFlashMessage() existent.
 // J'assume que la liste des rôles $roles existe (définie ici pour la complétude)
