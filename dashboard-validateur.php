@@ -1,13 +1,9 @@
 <?php
-// require_once __DIR__ . 'config/auth.php';
 require_once './config/auth.php';
 require_once './config/database.php';
-// require_once './includes/header.php';
 
 // Vérification du rôle
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Validateur') {
-//   header("Location: /besoins/index.php");
-//   exit;
     header("Location: /besoins/index.php");
     exit;
 }
