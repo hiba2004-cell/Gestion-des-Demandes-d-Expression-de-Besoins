@@ -1,7 +1,6 @@
 <?php
 $page_title = "Statistiques";
 include '../includes/header.php';
-include '../includes/sidebar-admin.php';
 
 // Récupération des statistiques
 try {

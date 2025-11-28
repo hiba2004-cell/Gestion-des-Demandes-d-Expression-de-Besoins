@@ -1,7 +1,6 @@
 <?php
 $page_title = "Gestion des Utilisateurs";
 include '../includes/header.php';
-include '../includes/sidebar-admin.php';
 
 
 /**
