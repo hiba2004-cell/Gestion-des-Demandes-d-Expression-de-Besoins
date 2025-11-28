@@ -12,7 +12,7 @@ if (!$id) {
 
 // Mode édition
 $editMode = isset($_GET['edit']) && $_GET['edit'] == '1';
-
+$besoin = null;
 // Récupération du besoin
 try {
     $besoin = getBesoinById($id);
@@ -22,7 +22,7 @@ try {
     }
 } catch (Exception $e) {
     setFlashMessage('error', 'Erreur lors du chargement du besoin : ' . $e->getMessage());
-    redirect('liste-besoins.php');
+    // redirect('liste-besoins.php');
 }
 
 // Traitement de la mise à jour
@@ -35,53 +35,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $editMode) {
     }
     
     // Validation des champs
-    $titre = sanitize($_POST['titre'] ?? '');
     $description = sanitize($_POST['description'] ?? '');
     $priorite = sanitize($_POST['priorite'] ?? '');
     $statut = sanitize($_POST['statut'] ?? '');
     $categorie = sanitize($_POST['categorie'] ?? '');
-    $demandeur_nom = sanitize($_POST['demandeur_nom'] ?? '');
-    $demandeur_email = sanitize($_POST['demandeur_email'] ?? '');
-    $cout_estime = sanitize($_POST['cout_estime'] ?? '');
-    $delai_souhaite = sanitize($_POST['delai_souhaite'] ?? '');
-    
+
     // Validation des champs obligatoires
-    if (empty($titre)) $errors[] = "Le titre est obligatoire.";
     if (empty($description)) $errors[] = "La description est obligatoire.";
     if (empty($priorite)) $errors[] = "La priorité est obligatoire.";
     if (empty($statut)) $errors[] = "Le statut est obligatoire.";
     if (empty($categorie)) $errors[] = "La catégorie est obligatoire.";
-    if (empty($demandeur_nom)) $errors[] = "Le nom du demandeur est obligatoire.";
-    if (empty($demandeur_email)) $errors[] = "L'email du demandeur est obligatoire.";
-    
-    // Validation de l'email
-    if (!empty($demandeur_email) && !validateEmail($demandeur_email)) {
-        $errors[] = "L'adresse email n'est pas valide.";
-    }
-    
-    // Validation de la date
-    if (!empty($delai_souhaite) && !validateDate($delai_souhaite)) {
-        $errors[] = "La date souhaitée n'est pas valide.";
-    }
-    
-    // Validation du coût
-    if (!empty($cout_estime) && (!is_numeric($cout_estime) || $cout_estime < 0)) {
-        $errors[] = "Le coût estimé doit être un nombre positif.";
-    }
+
     
     // Si pas d'erreurs, mettre à jour
     if (empty($errors)) {
         try {
             $data = [
-                'titre' => $titre,
                 'description' => $description,
                 'priorite' => $priorite,
                 'statut' => $statut,
                 'categorie' => $categorie,
-                'demandeur_nom' => $demandeur_nom,
-                'demandeur_email' => $demandeur_email,
-                'cout_estime' => $cout_estime,
-                'delai_souhaite' => $delai_souhaite
             ];
             
             if (updateBesoin($id, $data)) {
@@ -168,29 +141,21 @@ if ($editMode) {
                             </h6>
                         </div>
 
-                        <div class="col-md-12 mb-3">
-                            <label for="titre" class="form-label">Titre du Besoin *</label>
-                            <input type="text" class="form-control" id="titre" name="titre"
-                                value="<?php echo htmlspecialchars($besoin['titre']); ?>" required maxlength="200">
-                        </div>
+                      
 
                         <div class="col-md-6 mb-3">
                             <label for="priorite" class="form-label">Priorité *</label>
                             <select class="form-select" id="priorite" name="priorite" required>
-                                <option value="faible"
-                                    <?php echo ($besoin['priorite'] === 'faible') ? 'selected' : ''; ?>>
+                                <option value="Faible"
+                                    <?php echo ($besoin['urgence'] === 'Faible') ? 'selected' : ''; ?>>
                                     Faible
                                 </option>
-                                <option value="moyenne"
-                                    <?php echo ($besoin['priorite'] === 'moyenne') ? 'selected' : ''; ?>>
+                                <option value="Moyenne"
+                                    <?php echo ($besoin['urgence'] === 'Moyenne') ? 'selected' : ''; ?>>
                                     Moyenne
                                 </option>
-                                <option value="haute"
-                                    <?php echo ($besoin['priorite'] === 'haute') ? 'selected' : ''; ?>>
-                                    Haute
-                                </option>
-                                <option value="critique"
-                                    <?php echo ($besoin['priorite'] === 'critique') ? 'selected' : ''; ?>>
+                                <option value="Urgente"
+                                    <?php echo ($besoin['urgence'] === 'Urgente') ? 'selected' : ''; ?>>
                                     Critique
                                 </option>
                             </select>
@@ -199,29 +164,51 @@ if ($editMode) {
                         <div class="col-md-6 mb-3">
                             <label for="statut" class="form-label">Statut *</label>
                             <select class="form-select" id="statut" name="statut" required>
-                                <option value="nouveau"
-                                    <?php echo ($besoin['statut'] === 'nouveau') ? 'selected' : ''; ?>>
-                                    Nouveau
+                                <option value="En attente"
+                                    <?php echo ($besoin['statut_final'] === 'En attente') ? 'selected' : ''; ?>>
+                                    En attente
                                 </option>
-                                <option value="en_cours"
-                                    <?php echo ($besoin['statut'] === 'en_cours') ? 'selected' : ''; ?>>
-                                    En cours
+                                <option value="En cours de validation"
+                                    <?php echo ($besoin['statut_final'] === 'En cours de validation') ? 'selected' : ''; ?>>
+                                    En cours de validation
                                 </option>
-                                <option value="termine"
-                                    <?php echo ($besoin['statut'] === 'termine') ? 'selected' : ''; ?>>
-                                    Terminé
+                                <option value="Traitée"
+                                    <?php echo ($besoin['statut_final'] === 'Traitée') ? 'selected' : ''; ?>>
+                                    Traitée
                                 </option>
-                                <option value="rejete"
-                                    <?php echo ($besoin['statut'] === 'rejete') ? 'selected' : ''; ?>>
-                                    Rejeté
+                               
+                                <option value="Validée"
+                                    <?php echo ($besoin['statut_final'] === 'Validée') ? 'selected' : ''; ?>>
+                                    Validée
                                 </option>
+                                <option value="Rejetée"
+                                    <?php echo ($besoin['statut_final'] === 'Rejetée') ? 'selected' : ''; ?>>
+                                    Rejetée
+                                </option>
+                               
                             </select>
                         </div>
 
                         <div class="col-md-12 mb-3">
                             <label for="categorie" class="form-label">Catégorie *</label>
-                            <input type="text" class="form-control" id="categorie" name="categorie"
-                                value="<?php echo htmlspecialchars($besoin['categorie']); ?>" required maxlength="100">
+                            <select class="form-select" id="categorie" name="categorie" required>
+                                <option value="">Sélectionnez une catégorie</option>
+                                <option value="1"
+                                    <?php echo (($besoin['type_besoin'] ?? '') == '1') ? 'selected' : ''; ?>>
+                                    Matériel
+                                </option>
+                                <option value="2"
+                                    <?php echo (($besoin['type_besoin'] ?? '') == '2') ? 'selected' : ''; ?>>
+                                    Logiciel
+                                </option>
+                                <option value="3" <?php echo (($besoin['type_besoin'] ?? '') == '3') ? 'selected' : ''; ?>>
+                                    Service
+                                </option>
+                                <option value="4"
+                                    <?php echo (($besoin['type_besoin'] ?? '') === '4') ? 'selected' : ''; ?>>
+                                    Autre
+                                </option>
+                            </select>
                         </div>
 
                         <div class="col-12 mb-3">
@@ -244,14 +231,14 @@ if ($editMode) {
                             <label for="demandeur_nom" class="form-label">Nom Complet *</label>
                             <input type="text" class="form-control" id="demandeur_nom" name="demandeur_nom"
                                 value="<?php echo htmlspecialchars($besoin['demandeur_nom']); ?>" required
-                                maxlength="100">
+                                maxlength="100" readonly>
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label for="demandeur_email" class="form-label">Adresse Email *</label>
                             <input type="email" class="form-control" id="demandeur_email" name="demandeur_email"
                                 value="<?php echo htmlspecialchars($besoin['demandeur_email']); ?>" required
-                                maxlength="150">
+                                maxlength="150" readonly>
                         </div>
                     </div>
 
@@ -264,18 +251,7 @@ if ($editMode) {
                             </h6>
                         </div>
 
-                        <div class="col-md-6 mb-3">
-                            <label for="cout_estime" class="form-label">Coût Estimé (€)</label>
-                            <input type="number" class="form-control" id="cout_estime" name="cout_estime"
-                                value="<?php echo htmlspecialchars($besoin['cout_estime'] ?? ''); ?>" min="0"
-                                step="0.01">
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="delai_souhaite" class="form-label">Délai Souhaité</label>
-                            <input type="date" class="form-control" id="delai_souhaite" name="delai_souhaite"
-                                value="<?php echo $besoin['delai_souhaite'] ?? ''; ?>">
-                        </div>
+                       
                     </div>
 
                     <!-- Boutons d'action -->
@@ -301,16 +277,13 @@ if ($editMode) {
         <!-- Affichage des détails -->
         <div class="card">
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-file-text me-2"></i>
-                    <?php echo htmlspecialchars($besoin['titre']); ?>
-                </h5>
+               
                 <div class="d-flex gap-2">
-                    <span class="badge bg-<?php echo getPriorityClass($besoin['priorite']); ?> fs-6">
-                        <?php echo getPriorityLabel($besoin['priorite']); ?>
+                    <span class="badge bg-<?php echo getPriorityClass($besoin['urgence']); ?> fs-6">
+                        <?php echo $besoin['urgence']; ?>
                     </span>
-                    <span class="badge bg-<?php echo getStatusClass($besoin['statut']); ?> fs-6">
-                        <?php echo getStatusLabel($besoin['statut']); ?>
+                    <span class="badge bg-<?php echo getPriorityClass($besoin['statut_final']); ?> fs-6">
+                        <?php echo $besoin['statut_final']; ?>
                     </span>
                 </div>
             </div>
@@ -355,28 +328,6 @@ if ($editMode) {
                     </h6>
                     <div class="row">
                         <div class="col-md-3">
-                            <p><strong>Catégorie :</strong><br>
-                                <span class="badge bg-light text-dark border fs-6">
-                                    <?php echo htmlspecialchars($besoin['categorie']); ?>
-                                </span>
-                            </p>
-                        </div>
-                        <div class="col-md-3">
-                            <p><strong>Coût Estimé :</strong><br>
-                                <span class="fs-5 fw-bold text-success">
-                                    <?php echo $besoin['cout_estime'] ? formatCurrency($besoin['cout_estime']) : 'Non spécifié'; ?>
-                                </span>
-                            </p>
-                        </div>
-                        <div class="col-md-3">
-                            <p><strong>Délai Souhaité :</strong><br>
-                                <span
-                                    class="<?php echo $besoin['delai_souhaite'] && strtotime($besoin['delai_souhaite']) < time() ? 'text-danger fw-bold' : ''; ?>">
-                                    <?php echo $besoin['delai_souhaite'] ? formatDate($besoin['delai_souhaite']) : 'Non spécifié'; ?>
-                                </span>
-                            </p>
-                        </div>
-                        <div class="col-md-3">
                             <p><strong>Date de Création :</strong><br>
                                 <?php echo formatDateTime($besoin['date_creation']); ?>
                             </p>
@@ -384,12 +335,6 @@ if ($editMode) {
                     </div>
                 </div>
 
-                <?php if ($besoin['date_modification'] !== $besoin['date_creation']): ?>
-                <div class="alert alert-info">
-                    <i class="bi bi-info-circle me-2"></i>
-                    <strong>Dernière modification :</strong> <?php echo formatDateTime($besoin['date_modification']); ?>
-                </div>
-                <?php endif; ?>
             </div>
         </div>
         <?php endif; ?>
@@ -412,36 +357,20 @@ if ($editMode) {
                     </li>
                     <li class="mb-2">
                         <strong>Priorité :</strong>
-                        <span class="badge bg-<?php echo getPriorityClass($besoin['priorite']); ?>">
-                            <?php echo getPriorityLabel($besoin['priorite']); ?>
+                        <span class="badge bg-<?php echo getPriorityClass($besoin['urgence']); ?>">
+                            <?php echo getPriorityLabel($besoin['urgence']); ?>
                         </span>
                     </li>
                     <li class="mb-2">
                         <strong>Statut :</strong>
-                        <span class="badge bg-<?php echo getStatusClass($besoin['statut']); ?>">
-                            <?php echo getStatusLabel($besoin['statut']); ?>
+                        <span class="badge bg-<?php echo getPriorityClass($besoin['statut_final']); ?>">
+                            <?php echo $besoin['statut_final']; ?>
                         </span>
                     </li>
                     <li class="mb-2">
-                        <strong>Catégorie :</strong> <?php echo htmlspecialchars($besoin['categorie']); ?>
+                        <strong>Catégorie :</strong> <?php echo htmlspecialchars($besoin['type_besoin']); ?>
                     </li>
-                    <?php if ($besoin['cout_estime']): ?>
-                    <li class="mb-2">
-                        <strong>Budget :</strong> <?php echo formatCurrency($besoin['cout_estime']); ?>
-                    </li>
-                    <?php endif; ?>
-                    <?php if ($besoin['delai_souhaite']): ?>
-                    <li class="mb-2">
-                        <strong>Échéance :</strong>
-                        <span
-                            class="<?php echo strtotime($besoin['delai_souhaite']) < time() ? 'text-danger fw-bold' : ''; ?>">
-                            <?php echo formatDate($besoin['delai_souhaite']); ?>
-                            <?php if (strtotime($besoin['delai_souhaite']) < time()): ?>
-                            <i class="bi bi-exclamation-triangle text-danger"></i>
-                            <?php endif; ?>
-                        </span>
-                    </li>
-                    <?php endif; ?>
+                     
                 </ul>
             </div>
         </div>
@@ -462,7 +391,7 @@ if ($editMode) {
                         Modifier ce Besoin
                     </a>
 
-                    <a href="mailto:<?php echo htmlspecialchars($besoin['demandeur_email']); ?>?subject=Concernant votre besoin: <?php echo urlencode($besoin['titre']); ?>"
+                    <a href="mailto:<?php echo htmlspecialchars($besoin['demandeur_email']); ?>?subject=Concernant votre besoin: <?php echo urlencode($besoin['description']); ?>"
                         class="btn btn-outline-primary">
                         <i class="bi bi-envelope me-1"></i>
                         Contacter le Demandeur

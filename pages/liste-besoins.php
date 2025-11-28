@@ -183,11 +183,10 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th style="width: 30%;">Besoin</th>
+                            <th style="width: 40%;">Description</th>
                             <th style="width: 20%;">Demandeur</th>
                             <th style="width: 10%;">Priorité</th>
                             <th style="width: 10%;">Statut</th>
-                            <th style="width: 10%;">Coût</th>
                             <th style="width: 10%;">Date</th>
                             <th style="width: 10%;">Actions</th>
                         </tr>
@@ -197,13 +196,13 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                             <tr>
                                 <td>
                                     <div>
-                                        <strong class="d-block"><?php echo htmlspecialchars($besoin['titre']); ?></strong>
-                                        <small class="text-muted">
+                                        <strong class="d-block"><?php echo htmlspecialchars($besoin['description']); ?></strong>
+                                        <!-- <small class="text-muted">
                                             <?php echo htmlspecialchars(substr($besoin['description'], 0, 80)) . '...'; ?>
-                                        </small>
+                                        </small> -->
                                         <div class="mt-1">
                                             <span class="badge bg-light text-dark border">
-                                                <?php echo htmlspecialchars($besoin['categorie']); ?>
+                                                <?php echo htmlspecialchars($besoin['type_besoin']); ?>
                                             </span>
                                         </div>
                                     </div>
@@ -215,22 +214,16 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="badge bg-<?php echo getPriorityClass($besoin['priorite']); ?> fs-6">
-                                        <?php echo getPriorityLabel($besoin['priorite']); ?>
+                                    <span class="badge bg-<?php echo getPriorityClass($besoin['urgence']); ?> fs-6">
+                                        <?php echo $besoin['urgence']; ?>
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="badge bg-<?php echo getStatusClass($besoin['statut']); ?> fs-6">
-                                        <?php echo getStatusLabel($besoin['statut']); ?>
+                                    <span class="badge bg-<?php echo getPriorityClass($besoin['statut_final']); ?> fs-6">
+                                        <?php echo $besoin['statut_final']; ?>
                                     </span>
                                 </td>
-                                <td>
-                                    <?php if ($besoin['cout_estime']): ?>
-                                        <span class="fw-bold"><?php echo formatCurrency($besoin['cout_estime']); ?></span>
-                                    <?php else: ?>
-                                        <span class="text-muted">N/A</span>
-                                    <?php endif; ?>
-                                </td>
+                             
                                <td>
                                 <?php echo formatDate($besoin['date_creation']); ?>
                                     <!-- <small>
@@ -272,19 +265,19 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                 <div class="row">
                     <?php foreach ($besoins as $besoin): ?>
                         <div class="col-lg-6 mb-3">
-                            <div class="card h-100 border-start border-<?php echo getPriorityClass($besoin['priorite']); ?> border-3">
+                            <div class="card h-100 border-start border-<?php echo getPriorityClass($besoin['urgence']); ?> border-3">
                                 <div class="card-header d-flex justify-content-between align-items-start">
                                     <div>
-                                        <h6 class="card-title mb-1"><?php echo htmlspecialchars($besoin['titre']); ?></h6>
-                                        <small class="text-muted"><?php echo htmlspecialchars($besoin['categorie']); ?></small>
+                                        <h6 class="card-title mb-1"><?php echo htmlspecialchars($besoin['description']); ?></h6>
+                                        <small class="text-muted"><?php echo htmlspecialchars($besoin['type_besoin']); ?></small>
                                     </div>
                                     <div class="text-end">
-                                        <span class="badge bg-<?php echo getPriorityClass($besoin['priorite']); ?> mb-1">
-                                            <?php echo getPriorityLabel($besoin['priorite']); ?>
+                                        <span class="badge bg-<?php echo getPriorityClass($besoin['urgence']); ?> mb-1">
+                                            <?php echo $besoin['urgence']; ?>
                                         </span>
                                         <br>
-                                        <span class="badge bg-<?php echo getStatusClass($besoin['statut']); ?>">
-                                            <?php echo getStatusLabel($besoin['statut']); ?>
+                                        <span class="badge bg-<?php echo getPriorityClass($besoin['statut_final']); ?>">
+                                            <?php echo $besoin['statut_final']; ?>
                                         </span>
                                     </div>
                                 </div>
@@ -300,9 +293,6 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                                         <div class="col-6 text-end">
                                             <strong>Date:</strong><br>
                                             <?php echo formatDate($besoin['date_creation']); ?>
-                                            <?php if ($besoin['cout_estime']): ?>
-                                                <br><strong><?php echo formatCurrency($besoin['cout_estime']); ?></strong>
-                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
