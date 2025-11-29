@@ -50,8 +50,11 @@ $query = "
     LEFT JOIN types_besoins t ON d.type_besoin_id = t.id
     LEFT JOIN users u ON d.user_id = u.id
     LEFT JOIN validation v ON v.demande_id = d.id
-    WHERE v.demande_id IS NULL
+    WHERE v.demande_id IS NULL AND d.type_besoin_id = :service_id
 ";
+
+$params['service_id'] = $_SESSION['user_service'];
+
 
 // Ajouter les filtres éventuels
 if ($where) {

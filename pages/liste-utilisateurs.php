@@ -23,9 +23,9 @@ $page = max(1, intval($_GET['page'] ?? 1));
 $itemsPerPage = 10;
 
 // Filtres
-// J'assume que la fonction sanitize() et la constante ROLES_LIST existent
 $filters = [
     'role' => sanitize($_GET['role'] ?? ''),
+    'service_id' => sanitize($_GET['service_id'] ?? ''),
     'search' => sanitize($_GET['search'] ?? '')
 ];
 
@@ -101,7 +101,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     </div>
     <div class="card-body">
         <form method="GET" class="row g-3">
-            <div class="col-md-5">
+            <div class="col-md-3">
                 <label for="search" class="form-label">Recherche</label>
                 <input type="text" 
                        class="form-control" 
@@ -123,6 +123,24 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                     </option>
                     <option value="Demandeur" <?php echo ($filters['role'] === 'Demandeur') ? 'selected' : ''; ?>>
                         Membre
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="service_id" class="form-label">Service</label>
+                <select class="form-select" id="service_id" name="service_id">
+                    <option value="">Selectionez une besoin</option>
+                    <option value="1" <?php echo ($filters['service_id'] === '1') ? 'selected' : ''; ?>>
+                        Matériel
+                    </option>
+                    <option value="2" <?php echo ($filters['service_id'] === '2') ? 'selected' : ''; ?>>
+                        Logiciel
+                    </option>
+                    <option value="3" <?php echo ($filters['service_id'] === '3') ? 'selected' : ''; ?>>
+                        Service
+                    </option>
+                    <option value="4" <?php echo ($filters['service_id'] === '4') ? 'selected' : ''; ?>>
+                        Autre
                     </option>
                 </select>
             </div>

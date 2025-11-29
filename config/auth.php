@@ -42,6 +42,7 @@ class Auth {
             $_SESSION['user_nom'] = $user['nom'];
             $_SESSION['user_email'] = $user['email'];
             $_SESSION['user_role'] = $user['role'];
+            $_SESSION['user_service'] = $user['service_id'];
             
             return true;
         }
