@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 29, 2025 at 02:42 PM
+-- Generation Time: Nov 29, 2025 at 05:20 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -73,10 +73,10 @@ INSERT INTO `demandes` (`id`, `user_id`, `type_besoin_id`, `description`, `urgen
 (2, 2, 1, 'Achat de fournitures de bureau (papier, stylos).', 'Moyenne', 'En attente', '2025-06-30 14:41:54'),
 (3, 2, 2, 'Accès au serveur de production.', 'Moyenne', '', '2024-06-22 13:09:00'),
 (4, 2, 4, 'Formation en sécurité informatique pour l\'équipe.', 'Faible', '', '2024-03-09 09:00:50'),
-(5, 2, 4, 'Besoin d\'un nouvel ordinateur portable pour le développement.', 'Moyenne', 'En attente', '2025-02-26 01:54:49'),
+(5, 2, 4, 'Besoin d\'un nouvel ordinateur portable pour le développement.', 'Moyenne', 'Traitée', '2025-02-26 01:54:49'),
 (6, 3, 2, 'Renouvellement de la licence Adobe Creative Cloud.', 'Faible', 'En cours de validation', '2023-01-20 09:28:18'),
 (7, 3, 3, 'Remplacement de la chaise de bureau cassée.', 'Urgente', 'En attente', '2024-11-16 03:36:45'),
-(8, 4, 4, 'Renouvellement de la licence Adobe Creative Cloud.', 'Faible', 'En attente', '2025-02-11 18:49:57'),
+(8, 4, 4, 'Renouvellement de la licence Adobe Creative Cloud.', 'Faible', 'Traitée', '2025-02-11 18:49:57'),
 (9, 4, 4, 'Remplacement de la chaise de bureau cassée.', 'Faible', '', '2023-02-21 10:49:22'),
 (10, 5, 3, 'Besoin d\'un écran supplémentaire 27 pouces.', 'Faible', '', '2024-10-12 11:12:24'),
 (11, 6, 1, 'Accès au serveur de production.', 'Faible', '', '2025-01-30 18:03:03'),
@@ -97,7 +97,7 @@ INSERT INTO `demandes` (`id`, `user_id`, `type_besoin_id`, `description`, `urgen
 (26, 12, 3, 'Besoin d\'un écran supplémentaire 27 pouces.', 'Moyenne', 'Traitée', '2024-08-22 10:07:12'),
 (27, 12, 1, 'Remplacement de la chaise de bureau cassée.', 'Faible', 'En attente', '2024-09-03 17:26:28'),
 (28, 12, 2, 'Formation en sécurité informatique pour l\'équipe.', 'Urgente', 'Traitée', '2024-03-16 12:39:03'),
-(29, 12, 4, 'Logiciel de gestion de projet (Jira).', 'Faible', 'En cours de validation', '2025-01-14 19:31:28'),
+(29, 12, 4, 'Logiciel de gestion de projet (Jira).', 'Faible', 'Traitée', '2025-01-14 19:31:28'),
 (30, 13, 4, 'Besoin d\'un écran supplémentaire 27 pouces.', 'Moyenne', 'En attente', '2023-09-30 06:45:22'),
 (31, 13, 3, 'Besoin d\'un écran supplémentaire 27 pouces.', 'Urgente', 'En attente', '2025-05-10 19:26:10'),
 (32, 13, 4, 'Installation de la fibre optique.', 'Urgente', 'En cours de validation', '2024-03-21 11:47:07'),
@@ -118,10 +118,12 @@ INSERT INTO `demandes` (`id`, `user_id`, `type_besoin_id`, `description`, `urgen
 (47, 19, 1, 'Achat de fournitures de bureau (papier, stylos).', 'Moyenne', '', '2025-02-16 14:55:11'),
 (48, 19, 3, 'Accès au serveur de production.', 'Moyenne', 'Traitée', '2024-07-06 20:09:21'),
 (49, 19, 4, 'Logiciel de gestion de projet (Jira).', 'Urgente', 'En attente', '2025-03-16 13:37:38'),
-(50, 20, 4, 'Logiciel de gestion de projet (Jira).', 'Faible', 'En cours de validation', '2023-08-23 05:15:25'),
+(50, 20, 4, 'Logiciel de gestion de projet (Jira).', 'Faible', 'Traitée', '2023-08-23 05:15:25'),
 (51, 20, 3, 'Formation en sécurité informatique pour l\'équipe.', 'Moyenne', 'En attente', '2024-11-01 19:46:16'),
 (52, 20, 3, 'Besoin d\'un écran supplémentaire 27 pouces.', 'Moyenne', 'En attente', '2024-02-24 07:53:30'),
-(53, 20, 4, 'Formation en sécurité informatique pour l\'équipe.', 'Moyenne', 'Traitée', '2023-02-13 16:19:27');
+(53, 20, 4, 'Formation en sécurité informatique pour l\'équipe.', 'Moyenne', 'Traitée', '2023-02-13 16:19:27'),
+(55, 4, 4, 'HAHHAHAHA', 'Urgente', 'Traitée', '2025-11-29 15:10:26'),
+(56, 4, 4, 'HHAHAH', 'Faible', 'Traitée', '2025-11-29 15:24:26');
 
 -- --------------------------------------------------------
 
@@ -133,8 +135,24 @@ CREATE TABLE `notifications` (
   `id` int(11) NOT NULL,
   `service_id` int(11) NOT NULL,
   `is_just_for_admin` tinyint(1) NOT NULL DEFAULT 0,
-  `seen` tinyint(1) NOT NULL DEFAULT 0
+  `seen` tinyint(1) NOT NULL DEFAULT 0,
+  `demande_id` int(11) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `notifications`
+--
+
+INSERT INTO `notifications` (`id`, `service_id`, `is_just_for_admin`, `seen`, `demande_id`, `created_at`) VALUES
+(1, 4, 0, 0, 56, '2025-11-29 15:30:24'),
+(2, 1, 1, 0, 56, '2025-11-29 16:07:02'),
+(3, 1, 1, 0, 56, '2025-11-29 16:07:17'),
+(4, 1, 1, 0, 55, '2025-11-29 16:07:22'),
+(5, 1, 1, 0, 5, '2025-11-29 16:07:52'),
+(6, 1, 1, 0, 29, '2025-11-29 16:08:03'),
+(7, 1, 1, 0, 50, '2025-11-29 16:08:37'),
+(8, 1, 1, 1, 8, '2025-11-29 16:09:56');
 
 -- --------------------------------------------------------
 
@@ -202,9 +220,9 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `nom`, `email`, `password`, `role`, `created_at`, `service_id`) VALUES
 (1, 'Admin System', 'admin@admin.com', '12345', 'Administrateur', '2025-11-22 10:46:13', 2),
-(2, 'Chef Validateur', 'chef@company.com', '12345', 'Validateur', '2025-11-22 10:46:13', 3),
+(2, 'Chef Validateur', 'chef@company.com', '12345', 'Validateur', '2025-11-22 10:46:13', 4),
 (3, 'Frank Idrissi', 'frank.idrissi@solutions.net', '12345', 'Demandeur', '2025-11-22 10:46:13', 1),
-(4, 'Leila Smith', 'leila.smith@tech.org', '12345', 'Demandeur', '2025-11-22 10:46:13', 1),
+(4, 'Leila Smith', 'leila.smith@tech.org', '12345', 'Demandeur', '2025-11-22 10:46:13', 4),
 (5, 'Jack Miller', 'jack.miller@solutions.net', '12345', 'Demandeur', '2025-11-22 10:46:13', 1),
 (6, 'Henry Robinson', 'henry.robinson@solutions.net', '12345', 'Demandeur', '2025-11-22 10:46:13', 1),
 (7, 'Omar Brown', 'omar.brown@company.com', '12345', 'Validateur', '2025-11-22 10:46:13', 1),
@@ -213,7 +231,7 @@ INSERT INTO `users` (`id`, `nom`, `email`, `password`, `role`, `created_at`, `se
 (10, 'Karim Cohen', 'karim.cohen@company.com', '12345', 'Demandeur', '2025-11-22 10:46:13', 1),
 (11, 'Nadia Thomas', 'nadia.thomas@company.com', '12345', 'Validateur', '2025-11-22 10:46:13', 1),
 (12, 'Alice Martinez', 'alice.martinez@company.com', '12345', 'Validateur', '2025-11-22 10:46:13', 1),
-(13, 'Leila Cohen', 'leila.cohen@tech.org', '12345', 'Demandeur', '2025-11-22 10:46:13', 1),
+(13, 'Leila Cohen', 'leila.cohen@tech.org', '12345', 'Demandeur', '2025-11-22 10:46:13', 4),
 (14, 'Alice Miller', 'alice.miller@company.com', '12345', 'Demandeur', '2025-11-22 10:46:13', 1),
 (15, 'Alice Benali', 'alice.benali@company.com', '12345', 'Demandeur', '2025-11-22 10:46:13', 1),
 (16, 'Grace Thomas', 'grace.thomas@company.com', '12345', 'Validateur', '2025-11-22 10:46:13', 1),
@@ -275,7 +293,9 @@ INSERT INTO `validation` (`id`, `demande_id`, `validateur_id`, `commentaire`, `s
 (30, 48, 2, 'En attente de plus d\'informations.', 'Validée', '2025-07-30 07:36:07'),
 (31, 53, 2, 'Rejeté, voir avec le service IT avant.', 'Validée', '2024-09-15 15:45:36'),
 (46, 31, 2, 'i accept from Rachid Jedata', 'Validée', '2025-11-28 12:00:11'),
-(47, 49, 2, 'Hekkoo', 'Rejetée', '2025-11-28 12:00:30');
+(47, 49, 2, 'Hekkoo', 'Rejetée', '2025-11-28 12:00:30'),
+(48, 56, 1, '{$action} depuis {$_SESSION[\'user_nom\']}', 'Validée', '2025-11-29 17:18:37'),
+(49, 55, 1, '{$action} depuis {$_SESSION[\'user_nom\']}', 'Validée', '2025-11-29 17:18:54');
 
 --
 -- Indexes for dumped tables
@@ -301,7 +321,8 @@ ALTER TABLE `demandes`
 --
 ALTER TABLE `notifications`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `service_id` (`service_id`);
+  ADD KEY `service_id` (`service_id`),
+  ADD KEY `demande_id` (`demande_id`);
 
 --
 -- Indexes for table `pieces_jointes`
@@ -346,13 +367,13 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `demandes`
 --
 ALTER TABLE `demandes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `pieces_jointes`
@@ -376,7 +397,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `validation`
 --
 ALTER TABLE `validation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- Constraints for dumped tables
@@ -393,7 +414,8 @@ ALTER TABLE `demandes`
 -- Constraints for table `notifications`
 --
 ALTER TABLE `notifications`
-  ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`service_id`) REFERENCES `types_besoins` (`id`);
+  ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`service_id`) REFERENCES `types_besoins` (`id`),
+  ADD CONSTRAINT `notifications_ibfk_2` FOREIGN KEY (`demande_id`) REFERENCES `demandes` (`id`);
 
 --
 -- Constraints for table `pieces_jointes`
