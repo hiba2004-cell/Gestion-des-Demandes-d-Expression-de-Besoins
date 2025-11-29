@@ -13,7 +13,7 @@ $user_id = $_SESSION['user_id'];
     <h3>Gestion de vos demandes</h3>
 
     <div class="mb-4">
-<<<<<<< HEAD
+
         <a href="create_demande.php" class="btn btn-primary me-2">
             <i class="bi bi-plus-circle me-1"></i> Créer une demande
         </a>
@@ -26,13 +26,8 @@ $user_id = $_SESSION['user_id'];
         <a href="logout.php" class="btn btn-danger">
             <i class="bi bi-box-arrow-right me-1"></i> Déconnexion
         </a>
-
-=======
-        <a href="create_demande.php" class="btn btn-primary">Créer une demande</a>
-        <a href="historique_demande.php" class="btn btn-secondary">Historique des demandes</a>
-        <a href="suivi_statut.php" class="btn btn-info">Suivi des statuts</a>
         <!-- <a href="logout.php" class="btn btn-danger">Déconnexion</a> -->
->>>>>>> 32415037dae535ea0e9fc26318c6007020da2ac5
+
     </div>
 
     <h4>Vos demandes récentes</h4>
