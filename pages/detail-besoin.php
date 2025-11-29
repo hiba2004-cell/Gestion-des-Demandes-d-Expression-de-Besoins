@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $editMode) {
 
 $action = $_GET['action'] ?? '';
 if($action == 'valider' || $action == 'rejeter'){
-    $_SESSION['action_result'] = processBesoinAction($id, $_SESSION['user_id'],'{$action} depuis {$_SESSION[\'user_nom\']}',$action);
+    $_SESSION['action_result'] = processBesoinAction($id, $_SESSION['user_id'],"{$action} depuis {$_SESSION['user_nom']}",$action);
     redirect("detail-besoin.php?id=$id");
 }
 
