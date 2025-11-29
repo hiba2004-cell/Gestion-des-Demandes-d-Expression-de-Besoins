@@ -88,7 +88,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                        id="search" 
                        name="search" 
                        value="<?php echo htmlspecialchars($filters['search']); ?>"
-                       placeholder="Titre, description, demandeur...">
+                       placeholder="description, demandeur...">
             </div>
             
             <div class="col-md-2">
@@ -130,13 +130,22 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
             </div>
             
             <div class="col-md-3">
-                <label for="categorie" class="form-label">Catégorie</label>
-                <input type="text" 
-                       class="form-control" 
-                       id="categorie" 
-                       name="categorie" 
-                       value="<?php echo htmlspecialchars($filters['categorie']); ?>"
-                       placeholder="Ex: Développement">
+                <label for="categorie" class="form-label">Type De Besoin</label>
+                 <select class="form-select" id="categorie" name="categorie">
+                    <option value="">Tous</option>
+                    <option value="1" <?php echo ($filters['categorie'] === '1') ? 'selected' : ''; ?>>
+                        Matériel
+                    </option>
+                    <option value="2" <?php echo ($filters['categorie'] === '2') ? 'selected' : ''; ?>>
+                        Logiciel
+                    </option>
+                    <option value="3" <?php echo ($filters['categorie'] === '3') ? 'selected' : ''; ?>>
+                        Service
+                    </option>
+                    <option value="3" <?php echo ($filters['categorie'] === '3') ? 'selected' : ''; ?>>
+                        Autre
+                    </option>
+                </select>
             </div>
             
             <div class="col-md-2">

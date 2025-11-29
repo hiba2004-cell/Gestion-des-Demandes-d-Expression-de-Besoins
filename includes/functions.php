@@ -262,22 +262,22 @@ function getBesoins($filters = [], $limit = 10, $offset = 0) {
     
     // Construction des filtres
     if (!empty($filters['priorite'])) {
-        $where[] = "priorite = :priorite";
+        $where[] = "urgence = :priorite";
         $params[':priorite'] = $filters['priorite'];
     }
     
     if (!empty($filters['statut'])) {
-        $where[] = "statut = :statut";
+        $where[] = "statut_final = :statut";
         $params[':statut'] = $filters['statut'];
     }
     
     if (!empty($filters['categorie'])) {
-        $where[] = "categorie LIKE :categorie";
-        $params[':categorie'] = '%' . $filters['categorie'] . '%';
+        $where[] = "type_besoin_id LIKE :categorie";
+        $params[':categorie'] = $filters['categorie'];
     }
     
     if (!empty($filters['search'])) {
-        $where[] = "(titre LIKE :search OR description LIKE :search OR demandeur_nom LIKE :search)";
+        $where[] = "(description LIKE :search OR demandeur_nom LIKE :search OR demandeur_email LIKE :search)";
         $params[':search'] = '%' . $filters['search'] . '%';
     }
     
