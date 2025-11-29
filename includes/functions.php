@@ -198,7 +198,8 @@ function getUsers(array $filters, int $limit, int $offset): array {
                        stripos($user['nom'], $filters['search']) !== false || 
                        stripos($user['email'], $filters['search']) !== false;
         $matchRole = empty($filters['role']) || $user['role'] === $filters['role'];
-        return $matchSearch && $matchRole;
+        $matchService = empty($filters['service_id']) || $user['service_id'] == $filters['service_id'];
+        return $matchSearch && $matchRole && $matchService;
     });
 
     $total = count($filteredUsers);
