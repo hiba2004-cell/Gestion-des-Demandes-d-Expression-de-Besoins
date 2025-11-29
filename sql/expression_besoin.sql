@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 29, 2025 at 12:04 PM
+-- Generation Time: Nov 29, 2025 at 02:42 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -126,6 +126,19 @@ INSERT INTO `demandes` (`id`, `user_id`, `type_besoin_id`, `description`, `urgen
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `notifications`
+--
+
+CREATE TABLE `notifications` (
+  `id` int(11) NOT NULL,
+  `service_id` int(11) NOT NULL,
+  `is_just_for_admin` tinyint(1) NOT NULL DEFAULT 0,
+  `seen` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `pieces_jointes`
 --
 
@@ -188,8 +201,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `nom`, `email`, `password`, `role`, `created_at`, `service_id`) VALUES
-(1, 'Admin System', 'admin@admin.com', '12345', 'Administrateur', '2025-11-22 10:46:13', 1),
-(2, 'Chef Validateur', 'chef@company.com', '12345', 'Validateur', '2025-11-22 10:46:13', 1),
+(1, 'Admin System', 'admin@admin.com', '12345', 'Administrateur', '2025-11-22 10:46:13', 2),
+(2, 'Chef Validateur', 'chef@company.com', '12345', 'Validateur', '2025-11-22 10:46:13', 3),
 (3, 'Frank Idrissi', 'frank.idrissi@solutions.net', '12345', 'Demandeur', '2025-11-22 10:46:13', 1),
 (4, 'Leila Smith', 'leila.smith@tech.org', '12345', 'Demandeur', '2025-11-22 10:46:13', 1),
 (5, 'Jack Miller', 'jack.miller@solutions.net', '12345', 'Demandeur', '2025-11-22 10:46:13', 1),
@@ -207,7 +220,8 @@ INSERT INTO `users` (`id`, `nom`, `email`, `password`, `role`, `created_at`, `se
 (17, 'Charlie Benali', 'charlie.benali@tech.org', '12345', 'Demandeur', '2025-11-22 10:46:13', 1),
 (18, 'Ivy Martinez', 'ivy.martinez@solutions.net', '12345', 'Demandeur', '2025-11-22 10:46:13', 1),
 (19, 'Grace Idrissi', 'grace.idrissi@tech.org', '12345', 'Validateur', '2025-11-22 10:46:13', 1),
-(20, 'Emma Benali', 'emma.benali@tech.org', '12345', 'Demandeur', '2025-11-22 10:46:13', 1);
+(20, 'Emma Benali', 'emma.benali@tech.org', '12345', 'Demandeur', '2025-11-22 10:46:13', 1),
+(22, 'Jedata', 'admin@jedatad.com', '12345', 'Demandeur', '2025-11-29 11:26:58', 1);
 
 -- --------------------------------------------------------
 
@@ -283,6 +297,13 @@ ALTER TABLE `demandes`
   ADD KEY `type_besoin_id` (`type_besoin_id`);
 
 --
+-- Indexes for table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `service_id` (`service_id`);
+
+--
 -- Indexes for table `pieces_jointes`
 --
 ALTER TABLE `pieces_jointes`
@@ -328,6 +349,12 @@ ALTER TABLE `demandes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
+-- AUTO_INCREMENT for table `notifications`
+--
+ALTER TABLE `notifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `pieces_jointes`
 --
 ALTER TABLE `pieces_jointes`
@@ -343,7 +370,7 @@ ALTER TABLE `types_besoins`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `validation`
@@ -361,6 +388,12 @@ ALTER TABLE `validation`
 ALTER TABLE `demandes`
   ADD CONSTRAINT `demandes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `demandes_ibfk_2` FOREIGN KEY (`type_besoin_id`) REFERENCES `types_besoins` (`id`);
+
+--
+-- Constraints for table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`service_id`) REFERENCES `types_besoins` (`id`);
 
 --
 -- Constraints for table `pieces_jointes`
