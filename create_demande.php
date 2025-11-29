@@ -36,53 +36,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     // Validation des champs
-    $titre = sanitize($_POST['titre'] ?? '');
     $description = sanitize($_POST['description'] ?? '');
     $priorite = sanitize($_POST['priorite'] ?? '');
     $categorie = sanitize($_POST['categorie'] ?? '');
 
-    $demandeur_nom = sanitize($_SESSION['user_nom'] ?? '');
-    $demandeur_email = sanitize($_SESSION['user_email'] ?? '');
-
-    $cout_estime = sanitize($_POST['cout_estime'] ?? '');
-    $delai_souhaite = sanitize($_POST['delai_souhaite'] ?? '');
-    
     // Validation des champs obligatoires
-    if (empty($titre)) $errors[] = "Le titre est obligatoire.";
     if (empty($description)) $errors[] = "La description est obligatoire.";
     if (empty($priorite)) $errors[] = "La priorité est obligatoire.";
     if (empty($categorie)) $errors[] = "La catégorie est obligatoire.";
-    
-    if (empty($demandeur_nom)) $errors[] = "Le nom du demandeur est obligatoire.";
-    if (empty($demandeur_email)) $errors[] = "L'email du demandeur est obligatoire.";
-    
-    // Validation de l'email
-    if (!empty($demandeur_email) && !validateEmail($demandeur_email)) {
-        $errors[] = "L'adresse email n'est pas valide.";
-    }
-    
-    // Validation de la date
-    if (!empty($delai_souhaite) && !validateDate($delai_souhaite)) {
-        $errors[] = "La date souhaitée n'est pas valide.";
-    }
-    
-    // Validation du coût
-    if (!empty($cout_estime) && (!is_numeric($cout_estime) || $cout_estime < 0)) {
-        $errors[] = "Le coût estimé doit être un nombre positif.";
-    }
     
     // Si pas d'erreurs, enregistrer
     if (empty($errors)) {
         try {
             $data = [
-                'titre' => $titre,
+                'demandeur_id' => $user_id,
+                'categorie' => $categorie,
                 'description' => $description,
                 'priorite' => $priorite,
-                'categorie' => $categorie,
-                'demandeur_nom' => $demandeur_nom,
-                'demandeur_email' => $demandeur_email,
-                'cout_estime' => $cout_estime,
-                'delai_souhaite' => $delai_souhaite
             ];
             
             $besoin_id = createBesoin($data);
@@ -192,11 +162,6 @@ $csrfToken = generateCSRFToken();
 
     <form action="" method="POST" novalidate enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
-
-        <div class="mb-3">
-            <label for="titre" class="form-label">Titre</label>
-            <input name="titre" id="titre" class="form-control" required />
-        </div>
 
         <div class="mb-3">
             <label for="categorie" class="form-label">Type de besoin</label>

@@ -13,7 +13,6 @@ $user_id = $_SESSION['user_id'];
     <h3>Gestion de vos demandes</h3>
 
     <div class="mb-4">
-
         <a href="create_demande.php" class="btn btn-primary me-2">
             <i class="bi bi-plus-circle me-1"></i> Créer une demande
         </a>
