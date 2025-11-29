@@ -539,6 +539,11 @@ function updateBesoin($id, $data) {
  */
 function deleteBesoin($id) {
     $conn = getConnection();
+   
+    $stmt_notification = $conn->prepare("DELETE FROM notifications WHERE demande_id = :id");
+    $stmt_notification->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt_notification->execute();
+
     $stmt = $conn->prepare("DELETE FROM demandes WHERE id = :id");
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     return $stmt->execute();
