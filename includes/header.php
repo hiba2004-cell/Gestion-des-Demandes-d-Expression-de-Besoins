@@ -274,9 +274,9 @@ $unreadCount = getUnreadNotificationCount($_SESSION['user_service'] ?? 0,
 
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/besoins/pages/liste-besoins.php?statut=En+attente">
+                            <a class="nav-link" href="/besoins/pages/liste-besoins.php?statut=Traitée">
                                 <i class="bi bi-circle-fill text-primary me-2" style="font-size: 0.5rem;"></i>
-                                Nouveaux Besoins
+                                Besoins à Valider
                             </a>
                         </li>
                         <li class="nav-item">

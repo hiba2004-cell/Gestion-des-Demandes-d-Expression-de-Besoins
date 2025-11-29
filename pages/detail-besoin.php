@@ -338,11 +338,25 @@ if ($editMode) {
                         Informations Projet
                     </h6>
                     <div class="row">
-                        <div class="col-md-3">
-                            <p><strong>Date de Création :</strong><br>
+                        <div class="col-md-6">
+                            <p><strong>Date de Création :</strong>
                                 <?php echo formatDateTime($besoin['date_creation']); ?>
                             </p>
                         </div>
+                        <?php if($besoin['statut_final'] === 'Validée' || $besoin['statut_final'] === 'Rejetée'):?>
+                            <div class="col-md-6">
+                                <p><strong>Date de <?php echo $besoin['statut_final'] === 'Validée' ? 'Validation' : 'Rejetée'; ?> :</strong>
+                                    <?php echo formatDateTime($besoin['date_validation']); ?>
+                                </p>
+                            </div>
+                        <?php endif; ?>
+                        <?php if($besoin['statut_final'] === 'Validée' || $besoin['statut_final'] === 'Rejetée'):?>
+                            <div class="col-md-6">
+                                <p><strong>Raison de <?php echo $besoin['statut_final'] === 'Validée' ? 'Validation' : 'Rejetée'; ?> :</strong>
+                                    <?php echo $besoin['commentaire']; ?>
+                                </p>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
 

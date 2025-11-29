@@ -354,7 +354,7 @@ function getBesoins($filters = [], $limit = 10, $offset = 0) {
  */
 function getBesoinById($id) {
     $conn = getConnection();
-    $stmt = $conn->prepare("SELECT d.*, t.libelle AS type_besoin,
+    $stmt = $conn->prepare("SELECT d.*, t.libelle AS type_besoin,v.date_validation,v.commentaire,
             u.nom as demandeur_nom,
             u.email as demandeur_email,
      CASE 
