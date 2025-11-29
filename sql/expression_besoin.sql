@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 29, 2025 at 05:54 PM
+-- Generation Time: Nov 29, 2025 at 07:42 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,33 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `expression_besoin`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `categories`
---
-
-CREATE TABLE `categories` (
-  `id` int(11) NOT NULL,
-  `nom` varchar(100) NOT NULL,
-  `description` text DEFAULT NULL,
-  `couleur` varchar(7) DEFAULT '#007bff',
-  `date_creation` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `categories`
---
-
-INSERT INTO `categories` (`id`, `nom`, `description`, `couleur`, `date_creation`) VALUES
-(1, 'Développement', 'Projets de développement logiciel', '#007bff', '2025-11-22 14:03:49'),
-(2, 'Web Design', 'Projets de conception web et UX/UI', '#28a745', '2025-11-22 14:03:49'),
-(3, 'ERP', 'Systèmes de gestion d\'entreprise', '#dc3545', '2025-11-22 14:03:49'),
-(4, 'Formation', 'Projets de formation et développement des compétences', '#ffc107', '2025-11-22 14:03:49'),
-(5, 'Infrastructure', 'Projets d\'infrastructure IT', '#6c757d', '2025-11-22 14:03:49'),
-(6, 'Marketing', 'Projets marketing et communication', '#e83e8c', '2025-11-22 14:03:49'),
-(7, 'Support', 'Support technique et maintenance', '#fd7e14', '2025-11-22 14:03:49');
 
 -- --------------------------------------------------------
 
@@ -302,13 +275,6 @@ INSERT INTO `validation` (`id`, `demande_id`, `validateur_id`, `commentaire`, `s
 --
 
 --
--- Indexes for table `categories`
---
-ALTER TABLE `categories`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `nom` (`nom`);
-
---
 -- Indexes for table `demandes`
 --
 ALTER TABLE `demandes`
@@ -356,12 +322,6 @@ ALTER TABLE `validation`
 --
 -- AUTO_INCREMENT for dumped tables
 --
-
---
--- AUTO_INCREMENT for table `categories`
---
-ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `demandes`
