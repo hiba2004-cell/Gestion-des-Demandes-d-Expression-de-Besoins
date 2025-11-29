@@ -95,16 +95,13 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                 <label for="priorite" class="form-label">Priorité</label>
                 <select class="form-select" id="priorite" name="priorite">
                     <option value="">Toutes</option>
-                    <option value="critique" <?php echo ($filters['priorite'] === 'critique') ? 'selected' : ''; ?>>
-                        Critique
+                    <option value="Urgente" <?php echo ($filters['priorite'] === 'Urgente') ? 'selected' : ''; ?>>
+                        Urgente
                     </option>
-                    <option value="haute" <?php echo ($filters['priorite'] === 'haute') ? 'selected' : ''; ?>>
-                        Haute
-                    </option>
-                    <option value="moyenne" <?php echo ($filters['priorite'] === 'moyenne') ? 'selected' : ''; ?>>
+                    <option value="Moyenne" <?php echo ($filters['priorite'] === 'Moyenne') ? 'selected' : ''; ?>>
                         Moyenne
                     </option>
-                    <option value="faible" <?php echo ($filters['priorite'] === 'faible') ? 'selected' : ''; ?>>
+                    <option value="Faible" <?php echo ($filters['priorite'] === 'Faible') ? 'selected' : ''; ?>>
                         Faible
                     </option>
                 </select>
@@ -114,18 +111,23 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                 <label for="statut" class="form-label">Statut</label>
                 <select class="form-select" id="statut" name="statut">
                     <option value="">Tous</option>
-                    <option value="nouveau" <?php echo ($filters['statut'] === 'nouveau') ? 'selected' : ''; ?>>
-                        Nouveau
+                    <option value="En attente" <?php echo ($filters['statut'] === 'En attente') ? 'selected' : ''; ?>>
+                        En attente
                     </option>
-                    <option value="en_cours" <?php echo ($filters['statut'] === 'en_cours') ? 'selected' : ''; ?>>
-                        En cours
+                    <option value="En cours de validation" <?php echo ($filters['statut'] === 'En cours de validation') ? 'selected' : ''; ?>>
+                        En cours de validation
                     </option>
-                    <option value="termine" <?php echo ($filters['statut'] === 'termine') ? 'selected' : ''; ?>>
-                        Terminé
+                    <option value="Traitée" <?php echo ($filters['statut'] === 'Traitée') ? 'selected' : ''; ?>>
+                        Traitée
                     </option>
-                    <option value="rejete" <?php echo ($filters['statut'] === 'rejete') ? 'selected' : ''; ?>>
-                        Rejeté
+                    
+                    <option value="Validée" <?php echo ($filters['statut'] === 'Validée') ? 'selected' : ''; ?>>
+                        Validée
                     </option>
+                    <option value="Rejetée" <?php echo ($filters['statut'] === 'Rejetée') ? 'selected' : ''; ?>>
+                        Rejetée
+                    </option>
+                    
                 </select>
             </div>
             

@@ -261,41 +261,60 @@ function getBesoins($filters = [], $limit = 10, $offset = 0) {
     $where = [];
     $params = [];
     
-    // Construction des filtres
+    // PRIORITE
     if (!empty($filters['priorite'])) {
-        $where[] = "urgence = :priorite";
-        $params[':priorite'] = $filters['priorite'];
+        $where[] = "d.urgence = :priorite";
+        $params['priorite'] = $filters['priorite'];
     }
-    
+
+    // STATUT (need to filter using CASE expression)
     if (!empty($filters['statut'])) {
-        $where[] = "statut_final = :statut";
-        $params[':statut'] = $filters['statut'];
+        $where[] = "(
+            CASE 
+                WHEN v.demande_id IS NULL THEN d.statut 
+                ELSE v.statut_validation 
+            END
+        ) = :statut";
+        $params['statut'] = $filters['statut'];
     }
-    
+
+    // CATEGORIE (LIKE)
     if (!empty($filters['categorie'])) {
-        $where[] = "type_besoin_id LIKE :categorie";
-        $params[':categorie'] = $filters['categorie'];
+        $where[] = "d.type_besoin_id LIKE :categorie";
+        $params['categorie'] = '%' . $filters['categorie'] . '%';
     }
-    
+
+    // SEARCH
     if (!empty($filters['search'])) {
-        $where[] = "(description LIKE :search OR demandeur_nom LIKE :search OR demandeur_email LIKE :search)";
-        $params[':search'] = '%' . $filters['search'] . '%';
+        $where[] = "(d.description LIKE :search 
+                    OR u.nom LIKE :search 
+                    OR u.email LIKE :search)";
+        $params['search'] = '%' . $filters['search'] . '%';
     }
-    
+
     $whereClause = !empty($where) ? ' WHERE ' . implode(' AND ', $where) : '';
-    
-    // Requête pour compter le total
-    $countQuery = "SELECT COUNT(*) as total FROM demandes d" . $whereClause;
+
+    // COUNT QUERY
+    $countQuery = "
+        SELECT COUNT(*) as total
+        FROM demandes d
+        LEFT JOIN validation v ON v.demande_id = d.id
+        JOIN types_besoins t ON d.type_besoin_id = t.id
+        JOIN users u ON d.user_id = u.id
+        $whereClause
+    ";
+
     $stmt = $conn->prepare($countQuery);
     $stmt->execute($params);
     $total = (int) $stmt->fetch()['total'];
-    
-    // Requête pour récupérer les données avec jointure + CASE pour le statut
+
+    // MAIN QUERY
     $query = "
         SELECT 
-            d.*,t.libelle AS type_besoin, 
-            u.nom as demandeur_nom,
-            u.email as demandeur_email,
+            d.*,
+            t.libelle AS type_besoin, 
+            u.nom AS demandeur_nom,
+            u.email AS demandeur_email,
             CASE 
                 WHEN v.demande_id IS NULL THEN d.statut 
                 ELSE v.statut_validation 
@@ -308,19 +327,21 @@ function getBesoins($filters = [], $limit = 10, $offset = 0) {
         ORDER BY d.date_creation DESC
         LIMIT :limit OFFSET :offset
     ";
+
     $stmt = $conn->prepare($query);
-    
-    // Bind des filtres
+
+    // Bind filter params
     foreach ($params as $key => $value) {
-        $stmt->bindValue($key, $value);
+        $stmt->bindValue(':' . $key, $value);
     }
-    // Bind de limit/offset comme entiers (obligatoire avec PDO + MySQL) :contentReference[oaicite:0]{index=0}
+
+    // Bind LIMIT/OFFSET
     $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
     $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
-    
+
     $stmt->execute();
     $besoins = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
     return [
         'besoins' => $besoins,
         'total' => $total

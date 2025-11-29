@@ -257,20 +257,20 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/besoins/pages/liste-besoins.php?statut=nouveau">
+                            <a class="nav-link" href="/besoins/pages/liste-besoins.php?statut=En+attente">
                                 <i class="bi bi-circle-fill text-primary me-2" style="font-size: 0.5rem;"></i>
                                 Nouveaux Besoins
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/besoins/pages/liste-besoins.php?priorite=critique">
+                            <a class="nav-link" href="/besoins/pages/liste-besoins.php?priorite=Urgente">
                                 <i class="bi bi-exclamation-triangle-fill text-danger me-2"
                                     style="font-size: 0.8rem;"></i>
                                 Priorité Critique
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/besoins/pages/liste-besoins.php?statut=en_cours">
+                            <a class="nav-link" href="/besoins/pages/liste-besoins.php?statut=En+cours+de+validation">
                                 <i class="bi bi-clock-fill text-warning me-2" style="font-size: 0.8rem;"></i>
                                 En Cours
                             </a>
