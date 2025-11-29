@@ -69,6 +69,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $editMode) {
     }
 }
 
+$action = $_GET['action'] ?? '';
+if($action == 'valider' || $action == 'rejeter'){
+    $_SESSION['action_result'] = processBesoinAction($id, $_SESSION['user_id'],'{$action} depuis {$_SESSION[\'user_nom\']}',$action);
+    redirect("detail-besoin.php?id=$id");
+}
+
 // Générer le token CSRF pour l'édition
 if ($editMode) {
     $csrfToken = generateCSRFToken();
@@ -79,18 +85,33 @@ if ($editMode) {
     <h1 class="h2">
         <i class="bi bi-file-text me-2 text-primary"></i>
         <?php echo $editMode ? 'Modifier le Besoin' : 'Détail du Besoin'; ?>
+
+        <?php if($besoin['statut_final'] === 'Traitée'):?>
+        <div class="btn-group shadow-sm" role="group" aria-label="Actions de Demande">
+            <a href="./detail-besoin.php?id=<?php echo $besoin['id']; ?>&action=valider"
+                class="btn btn-success" title="Valider la demande">
+                <i class="bi bi-check-lg me-1"></i>
+            </a>
+            <a href="./detail-besoin.php?id=<?php echo $besoin['id']; ?>&action=rejeter"
+                class="btn btn-danger" title="Rejeter la demande">
+                <i class="bi bi-x-lg me-1"></i> 
+            </a>
+        </div>
+        <?php endif; ?>
+
     </h1>
     <div class="btn-toolbar mb-2 mb-md-0">
         <div class="btn-group me-2">
             <a href="liste-besoins.php" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left me-1"></i>
                 Retour à la Liste
-            </a>
+            </a>            
             <?php if (!$editMode): ?>
             <a href="detail-besoin.php?id=<?php echo $id; ?>&edit=1" class="btn btn-warning">
                 <i class="bi bi-pencil me-1"></i>
                 Modifier
             </a>
+
             <a href="liste-besoins.php?delete=<?php echo $id; ?>" class="btn btn-danger btn-delete">
                 <i class="bi bi-trash me-1"></i>
                 Supprimer
@@ -242,17 +263,7 @@ if ($editMode) {
                         </div>
                     </div>
 
-                    <!-- Informations projet -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h6 class="text-muted text-uppercase fw-bold mb-3">
-                                <i class="bi bi-calendar-check me-2"></i>
-                                Informations Projet
-                            </h6>
-                        </div>
-
-                       
-                    </div>
+                    
 
                     <!-- Boutons d'action -->
                     <div class="row">

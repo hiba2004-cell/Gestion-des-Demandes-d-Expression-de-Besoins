@@ -5,6 +5,10 @@ require_once __DIR__ . '/functions.php';
 
 // Variables pour la navigation
 $current_page = basename($_SERVER['PHP_SELF']);
+
+$unreadCount = getUnreadNotificationCount($_SESSION['user_service'] ?? 0,
+    isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'Administrateur' ? 1 : 0
+);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -166,7 +170,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <div class="navbar-brand flex align-items-center">
                 <!-- <i class="bi bi-clipboard-data me-2"></i> -->
                 <i id="my-toggler" class="bi bi-clipboard-data me-2" style="cursor: pointer; font-size: 1.25rem;"></i>
-                <a class="navbar-brand" href="/besoins/dashboard-admin.php">
+                <a class="navbar-brand" href="/besoins/index.php">
                     Expression du Besoin
                 </a>
             </div>
@@ -177,12 +181,25 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                     <?php if($_SESSION['user_role'] != 'Demandeur'): ?>
+                   <li class="nav-item position-relative">
+                        <a class="nav-link" href="/besoins/pages/notifications.php">
+                            <i class="bi bi-bell me-1"></i>
+                                <?php if (!empty($unreadCount) && $unreadCount > 0): ?>
+                            <span class="position-absolute -top-2 start-1 translate-middle badge rounded-pill bg-danger">
+                                <?= $unreadCount ?>
+                                <span class="visually-hidden">unread notifications</span>
+                            </span>
+                            <?php endif; ?>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+
                     <li class="nav-item">
                         <a class="nav-link" href="/besoins/index.php">
                             <i class="bi bi-house me-1"></i> Accueil
                         </a>
                     </li>
-
                     <li class="nav-item dropdown me-custom">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown">

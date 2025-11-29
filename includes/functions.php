@@ -395,8 +395,11 @@ function createBesoin(array $data) {
             'description'       => $data['description'],
             'priorite'          => $data['priorite'],
         ]);
+        $demandeId = $conn->lastInsertId();
 
-        return $conn->lastInsertId();
+       createNotification((int)$demandeId, (int)$data['categorie']);
+
+        return $demandeId;
     } catch (PDOException $e) {
         // Ici tu peux logger $e->getMessage() ou gérer l'erreur comme tu veux
         // Par exemple :
@@ -405,6 +408,81 @@ function createBesoin(array $data) {
     }
 }
 
+function createNotification(int $demandeId, int $categorie,int $is_just_for_admin=0) {
+    $conn = getConnection();
+    $notification_sql = "
+            INSERT INTO notifications (service_id, demande_id, is_just_for_admin)
+            VALUES (:service_id, :demande_id, :is_just_for_admin)";
+        $notification_stmt = $conn->prepare($notification_sql);
+        $notification_stmt->execute([
+            'service_id' => $categorie,
+            'demande_id' => $demandeId,
+            'is_just_for_admin' => $is_just_for_admin
+        ]);
+
+    if($is_just_for_admin === 1){
+        $demande_update = "
+            UPDATE demandes
+            SET statut = 'Traitée'
+            WHERE id = :demande_id";
+        $demande_stmt = $conn->prepare($demande_update);
+        $demande_stmt->execute([
+            'demande_id' => $demandeId
+        ]);
+    }
+
+}
+
+
+
+function getUnreadNotificationCount(int $serviceId,$isAdmin = 0): int {
+    $pdo = getConnection();
+
+    if($isAdmin == 1){
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM notifications WHERE is_just_for_admin = 1 AND seen = 0");
+        $stmt->execute();
+        return (int) $stmt->fetchColumn();
+    }
+
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM notifications WHERE service_id = :service_id AND seen = 0");
+    $stmt->execute([':service_id' => $serviceId]);
+
+    return (int) $stmt->fetchColumn();
+}
+
+function processBesoinAction($demande_id,$validator_id,$raison,$action):array{
+    $pdo = getConnection();
+    $new_statut = ($action === 'valider') ? 'Validée' : 'Rejetée';
+    try {
+            // Requête de mise à jour sécurisée avec la RAISON (ajout d'une colonne 'raison_validation' dans la DB)
+            $insert_query = "
+                INSERT INTO validation(demande_id, validateur_id, commentaire,statut_validation,date_validation)
+                VALUES (?, ?, ?, ?, NOW())
+            ";
+            
+            $stmt = $pdo->prepare($insert_query);
+            $executed = $stmt->execute([
+                $demande_id,        
+                $validator_id,     
+                $raison,    
+                $new_statut      
+            ]);
+
+            if ($executed && $stmt->rowCount() > 0) {
+                return [
+                    'success' => "La demande #{$demande_id} a été " . htmlspecialchars($new_statut) . " avec succès. (Raison: " . htmlspecialchars($raison) . ")",
+                    "color"   => ($action === 'valider') ? 'success' : 'danger'
+                ];
+            } else {
+                return [
+                    'error' => "L'action n'a eu aucun effet. La demande est peut-être déjà mise à jour."
+                ];
+            }
+
+        } catch (PDOException $e) {
+            return ['error' => "Erreur de base de données lors de la mise à jour: " . $e->getMessage()];
+        }
+}
 
 /**
  * Supprime un utilisateur par ID.

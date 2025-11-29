@@ -4,7 +4,10 @@
  * Système d'Expression du Besoin
  */
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 
 require_once __DIR__ . '/database.php';
 
@@ -110,7 +113,7 @@ class Auth {
     /**
      * Vérifier si l'utilisateur est administrateur
      */
-    public function isAdmin() {
+    public function isAdmin():int {
         return $this->hasRole('Administrateur');
     }
     

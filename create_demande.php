@@ -184,7 +184,7 @@ $csrfToken = generateCSRFToken();
                 <option value="">-- Sélectionnez --</option>
                 <option value="Faible">Faible</option>
                 <option value="Moyenne">Moyenne</option>
-                <option value="Haute">Haute</option>
+                <option value="Urgente">Urgente</option>
             </select>
         </div>
 

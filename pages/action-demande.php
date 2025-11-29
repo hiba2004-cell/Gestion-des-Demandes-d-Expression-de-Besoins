@@ -20,12 +20,22 @@ $demande_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 $action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_STRING);
 
 // Vérification de base des paramètres (doivent être présents pour afficher le formulaire)
-if (!$demande_id || !in_array($action, ['valider', 'rejeter'])) {
+if (!$demande_id || !in_array($action, ['valider', 'rejeter','send-to-admin'])) {
     header("Location: /besoins/dashboard-validateur.php"); 
     exit;
 }
 
-$new_statut = ($action === 'valider') ? 'Validée' : 'Rejetée';
+if($action==='send-to-admin'){
+    createNotification($demande_id,1,1);
+    $_SESSION['action_result'] = [
+        'success' => "La demande #{$demande_id} a été envoyée à l'administrateur avec succès.",
+        "color"   => 'success'
+    ];
+    // header("Location: /besoins/dashboard-validateur.php");
+    // exit;
+}
+
+
 $validator_id = $_SESSION['user_id'];
 $libelle_action = ($action === 'valider') ? 'Valider' : 'Rejeter';
 
@@ -93,36 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_action'])) {
     }
 
     if (empty($final_error_message)) {
-        try {
-            // Requête de mise à jour sécurisée avec la RAISON (ajout d'une colonne 'raison_validation' dans la DB)
-            $insert_query = "
-                INSERT INTO validation(demande_id, validateur_id, commentaire,statut_validation,date_validation)
-                VALUES (?, ?, ?, ?, NOW())
-            ";
-            
-            $stmt = $pdo->prepare($insert_query);
-            $executed = $stmt->execute([
-                $demande_id,        
-                $validator_id,     
-                $raison,    
-                $new_statut      
-            ]);
-
-            if ($executed && $stmt->rowCount() > 0) {
-                $_SESSION['action_result'] = [
-                    'success' => "La demande #{$demande_id} a été " . htmlspecialchars($new_statut) . " avec succès. (Raison: " . htmlspecialchars($raison) . ")",
-                    "color"   => ($action === 'valider') ? 'success' : 'danger'
-                ];
-            } else {
-                $_SESSION['action_result'] = [
-                    'error' => "L'action n'a eu aucun effet. La demande est peut-être déjà mise à jour."
-                ];
-            }
-
-        } catch (PDOException $e) {
-            $_SESSION['action_result'] = ['error' => "Erreur de base de données lors de la mise à jour: " . $e->getMessage()];
-        }
-        
+        $_SESSION['action_result'] = processBesoinAction($demande_id, $validator_id, $raison, $action);
         // Redirection finale après tout traitement réussi ou échoué
         header("Location: /besoins/dashboard-validateur.php");
         exit;

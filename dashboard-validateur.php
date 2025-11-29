@@ -1,6 +1,6 @@
 <?php
-require_once './config/auth.php';
-require_once './config/database.php';
+require_once './includes/header.php';
+
 
 // Vérification du rôle
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Validateur') {
@@ -50,7 +50,7 @@ $query = "
     LEFT JOIN types_besoins t ON d.type_besoin_id = t.id
     LEFT JOIN users u ON d.user_id = u.id
     LEFT JOIN validation v ON v.demande_id = d.id
-    WHERE v.demande_id IS NULL AND d.type_besoin_id = :service_id
+    WHERE v.demande_id IS NULL AND d.type_besoin_id = :service_id AND d.statut NOT IN ('Traitée')
 ";
 
 $params['service_id'] = $_SESSION['user_service'];
@@ -278,6 +278,12 @@ $_SESSION['action_result'] = null;
                                             class="btn btn-danger" title="Rejeter la demande">
                                             <i class="bi bi-x-lg"></i>
                                         </a>
+                                      <a href="./pages/action-demande.php?id=<?php echo $demande['id']; ?>&action=send-to-admin"
+                                        class="btn btn-primary" 
+                                        title="Envoyer à l'admin">
+                                        <i class="bi bi-send-fill"></i>
+                                        </a>
+
 
 
                                     </div>
