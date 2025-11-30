@@ -22,10 +22,6 @@ $user_id = $_SESSION['user_id'];
         <a href="suivi_statut.php" class="btn btn-info me-2">
             <i class="bi bi-eye me-1"></i> Suivi des statuts
         </a>
-        <a href="logout.php" class="btn btn-danger">
-            <i class="bi bi-box-arrow-right me-1"></i> Déconnexion
-        </a>
-        <!-- <a href="logout.php" class="btn btn-danger">Déconnexion</a> -->
 
     </div>
 
