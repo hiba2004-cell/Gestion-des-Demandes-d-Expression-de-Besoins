@@ -9,27 +9,23 @@ $user_id = $_SESSION['user_id'];
 ?>
 
 <div class="container mt-4">
-    <h1>Bonjour, <?php echo htmlspecialchars($_SESSION['user_nom']); ?> </h1>
-    <h3>Gestion de vos demandes</h3>
+    <h1><?php echo getSetence('greeting'); ?>, <?php echo htmlspecialchars($_SESSION['user_nom']); ?> </h1>
+    <h3><?php echo getSetence('gestion_demande'); ?></h3>
 
     <div class="mb-4">
         <a href="create_demande.php" class="btn btn-primary me-2">
-            <i class="bi bi-plus-circle me-1"></i> Créer une demande
+            <i class="bi bi-plus-circle me-1"></i> <?php echo getSetence('create_request'); ?>
         </a>
         <a href="historique_demande.php" class="btn btn-secondary me-2">
-            <i class="bi bi-clock-history me-1"></i> Historique des demandes
+            <i class="bi bi-clock-history me-1"></i> <?php echo getSetence('historique_demande'); ?>
         </a>
         <a href="suivi_statut.php" class="btn btn-info me-2">
-            <i class="bi bi-eye me-1"></i> Suivi des statuts
+            <i class="bi bi-eye me-1"></i> <?php echo getSetence('suivi_status'); ?>
         </a>
-        <a href="logout.php" class="btn btn-danger">
-            <i class="bi bi-box-arrow-right me-1"></i> Déconnexion
-        </a>
-        <!-- <a href="logout.php" class="btn btn-danger">Déconnexion</a> -->
 
     </div>
 
-    <h4>Vos demandes récentes</h4>
+    <h4><?php echo getSetence('recent_request'); ?></h4>
 
     <?php
     try {
@@ -55,7 +51,7 @@ $user_id = $_SESSION['user_id'];
         <div class="col-md-6 mb-4">
             <div class="card h-100 shadow-sm">
                 <div class="card-header">
-                    Demande #<?php echo $besoin['id']; ?> - <?= htmlspecialchars($besoin['type_besoin']) ?>
+                    <?php echo getSetence('demande'); ?> #<?php echo $besoin['id']; ?> - <?= htmlspecialchars($besoin['type_besoin']) ?>
                 </div>
                 <div class="card-body">
                     <p><strong>Description :</strong> <?= htmlspecialchars($besoin['description']) ?></p>
@@ -66,7 +62,7 @@ $user_id = $_SESSION['user_id'];
                         $stmtFiles->execute([':demande_id' => $besoin['id']]);
                         $fichiers = $stmtFiles->fetchAll(PDO::FETCH_ASSOC);
                     ?>
-                    <p><strong>Fichiers :</strong>
+                    <p><strong><?php echo getSetence('Fichiers'); ?> :</strong>
                         <?php if ($fichiers): ?>
                     <ul>
                         <?php foreach ($fichiers as $f): ?>
@@ -81,7 +77,7 @@ $user_id = $_SESSION['user_id'];
                 <div class="card-footer text-end">
                     <?php if (!in_array($besoin['statut'], ['Validée','Rejetée'])): ?>
                     <a href="modifier_demande.php?id=<?= $besoin['id'] ?>" class="btn btn-sm btn-warning">
-                        <i class="bi bi-pencil-square me-1"></i> Modifier
+                        <i class="bi bi-pencil-square me-1"></i> <?php echo getSetence('modify'); ?>
                     </a>
                     <?php else: ?>
                     <span class="text-muted">Non modifiable</span>

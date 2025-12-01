@@ -26,7 +26,7 @@ if (!$demande_id || !in_array($action, ['valider', 'rejeter','send-to-admin'])) 
 }
 
 if($action==='send-to-admin'){
-    createNotification($demande_id,1,1);
+    createNotification($demande_id,1,1,"validateur ${$_SESSION['user_nom']} a envoyé la demande #{$demande_id} à l'administrateur pour révision.");
     $_SESSION['action_result'] = [
         'success' => "La demande #{$demande_id} a été envoyée à l'administrateur avec succès.",
         "color"   => 'success'

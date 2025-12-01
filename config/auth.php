@@ -26,7 +26,6 @@ class Auth {
      */
     public function login($email, $password) {
         $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = :email");
-        // $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = :email AND actif = 1");
         $stmt->bindParam(':email', $email);
         $stmt->execute();
         
@@ -49,7 +48,6 @@ class Auth {
             
             return true;
         }
-        
         return false;
     }
     
