@@ -1,15 +1,21 @@
 
 <?php
+// CREATE TABLE Conversations (
+//     id INT PRIMARY KEY AUTO_INCREMENT,
+//     sender_id INT NOT NULL,
+//     receiver_id INT NOT NULL,
+//     message TEXT NOT NULL,
+//     sent_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+//     is_read TINYINT(1) DEFAULT 0,
+//     CONSTRAINT fk_sender FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
+//     CONSTRAINT fk_receiver FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
+// );
 include 'includes/header.php';
 ?>
-    <div class="chat-container mx-auto mt-5 p-4 border rounded" style="max-width: 600px; background-color: #f9f9f9;">
-        <h2>Chat : Admin ↔ Validateur</h2>
 
-        <!-- Sélecteur de rôle pour tester -->
-        <div class="role-selector">
-            <button id="roleAdmin" class="role-btn active" data-role="admin">Admin</button>
-            <button id="roleValidateur" class="role-btn" data-role="validateur">Validateur</button>
-        </div>
+
+    <div class="chat-container mx-auto mt-5 p-4 border rounded" style="max-width: 600px;">
+        <h2>Chat : <?php echo $_SESSION['user_role'] === "Validateur" ? "Administrateur" : "Validateur"; ?></h2>
 
         <div class="messages" id="messagesBox"></div>
 
@@ -20,7 +26,7 @@ include 'includes/header.php';
     </div>
 
     <script>
-    let currentRole = 'admin';
+    let currentRole = "<?php echo $_SESSION['user_role'] ?>";
 
     $('.role-btn').click(function() {
         currentRole = $(this).data('role');
