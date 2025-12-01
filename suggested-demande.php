@@ -1,14 +1,11 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 require_once 'config/database.php';
 
-// For demo purposes, simulate a logged-in user
-if (!isset($_SESSION['user_id'])) {
-    $_SESSION['user_id'] = 4; // Leila Smith
-    $_SESSION['user_nom'] = 'Leila Smith';
-    $_SESSION['user_email'] = 'leila.smith@tech.org';
-    $_SESSION['user_role'] = 'Demandeur';
-}
 
 $pdo = getConnection();
 
@@ -22,7 +19,7 @@ $stmt = $pdo->query("
 $materials = $stmt->fetchAll();
 
 // Fetch types for filter
-$typesStmt = $pdo->query("SELECT * FROM types_besoins ORDER BY libelle");
+$typesStmt = $pdo->query("SELECT * FROM types_besoins");
 $types = $typesStmt->fetchAll();
 ?>
 <!DOCTYPE html>
@@ -411,7 +408,7 @@ $types = $typesStmt->fetchAll();
                     $('#demandForm')[0].reset();
                 },
                 error: function(xhr, status, error) {
-                    showToast('error', 'Erreur', 'Une erreur est survenue. Veuillez réessayer.');
+                    showToast('error', 'Erreur', 'Une erreur est survenue. Veuillez réessayer. ');
                 },
                 complete: function() {
                     // Reset button state

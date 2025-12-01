@@ -150,6 +150,14 @@ $csrfToken = generateCSRFToken();
 <div class="container mt-4">
     <h2>Créer une nouvelle demande</h2>
 
+     <!-- Quick action button: Check suggestions -->
+    <div class="mb-4">
+        <a href="suggested-demande.php" class="btn btn-success btn-lg d-flex align-items-center">
+            <i class="bi bi-lightbulb me-2"></i>
+            Voir les suggestions disponibles
+        </a>
+    </div>
+
     <?php if (!empty($errors)): ?>
     <div class="alert alert-danger">
         <?php foreach ($errors as $err) echo "<p>$err</p>"; ?>

@@ -32,7 +32,7 @@ $serviceFilter = $isAdmin === 1 ? "" : " AND service_id = :uid";
 
 // Fetch notifications for the user
 $stmt = $pdo->prepare("
-    SELECT demande_id, created_at, d.*, n.id as notification_id,seen
+    SELECT demande_id, created_at, d.*, n.id as notification_id,seen, message
     FROM notifications n
     JOIN demandes d ON n.demande_id = d.id
     WHERE is_just_for_admin = :is_admin {$serviceFilter}
@@ -59,6 +59,7 @@ $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <strong><?php echo htmlspecialchars($n['message'] ?? $n['description']); ?></strong><br>
             <small class="text-muted"><?php echo htmlspecialchars($n['created_at']); ?></small><br>
 
+            <?php if ($isAdmin): ?>
             <small>
                 <a href="#" class="btn btn-sm btn-outline-primary mt-2 d-inline-flex align-items-center"
                     data-bs-toggle="modal" data-bs-target="#chatModal"
@@ -67,6 +68,7 @@ $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     Envoyer un message au validateur pour la demande #<?php echo $n['demande_id']; ?>
                 </a>
             </small>
+            <?php endif; ?>
         </div>
 
         <div>
