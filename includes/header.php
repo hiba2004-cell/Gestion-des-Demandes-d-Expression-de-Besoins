@@ -212,7 +212,7 @@ if (isset($_GET['lang'])) {
                         </a>
                     </li>
                     <li class="nav-item position-relative">
-                        <a class="nav-link" href="/besoins/pages/notifications.php">
+                        <a class="nav-link" href="/besoins/chat.php">
                            <i class="fas fa-comments"></i>
                         </a>
                     </li>
