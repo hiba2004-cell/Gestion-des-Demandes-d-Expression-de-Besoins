@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 01, 2025 at 09:26 PM
+-- Generation Time: Dec 01, 2025 at 09:31 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -135,6 +135,21 @@ INSERT INTO `demandes` (`id`, `user_id`, `type_besoin_id`, `description`, `urgen
 (59, 1, 1, 'Demande pour: Souris Ergonomique MX Master 3', 'Faible', 'En attente', '2025-12-01 21:10:46'),
 (60, 1, 1, 'Demande pour: Souris Ergonomique MX Master 3', 'Faible', 'En attente', '2025-12-01 21:12:32'),
 (61, 4, 4, 'Demande pour: Webcam 4K Logitech Brio', 'Faible', 'En attente', '2025-12-01 21:16:09');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `messages`
+--
+
+CREATE TABLE `messages` (
+  `id` int(11) NOT NULL,
+  `sender` varchar(50) NOT NULL,
+  `message` text NOT NULL,
+  `seen_by_admin` tinyint(1) DEFAULT 0,
+  `seen_by_validateur` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -330,6 +345,12 @@ ALTER TABLE `demandes`
   ADD KEY `type_besoin_id` (`type_besoin_id`);
 
 --
+-- Indexes for table `messages`
+--
+ALTER TABLE `messages`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `notifications`
 --
 ALTER TABLE `notifications`
@@ -381,6 +402,12 @@ ALTER TABLE `available_material`
 --
 ALTER TABLE `demandes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+
+--
+-- AUTO_INCREMENT for table `messages`
+--
+ALTER TABLE `messages`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `notifications`

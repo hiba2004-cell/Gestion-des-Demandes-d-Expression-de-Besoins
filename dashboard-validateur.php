@@ -1,6 +1,6 @@
 <?php
 require_once './includes/header.php';
-include 'chat_button.php';
+// include 'chat_button.php';
 
 
 // Vérification du rôle

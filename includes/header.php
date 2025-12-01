@@ -211,6 +211,11 @@ if (isset($_GET['lang'])) {
                             <?php endif; ?>
                         </a>
                     </li>
+                    <li class="nav-item position-relative">
+                        <a class="nav-link" href="/besoins/pages/notifications.php">
+                           <i class="fas fa-comments"></i>
+                        </a>
+                    </li>
                     <?php endif; ?>
 
                     
