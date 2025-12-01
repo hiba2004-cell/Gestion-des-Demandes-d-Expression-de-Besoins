@@ -509,7 +509,59 @@ function getUserById(int $id): ?array {
     return $user ?: null;
 }
 
+$allowed_languages = ['fr', 'en'];
+function setLanguage(string $lang) {
+    global $allowed_languages;
+    if (in_array($lang, $allowed_languages)) {
+        $_SESSION['lang'] = $lang;
+    }
+}
 
+$FrenchArray = [
+    'header_title' => 'Expression du Besoin',
+    'greeting' => 'Bonjour',
+    'gestion_demande'=>'Gestion de vos demandes',
+    'create_request'=>'Créer une demande',
+    'historique_demande'=>'Historique des demandes',
+    'suivi_status'=>'Suivi des statuts',
+    'recent_request'=>'Vos demandes récentes',
+    'demande'=>'Demande',
+    'Fichiers'=>'Files',
+    'modify'=>'Modifier',
+    'accueil' => 'Accueil',
+    'langue'=>'Language'
+
+];
+$EnglishArray = [
+    'header_title'      => 'Request Flow',
+    'greeting'          => 'Hello',
+    'gestion_demande'   => 'Manage your requests',
+    'create_request'    => 'Create a request',
+    'historique_demande'=> 'Request history',
+    'suivi_status'      => 'Status tracking',
+    'recent_request'    => 'Your recent requests',
+    'demande'           => 'Request',
+    'Fichiers'          => 'Files',
+    'modify'            => 'Edit',
+    'accueil'           => 'Home',
+    'langue' => 'Langue',
+];
+
+
+
+function getSetence($key){
+    global $FrenchArray, $EnglishArray, $allowed_languages;
+    $lang = $_SESSION['lang'] ?? 'fr';
+    if (!in_array($lang, $allowed_languages)) {
+        $lang = 'fr';
+    }
+
+    if ($lang === 'fr') {
+        return $FrenchArray[$key] ?? $key;
+    } else {
+        return $EnglishArray[$key] ?? $key;
+    }
+}
 
 /**
  * Met à jour un besoin

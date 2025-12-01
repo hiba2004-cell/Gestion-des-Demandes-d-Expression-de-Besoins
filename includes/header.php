@@ -9,6 +9,14 @@ $current_page = basename($_SERVER['PHP_SELF']);
 $unreadCount = getUnreadNotificationCount($_SESSION['user_service'] ?? 0,
     isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'Administrateur' ? 1 : 0
 );
+
+// call this before any output
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    // Validate $lang if needed
+    setLanguage($lang);
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -16,7 +24,7 @@ $unreadCount = getUnreadNotificationCount($_SESSION['user_service'] ?? 0,
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo isset($page_title) ? $page_title . ' - ' : ''; ?>Expression du Besoin</title>
+    <title><?php echo isset($page_title) ? $page_title . ' - ' : ''; ?><?php echo getSetence('header_title'); ?></title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -171,7 +179,7 @@ $unreadCount = getUnreadNotificationCount($_SESSION['user_service'] ?? 0,
                 <!-- <i class="bi bi-clipboard-data me-2"></i> -->
                 <i id="my-toggler" class="bi bi-clipboard-data me-2" style="cursor: pointer; font-size: 1.25rem;"></i>
                 <a class="navbar-brand" href="/besoins/index.php">
-                    Expression du Besoin
+                    <?php echo getSetence('header_title'); ?>
                 </a>
             </div>
 
@@ -197,9 +205,38 @@ $unreadCount = getUnreadNotificationCount($_SESSION['user_service'] ?? 0,
 
                     <li class="nav-item">
                         <a class="nav-link" href="/besoins/index.php">
-                            <i class="bi bi-house me-1"></i> Accueil
+                            <i class="bi bi-house me-1"></i> <?php echo getSetence('accueil'); ?>
                         </a>
                     </li>
+                   <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="changeLang" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-translate me-1"></i> <?php echo getSetence('langue'); ?>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+
+                            <!-- French -->
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="?lang=fr">
+                                    <img src="https://flagcdn.com/w20/fr.png" class="me-2" alt="FR">
+                                    Français
+                                </a>
+                            </li>
+
+                            <!-- Divider -->
+                            <li><hr class="dropdown-divider"></li>
+
+                            <!-- English -->
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="?lang=en">
+                                    <img src="https://flagcdn.com/w20/gb.png" class="me-2" alt="EN">
+                                    English
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
+
                     <li class="nav-item dropdown me-custom">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown">
