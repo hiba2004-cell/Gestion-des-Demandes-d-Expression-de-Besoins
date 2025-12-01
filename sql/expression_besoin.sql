@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 29, 2025 at 07:42 PM
+-- Generation Time: Dec 01, 2025 at 09:26 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,41 @@ SET time_zone = "+00:00";
 --
 -- Database: `expression_besoin`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `available_material`
+--
+
+CREATE TABLE `available_material` (
+  `id` int(11) NOT NULL,
+  `type_besoin_id` int(11) NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `quantite_disponible` int(11) NOT NULL DEFAULT 1,
+  `image_url` varchar(500) DEFAULT NULL,
+  `date_ajout` datetime DEFAULT current_timestamp(),
+  `statut` enum('Disponible','Indisponible','Réservé') NOT NULL DEFAULT 'Disponible'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `available_material`
+--
+
+INSERT INTO `available_material` (`id`, `type_besoin_id`, `titre`, `description`, `quantite_disponible`, `image_url`, `date_ajout`, `statut`) VALUES
+(1, 1, 'MacBook Pro 16\" M3', 'Ordinateur portable Apple MacBook Pro 16 pouces avec puce M3, 32Go RAM, 512Go SSD. Parfait pour le développement et le design.', 2, 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400', '2025-12-01 14:56:47', 'Disponible'),
+(2, 1, 'Dell UltraSharp 27\" 4K', 'Écran Dell UltraSharp 27 pouces 4K UHD avec USB-C, calibration des couleurs professionnelle.', 5, 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400', '2025-12-01 14:56:47', 'Disponible'),
+(3, 1, 'Clavier Mécanique Logitech MX', 'Clavier mécanique sans fil Logitech MX Mechanical avec rétroéclairage RGB et switches tactiles.', 10, 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400', '2025-12-01 14:56:47', 'Disponible'),
+(4, 1, 'Souris Ergonomique MX Master 3', 'Souris sans fil ergonomique Logitech MX Master 3S avec défilement ultra-rapide.', 5, 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400', '2025-12-01 14:56:47', 'Disponible'),
+(5, 2, 'Licence Adobe Creative Cloud', 'Abonnement annuel Adobe Creative Cloud incluant Photoshop, Illustrator, Premiere Pro et plus.', 15, 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400', '2025-12-01 14:56:47', 'Disponible'),
+(6, 2, 'Microsoft 365 Business', 'Suite Microsoft 365 Business Premium avec Teams, OneDrive 1To et applications Office.', 20, 'https://images.unsplash.com/photo-1633419461186-7d40a38105ec?w=400', '2025-12-01 14:56:47', 'Disponible'),
+(7, 2, 'JetBrains All Products Pack', 'Licence annuelle pour tous les IDE JetBrains: IntelliJ, WebStorm, PyCharm, etc.', 10, 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400', '2025-12-01 14:56:47', 'Disponible'),
+(8, 3, 'Chaise Ergonomique Herman Miller', 'Chaise de bureau Herman Miller Aeron avec support lombaire ajustable et accoudoirs 4D.', 4, 'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=400', '2025-12-01 14:56:47', 'Disponible'),
+(9, 3, 'Bureau Assis-Debout Électrique', 'Bureau motorisé réglable en hauteur avec plateau 160x80cm et mémorisation des positions.', 6, 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=400', '2025-12-01 14:56:47', 'Disponible'),
+(10, 4, 'Webcam 4K Logitech Brio', 'Webcam professionnelle 4K HDR avec cadrage automatique et réduction de bruit.', 11, 'https://images.unsplash.com/photo-1587826080692-f439cd0b70da?w=400', '2025-12-01 14:56:47', 'Disponible'),
+(11, 4, 'Casque Audio Sony WH-1000XM5', 'Casque sans fil à réduction de bruit active, autonomie 30h, qualité audio Hi-Res.', 7, 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400', '2025-12-01 14:56:47', 'Disponible'),
+(12, 1, 'iPad Pro 12.9\" M2', 'Tablette Apple iPad Pro 12.9 pouces avec puce M2, 256Go, WiFi + Cellular.', 2, 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400', '2025-12-01 14:56:47', 'Réservé');
 
 -- --------------------------------------------------------
 
@@ -95,8 +130,11 @@ INSERT INTO `demandes` (`id`, `user_id`, `type_besoin_id`, `description`, `urgen
 (51, 20, 3, 'Formation en sécurité informatique pour l\'équipe.', 'Moyenne', 'En attente', '2024-11-01 19:46:16'),
 (52, 20, 3, 'Besoin d\'un écran supplémentaire 27 pouces.', 'Moyenne', 'En attente', '2024-02-24 07:53:30'),
 (53, 20, 4, 'Formation en sécurité informatique pour l\'équipe.', 'Moyenne', 'Traitée', '2023-02-13 16:19:27'),
-(55, 4, 4, 'HAHHAHAHA', 'Urgente', 'Traitée', '2025-11-29 15:10:26'),
-(56, 4, 4, 'HHAHAH', 'Faible', 'Traitée', '2025-11-29 15:24:26');
+(57, 1, 1, 'Demande pour: MacBook Pro 16&quot; M3', 'Faible', 'En attente', '2025-12-01 21:08:55'),
+(58, 1, 1, 'Demande pour: Souris Ergonomique MX Master 3', 'Faible', 'En attente', '2025-12-01 21:10:31'),
+(59, 1, 1, 'Demande pour: Souris Ergonomique MX Master 3', 'Faible', 'En attente', '2025-12-01 21:10:46'),
+(60, 1, 1, 'Demande pour: Souris Ergonomique MX Master 3', 'Faible', 'En attente', '2025-12-01 21:12:32'),
+(61, 4, 4, 'Demande pour: Webcam 4K Logitech Brio', 'Faible', 'En attente', '2025-12-01 21:16:09');
 
 -- --------------------------------------------------------
 
@@ -110,22 +148,24 @@ CREATE TABLE `notifications` (
   `is_just_for_admin` tinyint(1) NOT NULL DEFAULT 0,
   `seen` tinyint(1) NOT NULL DEFAULT 0,
   `demande_id` int(11) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `message` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `notifications`
 --
 
-INSERT INTO `notifications` (`id`, `service_id`, `is_just_for_admin`, `seen`, `demande_id`, `created_at`) VALUES
-(1, 4, 0, 0, 56, '2025-11-29 15:30:24'),
-(2, 1, 1, 0, 56, '2025-11-29 16:07:02'),
-(3, 1, 1, 0, 56, '2025-11-29 16:07:17'),
-(4, 1, 1, 0, 55, '2025-11-29 16:07:22'),
-(5, 1, 1, 0, 5, '2025-11-29 16:07:52'),
-(6, 1, 1, 0, 29, '2025-11-29 16:08:03'),
-(7, 1, 1, 1, 50, '2025-11-29 16:08:37'),
-(8, 1, 1, 1, 8, '2025-11-29 16:09:56');
+INSERT INTO `notifications` (`id`, `service_id`, `is_just_for_admin`, `seen`, `demande_id`, `created_at`, `message`) VALUES
+(5, 1, 1, 0, 5, '2025-11-29 16:07:52', NULL),
+(6, 1, 1, 0, 29, '2025-11-29 16:08:03', NULL),
+(7, 1, 1, 0, 50, '2025-11-29 16:08:37', NULL),
+(8, 1, 1, 0, 8, '2025-11-29 16:09:56', NULL),
+(9, 1, 0, 0, 57, '2025-12-01 21:08:55', 'Nouvelle demande #57 créée.'),
+(10, 1, 0, 0, 58, '2025-12-01 21:10:31', 'Nouvelle demande #58 créée.'),
+(11, 1, 0, 0, 59, '2025-12-01 21:10:46', 'Nouvelle demande #59 créée.'),
+(12, 1, 0, 0, 60, '2025-12-01 21:12:32', 'Nouvelle demande #60 créée.'),
+(13, 4, 0, 0, 61, '2025-12-01 21:16:09', 'Nouvelle demande #61 créée.');
 
 -- --------------------------------------------------------
 
@@ -212,7 +252,9 @@ INSERT INTO `users` (`id`, `nom`, `email`, `password`, `role`, `created_at`, `se
 (18, 'Ivy Martinez', 'ivy.martinez@solutions.net', '12345', 'Demandeur', '2025-11-22 10:46:13', 1),
 (19, 'Grace Idrissi', 'grace.idrissi@tech.org', '12345', 'Validateur', '2025-11-22 10:46:13', 1),
 (20, 'Emma Benali', 'emma.benali@tech.org', '12345', 'Demandeur', '2025-11-22 10:46:13', 1),
-(22, 'Jedata', 'admin@jedatad.com', '12345', 'Demandeur', '2025-11-29 11:26:58', 1);
+(22, 'Jedata', 'admin@jedatad.com', '12345', 'Demandeur', '2025-11-29 11:26:58', 1),
+(23, 'Nadiri Hiba', 'nadiri@hiba.com', '$2y$10$XqoxthRVyYeI23dtOarOGOFwRVVB0sARkMu0pnqi7HHD1M6mj.Fp6', 'Administrateur', '2025-11-30 11:06:30', 1),
+(24, 'Jedata Rachid', 'jedata@rachid.com', '$2y$10$.z6XBVIH3RIgcZP5tpdTUeQYk2X/t10gDbGAeTeHbrJFL1BKhMG4q', 'Validateur', '2025-11-30 11:07:16', 1);
 
 -- --------------------------------------------------------
 
@@ -266,13 +308,18 @@ INSERT INTO `validation` (`id`, `demande_id`, `validateur_id`, `commentaire`, `s
 (30, 48, 2, 'En attente de plus d\'informations.', 'Validée', '2025-07-30 07:36:07'),
 (31, 53, 2, 'Rejeté, voir avec le service IT avant.', 'Validée', '2024-09-15 15:45:36'),
 (46, 31, 2, 'i accept from Rachid Jedata', 'Validée', '2025-11-28 12:00:11'),
-(47, 49, 2, 'Hekkoo', 'Rejetée', '2025-11-28 12:00:30'),
-(48, 56, 1, '{$action} depuis {$_SESSION[\'user_nom\']}', 'Validée', '2025-11-29 17:18:37'),
-(49, 55, 1, '{$action} depuis {$_SESSION[\'user_nom\']}', 'Validée', '2025-11-29 17:18:54');
+(47, 49, 2, 'Hekkoo', 'Rejetée', '2025-11-28 12:00:30');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `available_material`
+--
+ALTER TABLE `available_material`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_type_besoin` (`type_besoin_id`);
 
 --
 -- Indexes for table `demandes`
@@ -324,16 +371,22 @@ ALTER TABLE `validation`
 --
 
 --
+-- AUTO_INCREMENT for table `available_material`
+--
+ALTER TABLE `available_material`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
 -- AUTO_INCREMENT for table `demandes`
 --
 ALTER TABLE `demandes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `pieces_jointes`
@@ -351,7 +404,7 @@ ALTER TABLE `types_besoins`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `validation`
@@ -362,6 +415,12 @@ ALTER TABLE `validation`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `available_material`
+--
+ALTER TABLE `available_material`
+  ADD CONSTRAINT `fk_available_type_besoin` FOREIGN KEY (`type_besoin_id`) REFERENCES `types_besoins` (`id`);
 
 --
 -- Constraints for table `demandes`

@@ -167,7 +167,7 @@ if (isset($_GET['lang'])) {
 
     .me-custom {
         /* Adjust this value (e.g., 10px, 12px, 15px, etc.) */
-        margin-right: 45px !important;
+        margin-right: 90px !important;
     }
     </style>
 </head>
@@ -191,6 +191,13 @@ if (isset($_GET['lang'])) {
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/besoins/index.php">
+                            <i class="bi bi-house me-1"></i> 
+                            <!-- <?php echo getSetence('accueil'); ?> -->
+                        </a>
+                    </li>
+
                     <?php if($_SESSION['user_role'] != 'Demandeur'): ?>
                     <li class="nav-item position-relative">
                         <a class="nav-link" href="/besoins/pages/notifications.php">
@@ -206,14 +213,11 @@ if (isset($_GET['lang'])) {
                     </li>
                     <?php endif; ?>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="/besoins/index.php">
-                            <i class="bi bi-house me-1"></i> <?php echo getSetence('accueil'); ?>
-                        </a>
-                    </li>
+                    
                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="changeLang" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-translate me-1"></i> <?php echo getSetence('langue'); ?>
+                            <i class="bi bi-translate me-1"></i>
+                             <!-- <?php echo getSetence('langue'); ?> -->
                         </a>
 
                         <ul class="dropdown-menu dropdown-menu-end">
@@ -243,7 +247,8 @@ if (isset($_GET['lang'])) {
                     <li class="nav-item dropdown me-custom">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown">
-                            <i class="bi bi-gear me-1"></i> Options
+                            <i class="bi bi-gear me-1"></i> 
+                            <!-- Options -->
                         </a>
                         <ul class="dropdown-menu">
                             <li>
