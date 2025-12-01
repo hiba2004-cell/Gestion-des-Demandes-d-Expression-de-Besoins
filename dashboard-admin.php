@@ -2,7 +2,7 @@
 $page_title = "Dashboard";
 include 'includes/header.php';
 // include 'includes/sidebar-admin.php';
-
+include 'chat_button.php';
 
 // Récupération des statistiques
 try {

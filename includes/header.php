@@ -28,7 +28,9 @@ $unreadCount = getUnreadNotificationCount($_SESSION['user_service'] ?? 0,
     <!-- CSS personnalisé -->
     <link rel="stylesheet" href="assets/css/style.css">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
     <style>
@@ -181,12 +183,13 @@ $unreadCount = getUnreadNotificationCount($_SESSION['user_service'] ?? 0,
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                     <?php if($_SESSION['user_role'] != 'Demandeur'): ?>
-                   <li class="nav-item position-relative">
+                    <?php if($_SESSION['user_role'] != 'Demandeur'): ?>
+                    <li class="nav-item position-relative">
                         <a class="nav-link" href="/besoins/pages/notifications.php">
                             <i class="bi bi-bell me-1"></i>
-                                <?php if (!empty($unreadCount) && $unreadCount > 0): ?>
-                            <span class="position-absolute -top-2 start-1 translate-middle badge rounded-pill bg-danger">
+                            <?php if (!empty($unreadCount) && $unreadCount > 0): ?>
+                            <span
+                                class="position-absolute -top-2 start-1 translate-middle badge rounded-pill bg-danger">
                                 <?= $unreadCount ?>
                                 <span class="visually-hidden">unread notifications</span>
                             </span>

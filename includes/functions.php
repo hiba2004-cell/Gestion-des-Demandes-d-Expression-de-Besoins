@@ -13,8 +13,6 @@ function sanitize($data) {
     return htmlspecialchars(strip_tags(trim($data)), ENT_QUOTES, 'UTF-8');
 }
 
-
-
 function savePieceJointe(int $demandId, string $filePath) {
     $db = getConnection();
     
