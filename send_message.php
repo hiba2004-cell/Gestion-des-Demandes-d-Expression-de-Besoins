@@ -1,27 +1,30 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['role'])) exit;
-
-$role = $_SESSION['role'];
-
-$conn = new PDO("mysql:host=localhost;dbname=ton_db;charset=utf8", "root", "");
+$role = $_POST['role'] ?? 'admin';
+$_SESSION['role'] = $role;
 
 $message = $_POST['message'] ?? "";
 
-if ($message !== "") {
+if (empty($message)) exit;
 
-    if ($role == "admin") {
-        $stmt = $conn->prepare("
-            INSERT INTO messages (sender, message, seen_by_admin, seen_by_validateur)
-            VALUES ('admin', ?, 1, 0)
-        ");
+try {
+    $conn = new PDO("mysql:host=localhost;dbname=ton_db;charset=utf8", "root", "");
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_THROW);
+
+    $stmt = $conn->prepare("
+        INSERT INTO messages (sender, message, seen_by_admin, seen_by_validateur, created_at)
+        VALUES (?, ?, ?, ?, NOW())
+    ");
+
+    if ($role === "admin") {
+        $stmt->execute([$role, $message, 1, 0]);
     } else {
-        $stmt = $conn->prepare("
-            INSERT INTO messages (sender, message, seen_by_admin, seen_by_validateur)
-            VALUES ('validateur', ?, 0, 1)
-        ");
+        $stmt->execute([$role, $message, 0, 1]);
     }
 
-    $stmt->execute([$message]);
+    echo json_encode(['success' => true]);
+} catch (Exception $e) {
+    echo json_encode(['error' => $e->getMessage()]);
 }
+?>
