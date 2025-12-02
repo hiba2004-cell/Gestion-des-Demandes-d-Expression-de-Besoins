@@ -1,8 +1,8 @@
 <?php
-// include '../includes/header.php';
-ob_start();
-session_start();
-require_once '../includes/functions.php';
+include '../includes/header.php';
+// ob_start();
+// session_start();
+// require_once '../includes/functions.php';
 
 $current_user_id = $_SESSION['user_id'] ?? 1; // Default to 1 for demo
 
@@ -246,7 +246,7 @@ $conversations = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
             <?php else: ?>
                 <?php foreach ($conversations as $conv): ?>
-                    <a href="chat.php?user_id=<?php echo $conv['user_id']; ?>" 
+                    <a href="chat_page.php?user_id=<?php echo $conv['user_id']; ?>" 
                        class="conversation-item <?php echo $conv['unread_count'] > 0 ? 'unread' : ''; ?>"
                        data-username="<?php echo htmlspecialchars($conv['nom']); ?>">
                         <?php if (!empty($conv['avatar'])): ?>

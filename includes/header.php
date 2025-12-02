@@ -393,8 +393,8 @@ if (isset($_GET['lang'])) {
                         </a>
                     </li>
                     <li class="nav-item position-relative">
-                        <a class="nav-link" href="/besoins/chat.php">
-                           <i class="fas fa-comments"></i>
+                        <a class="nav-link" href="/besoins/chat/list_conversations.php">
+                         <i class="bi bi-chat-dots me-2"></i>
                         </a>
                     </li>
                     <?php endif; ?>

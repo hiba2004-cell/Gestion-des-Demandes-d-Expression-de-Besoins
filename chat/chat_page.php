@@ -7,7 +7,7 @@ $current_user_id = $_SESSION['user_id'] ?? 1;
 $chat_user_id = $_GET['user_id'] ?? null;
 
 if (!$chat_user_id) {
-    header('Location: list-conversation.php');
+    header('Location: list_conversations.php');
     exit;
 }
 
@@ -39,7 +39,7 @@ $stmt->execute(['id' => $chat_user_id]);
 $chat_user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$chat_user) {
-    header('Location: list-conversation.php');
+    header('Location: list_conversations.php');
     exit;
 }
 
@@ -347,7 +347,7 @@ $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <div class="chat-container">
         <div class="chat-header">
-            <a href="list-conversation.php" class="back-button">
+            <a href="list_conversations.php" class="back-button">
                 <i class="bi bi-arrow-left"></i>
             </a>
             
