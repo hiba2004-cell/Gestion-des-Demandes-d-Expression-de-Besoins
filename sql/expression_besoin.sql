@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Dec 02, 2025 at 08:41 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Hôte : 127.0.0.1
+-- Généré le : mar. 02 déc. 2025 à 16:10
+-- Version du serveur : 10.4.32-MariaDB
+-- Version de PHP : 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `expression_besoin`
+-- Base de données : `expression_besoin`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `available_material`
+-- Structure de la table `available_material`
 --
 
 CREATE TABLE `available_material` (
@@ -39,27 +39,27 @@ CREATE TABLE `available_material` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `available_material`
+-- Déchargement des données de la table `available_material`
 --
 
 INSERT INTO `available_material` (`id`, `type_besoin_id`, `titre`, `description`, `quantite_disponible`, `image_url`, `date_ajout`, `statut`) VALUES
 (1, 1, 'MacBook Pro 16\" M3', 'Ordinateur portable Apple MacBook Pro 16 pouces avec puce M3, 32Go RAM, 512Go SSD. Parfait pour le développement et le design.', 2, 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400', '2025-12-01 14:56:47', 'Disponible'),
 (2, 1, 'Dell UltraSharp 27\" 4K', 'Écran Dell UltraSharp 27 pouces 4K UHD avec USB-C, calibration des couleurs professionnelle.', 5, 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400', '2025-12-01 14:56:47', 'Disponible'),
 (3, 1, 'Clavier Mécanique Logitech MX', 'Clavier mécanique sans fil Logitech MX Mechanical avec rétroéclairage RGB et switches tactiles.', 10, 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400', '2025-12-01 14:56:47', 'Disponible'),
-(4, 1, 'Souris Ergonomique MX Master 3', 'Souris sans fil ergonomique Logitech MX Master 3S avec défilement ultra-rapide.', 5, 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400', '2025-12-01 14:56:47', 'Disponible'),
+(4, 1, 'Souris Ergonomique MX Master 3', 'Souris sans fil ergonomique Logitech MX Master 3S avec défilement ultra-rapide.', 4, 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400', '2025-12-01 14:56:47', 'Disponible'),
 (5, 2, 'Licence Adobe Creative Cloud', 'Abonnement annuel Adobe Creative Cloud incluant Photoshop, Illustrator, Premiere Pro et plus.', 15, 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400', '2025-12-01 14:56:47', 'Disponible'),
 (6, 2, 'Microsoft 365 Business', 'Suite Microsoft 365 Business Premium avec Teams, OneDrive 1To et applications Office.', 20, 'https://images.unsplash.com/photo-1633419461186-7d40a38105ec?w=400', '2025-12-01 14:56:47', 'Disponible'),
 (7, 2, 'JetBrains All Products Pack', 'Licence annuelle pour tous les IDE JetBrains: IntelliJ, WebStorm, PyCharm, etc.', 10, 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400', '2025-12-01 14:56:47', 'Disponible'),
 (8, 3, 'Chaise Ergonomique Herman Miller', 'Chaise de bureau Herman Miller Aeron avec support lombaire ajustable et accoudoirs 4D.', 4, 'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=400', '2025-12-01 14:56:47', 'Disponible'),
 (9, 3, 'Bureau Assis-Debout Électrique', 'Bureau motorisé réglable en hauteur avec plateau 160x80cm et mémorisation des positions.', 6, 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=400', '2025-12-01 14:56:47', 'Disponible'),
 (10, 4, 'Webcam 4K Logitech Brio', 'Webcam professionnelle 4K HDR avec cadrage automatique et réduction de bruit.', 11, 'https://images.unsplash.com/photo-1587826080692-f439cd0b70da?w=400', '2025-12-01 14:56:47', 'Disponible'),
-(11, 4, 'Casque Audio Sony WH-1000XM5', 'Casque sans fil à réduction de bruit active, autonomie 30h, qualité audio Hi-Res.', 7, 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400', '2025-12-01 14:56:47', 'Disponible'),
+(11, 4, 'Casque Audio Sony WH-1000XM5', 'Casque sans fil à réduction de bruit active, autonomie 30h, qualité audio Hi-Res.', 6, 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400', '2025-12-01 14:56:47', 'Disponible'),
 (12, 1, 'iPad Pro 12.9\" M2', 'Tablette Apple iPad Pro 12.9 pouces avec puce M2, 256Go, WiFi + Cellular.', 2, 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400', '2025-12-01 14:56:47', 'Réservé');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `conversations`
+-- Structure de la table `conversations`
 --
 
 CREATE TABLE `conversations` (
@@ -74,7 +74,7 @@ CREATE TABLE `conversations` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `demandes`
+-- Structure de la table `demandes`
 --
 
 CREATE TABLE `demandes` (
@@ -88,7 +88,7 @@ CREATE TABLE `demandes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `demandes`
+-- Déchargement des données de la table `demandes`
 --
 
 INSERT INTO `demandes` (`id`, `user_id`, `type_besoin_id`, `description`, `urgence`, `statut`, `date_creation`) VALUES
@@ -121,10 +121,10 @@ INSERT INTO `demandes` (`id`, `user_id`, `type_besoin_id`, `description`, `urgen
 (27, 12, 1, 'Remplacement de la chaise de bureau cassée.', 'Faible', 'En attente', '2024-09-03 17:26:28'),
 (28, 12, 2, 'Formation en sécurité informatique pour l\'équipe.', 'Urgente', 'Traitée', '2024-03-16 12:39:03'),
 (29, 12, 4, 'Logiciel de gestion de projet (Jira).', 'Faible', 'Traitée', '2025-01-14 19:31:28'),
-(30, 13, 4, 'Besoin d\'un écran supplémentaire 27 pouces.', 'Moyenne', 'En attente', '2023-09-30 06:45:22'),
+(30, 13, 4, 'Besoin d\'un écran supplémentaire 27 pouces.', 'Moyenne', 'Traitée', '2023-09-30 06:45:22'),
 (31, 13, 3, 'Besoin d\'un écran supplémentaire 27 pouces.', 'Urgente', 'En attente', '2025-05-10 19:26:10'),
 (32, 13, 4, 'Installation de la fibre optique.', 'Urgente', 'En cours de validation', '2024-03-21 11:47:07'),
-(33, 14, 4, 'Besoin d\'un écran supplémentaire 27 pouces.', 'Faible', 'En attente', '2024-10-28 00:01:45'),
+(33, 14, 4, 'Besoin d\'un écran supplémentaire 27 pouces.', 'Faible', 'Traitée', '2024-10-28 00:01:45'),
 (34, 14, 2, 'Remplacement de la chaise de bureau cassée.', 'Faible', 'Traitée', '2025-07-29 18:06:14'),
 (35, 14, 2, 'Achat de fournitures de bureau (papier, stylos).', 'Moyenne', 'En attente', '2023-11-18 09:31:50'),
 (36, 14, 3, 'Formation en sécurité informatique pour l\'équipe.', 'Faible', 'En attente', '2023-06-05 08:32:25'),
@@ -149,12 +149,14 @@ INSERT INTO `demandes` (`id`, `user_id`, `type_besoin_id`, `description`, `urgen
 (58, 1, 1, 'Demande pour: Souris Ergonomique MX Master 3', 'Faible', 'En attente', '2025-12-01 21:10:31'),
 (59, 1, 1, 'Demande pour: Souris Ergonomique MX Master 3', 'Faible', 'En attente', '2025-12-01 21:10:46'),
 (60, 1, 1, 'Demande pour: Souris Ergonomique MX Master 3', 'Faible', 'En attente', '2025-12-01 21:12:32'),
-(61, 4, 4, 'Demande pour: Webcam 4K Logitech Brio', 'Faible', 'En attente', '2025-12-01 21:16:09');
+(61, 4, 4, 'Demande pour: Webcam 4K Logitech Brio', 'Faible', 'En attente', '2025-12-01 21:16:09'),
+(62, 4, 1, 'Demande pour: Souris Ergonomique MX Master 3', 'Faible', 'En attente', '2025-12-01 21:42:12'),
+(63, 2, 4, 'Demande pour: Casque Audio Sony WH-1000XM5', 'Urgente', 'Traitée', '2025-12-01 21:44:19');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `notifications`
+-- Structure de la table `notifications`
 --
 
 CREATE TABLE `notifications` (
@@ -164,28 +166,34 @@ CREATE TABLE `notifications` (
   `seen` tinyint(1) NOT NULL DEFAULT 0,
   `demande_id` int(11) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `message` varchar(200) DEFAULT NULL
+  `message` varchar(200) DEFAULT NULL,
+  `validateur_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `notifications`
+-- Déchargement des données de la table `notifications`
 --
 
-INSERT INTO `notifications` (`id`, `service_id`, `is_just_for_admin`, `seen`, `demande_id`, `created_at`, `message`) VALUES
-(5, 1, 1, 0, 5, '2025-11-29 16:07:52', NULL),
-(6, 1, 1, 0, 29, '2025-11-29 16:08:03', NULL),
-(7, 1, 1, 0, 50, '2025-11-29 16:08:37', NULL),
-(8, 1, 1, 0, 8, '2025-11-29 16:09:56', NULL),
-(9, 1, 0, 0, 57, '2025-12-01 21:08:55', 'Nouvelle demande #57 créée.'),
-(10, 1, 0, 0, 58, '2025-12-01 21:10:31', 'Nouvelle demande #58 créée.'),
-(11, 1, 0, 0, 59, '2025-12-01 21:10:46', 'Nouvelle demande #59 créée.'),
-(12, 1, 0, 0, 60, '2025-12-01 21:12:32', 'Nouvelle demande #60 créée.'),
-(13, 4, 0, 0, 61, '2025-12-01 21:16:09', 'Nouvelle demande #61 créée.');
+INSERT INTO `notifications` (`id`, `service_id`, `is_just_for_admin`, `seen`, `demande_id`, `created_at`, `message`, `validateur_id`) VALUES
+(5, 1, 1, 0, 5, '2025-11-29 16:07:52', NULL, NULL),
+(6, 1, 1, 0, 29, '2025-11-29 16:08:03', NULL, NULL),
+(7, 1, 1, 0, 50, '2025-11-29 16:08:37', NULL, NULL),
+(8, 1, 1, 0, 8, '2025-11-29 16:09:56', NULL, NULL),
+(9, 1, 0, 0, 57, '2025-12-01 21:08:55', 'Nouvelle demande #57 créée.', NULL),
+(10, 1, 0, 0, 58, '2025-12-01 21:10:31', 'Nouvelle demande #58 créée.', NULL),
+(11, 1, 0, 0, 59, '2025-12-01 21:10:46', 'Nouvelle demande #59 créée.', NULL),
+(12, 1, 0, 0, 60, '2025-12-01 21:12:32', 'Nouvelle demande #60 créée.', NULL),
+(13, 4, 0, 0, 61, '2025-12-01 21:16:09', 'Nouvelle demande #61 créée.', NULL),
+(14, 1, 0, 0, 62, '2025-12-01 21:42:12', 'Nouvelle demande #62 créée.', NULL),
+(15, 4, 0, 0, 63, '2025-12-01 21:44:19', 'Nouvelle demande #63 créée.', NULL),
+(16, 1, 1, 0, 63, '2025-12-01 21:45:08', 'validateur  a envoyé la demande #63 à l\'administrateur pour révision.', NULL),
+(17, 1, 1, 0, 30, '2025-12-02 15:42:42', 'validateur  a envoyé la demande #30 à l\'administrateur pour révision.', NULL),
+(18, 1, 1, 0, 33, '2025-12-02 15:48:33', 'validateur  a envoyé la demande #33 à l\'administrateur pour révision.', 2);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pieces_jointes`
+-- Structure de la table `pieces_jointes`
 --
 
 CREATE TABLE `pieces_jointes` (
@@ -196,7 +204,7 @@ CREATE TABLE `pieces_jointes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `pieces_jointes`
+-- Déchargement des données de la table `pieces_jointes`
 --
 
 INSERT INTO `pieces_jointes` (`id`, `demande_id`, `chemin_fichier`, `date_ajout`) VALUES
@@ -208,7 +216,7 @@ INSERT INTO `pieces_jointes` (`id`, `demande_id`, `chemin_fichier`, `date_ajout`
 -- --------------------------------------------------------
 
 --
--- Table structure for table `types_besoins`
+-- Structure de la table `types_besoins`
 --
 
 CREATE TABLE `types_besoins` (
@@ -217,7 +225,7 @@ CREATE TABLE `types_besoins` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `types_besoins`
+-- Déchargement des données de la table `types_besoins`
 --
 
 INSERT INTO `types_besoins` (`id`, `libelle`) VALUES
@@ -229,7 +237,7 @@ INSERT INTO `types_besoins` (`id`, `libelle`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Structure de la table `users`
 --
 
 CREATE TABLE `users` (
@@ -243,7 +251,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `users`
+-- Déchargement des données de la table `users`
 --
 
 INSERT INTO `users` (`id`, `nom`, `email`, `password`, `role`, `created_at`, `service_id`) VALUES
@@ -274,7 +282,7 @@ INSERT INTO `users` (`id`, `nom`, `email`, `password`, `role`, `created_at`, `se
 -- --------------------------------------------------------
 
 --
--- Table structure for table `validation`
+-- Structure de la table `validation`
 --
 
 CREATE TABLE `validation` (
@@ -287,7 +295,7 @@ CREATE TABLE `validation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `validation`
+-- Déchargement des données de la table `validation`
 --
 
 INSERT INTO `validation` (`id`, `demande_id`, `validateur_id`, `commentaire`, `statut_validation`, `date_validation`) VALUES
@@ -326,18 +334,18 @@ INSERT INTO `validation` (`id`, `demande_id`, `validateur_id`, `commentaire`, `s
 (47, 49, 2, 'Hekkoo', 'Rejetée', '2025-11-28 12:00:30');
 
 --
--- Indexes for dumped tables
+-- Index pour les tables déchargées
 --
 
 --
--- Indexes for table `available_material`
+-- Index pour la table `available_material`
 --
 ALTER TABLE `available_material`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_type_besoin` (`type_besoin_id`);
 
 --
--- Indexes for table `conversations`
+-- Index pour la table `conversations`
 --
 ALTER TABLE `conversations`
   ADD PRIMARY KEY (`id`),
@@ -345,7 +353,7 @@ ALTER TABLE `conversations`
   ADD KEY `fk_receiver` (`receiver_id`);
 
 --
--- Indexes for table `demandes`
+-- Index pour la table `demandes`
 --
 ALTER TABLE `demandes`
   ADD PRIMARY KEY (`id`),
@@ -353,28 +361,29 @@ ALTER TABLE `demandes`
   ADD KEY `type_besoin_id` (`type_besoin_id`);
 
 --
--- Indexes for table `notifications`
+-- Index pour la table `notifications`
 --
 ALTER TABLE `notifications`
   ADD PRIMARY KEY (`id`),
   ADD KEY `service_id` (`service_id`),
-  ADD KEY `demande_id` (`demande_id`);
+  ADD KEY `demande_id` (`demande_id`),
+  ADD KEY `validateur_fk` (`validateur_id`);
 
 --
--- Indexes for table `pieces_jointes`
+-- Index pour la table `pieces_jointes`
 --
 ALTER TABLE `pieces_jointes`
   ADD PRIMARY KEY (`id`),
   ADD KEY `demande_id` (`demande_id`);
 
 --
--- Indexes for table `types_besoins`
+-- Index pour la table `types_besoins`
 --
 ALTER TABLE `types_besoins`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `users`
+-- Index pour la table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
@@ -382,7 +391,7 @@ ALTER TABLE `users`
   ADD KEY `fk_service` (`service_id`);
 
 --
--- Indexes for table `validation`
+-- Index pour la table `validation`
 --
 ALTER TABLE `validation`
   ADD PRIMARY KEY (`id`),
@@ -390,102 +399,103 @@ ALTER TABLE `validation`
   ADD KEY `validateur_id` (`validateur_id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT pour les tables déchargées
 --
 
 --
--- AUTO_INCREMENT for table `available_material`
+-- AUTO_INCREMENT pour la table `available_material`
 --
 ALTER TABLE `available_material`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
--- AUTO_INCREMENT for table `conversations`
+-- AUTO_INCREMENT pour la table `conversations`
 --
 ALTER TABLE `conversations`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `demandes`
+-- AUTO_INCREMENT pour la table `demandes`
 --
 ALTER TABLE `demandes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
--- AUTO_INCREMENT for table `notifications`
+-- AUTO_INCREMENT pour la table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
--- AUTO_INCREMENT for table `pieces_jointes`
+-- AUTO_INCREMENT pour la table `pieces_jointes`
 --
 ALTER TABLE `pieces_jointes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
--- AUTO_INCREMENT for table `types_besoins`
+-- AUTO_INCREMENT pour la table `types_besoins`
 --
 ALTER TABLE `types_besoins`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT pour la table `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
--- AUTO_INCREMENT for table `validation`
+-- AUTO_INCREMENT pour la table `validation`
 --
 ALTER TABLE `validation`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
--- Constraints for dumped tables
+-- Contraintes pour les tables déchargées
 --
 
 --
--- Constraints for table `available_material`
+-- Contraintes pour la table `available_material`
 --
 ALTER TABLE `available_material`
   ADD CONSTRAINT `fk_available_type_besoin` FOREIGN KEY (`type_besoin_id`) REFERENCES `types_besoins` (`id`);
 
 --
--- Constraints for table `conversations`
+-- Contraintes pour la table `conversations`
 --
 ALTER TABLE `conversations`
   ADD CONSTRAINT `fk_receiver` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_sender` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `demandes`
+-- Contraintes pour la table `demandes`
 --
 ALTER TABLE `demandes`
   ADD CONSTRAINT `demandes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `demandes_ibfk_2` FOREIGN KEY (`type_besoin_id`) REFERENCES `types_besoins` (`id`);
 
 --
--- Constraints for table `notifications`
+-- Contraintes pour la table `notifications`
 --
 ALTER TABLE `notifications`
   ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`service_id`) REFERENCES `types_besoins` (`id`),
-  ADD CONSTRAINT `notifications_ibfk_2` FOREIGN KEY (`demande_id`) REFERENCES `demandes` (`id`);
+  ADD CONSTRAINT `notifications_ibfk_2` FOREIGN KEY (`demande_id`) REFERENCES `demandes` (`id`),
+  ADD CONSTRAINT `validateur_fk` FOREIGN KEY (`validateur_id`) REFERENCES `users` (`id`);
 
 --
--- Constraints for table `pieces_jointes`
+-- Contraintes pour la table `pieces_jointes`
 --
 ALTER TABLE `pieces_jointes`
   ADD CONSTRAINT `pieces_jointes_ibfk_1` FOREIGN KEY (`demande_id`) REFERENCES `demandes` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `users`
+-- Contraintes pour la table `users`
 --
 ALTER TABLE `users`
   ADD CONSTRAINT `fk_service` FOREIGN KEY (`service_id`) REFERENCES `types_besoins` (`id`);
 
 --
--- Constraints for table `validation`
+-- Contraintes pour la table `validation`
 --
 ALTER TABLE `validation`
   ADD CONSTRAINT `validation_ibfk_1` FOREIGN KEY (`demande_id`) REFERENCES `demandes` (`id`) ON DELETE CASCADE,
