@@ -406,17 +406,18 @@ function createBesoin(array $data) {
     }
 }
 
-function createNotification(int $demandeId, int $categorie,int $is_just_for_admin=0,$message=null): void {
+function createNotification(int $demandeId, int $categorie,int $is_just_for_admin=0,$message=null, int $validateur_id=null): void {
     $conn = getConnection();
     $notification_sql = "
-            INSERT INTO notifications (service_id, demande_id, is_just_for_admin, message)
-            VALUES (:service_id, :demande_id, :is_just_for_admin, :message)";
+            INSERT INTO notifications (service_id, demande_id, is_just_for_admin, message, validateur_id)
+            VALUES (:service_id, :demande_id, :is_just_for_admin, :message, :validateur_id)";
         $notification_stmt = $conn->prepare($notification_sql);
         $notification_stmt->execute([
             'service_id' => $categorie,
             'demande_id' => $demandeId,
             'is_just_for_admin' => $is_just_for_admin,
-            'message' => $message ?? "Nouvelle demande #{$demandeId} créée."
+            'message' => $message ?? "Nouvelle demande #{$demandeId} créée.",
+            'validateur_id' => $validateur_id 
         ]);
 
     if($is_just_for_admin === 1){

@@ -26,7 +26,7 @@ if (!$demande_id || !in_array($action, ['valider', 'rejeter','send-to-admin'])) 
 }
 
 if($action==='send-to-admin'){
-    createNotification($demande_id,1,1,"validateur ${$_SESSION['user_nom']} a envoyé la demande #{$demande_id} à l'administrateur pour révision.");
+    createNotification($demande_id,1,1,"validateur ${$_SESSION['user_nom']} a envoyé la demande #{$demande_id} à l'administrateur pour révision.",$_SESSION['user_id']);
     $_SESSION['action_result'] = [
         'success' => "La demande #{$demande_id} a été envoyée à l'administrateur avec succès.",
         "color"   => 'success'
@@ -116,31 +116,33 @@ $csrfToken = generateCSRFToken();
 
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <title><?php echo $libelle_action; ?> la Demande #<?php echo $demande_id; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" rel="stylesheet">
 </head>
+
 <body>
 
     <div class="container py-5">
-        
+
         <h2 class="mb-4">
             <i class="bi bi-shield-fill-check me-2 
                 <?php echo ($action === 'valider') ? 'text-success' : 'text-danger'; ?>"></i>
             Confirmation : <?php echo $libelle_action; ?> la Demande #<?php echo $demande_id; ?>
         </h2>
-        
+
         <hr>
 
         <?php 
         // Affichage des erreurs de validation POST (si la raison manque)
         if (isset($final_error_message) && !empty($final_error_message)): ?>
-            <div class="alert alert-warning" role="alert">
-                <i class="bi bi-exclamation-circle-fill me-2"></i>
-                <?php echo htmlspecialchars($final_error_message); ?>
-            </div>
+        <div class="alert alert-warning" role="alert">
+            <i class="bi bi-exclamation-circle-fill me-2"></i>
+            <?php echo htmlspecialchars($final_error_message); ?>
+        </div>
         <?php endif; ?>
 
         <div class="card shadow mb-4">
@@ -151,11 +153,15 @@ $csrfToken = generateCSRFToken();
                 <div class="row">
                     <div class="col-md-6">
                         <p><strong>Demandeur :</strong> <?php echo htmlspecialchars($demande_data['demandeur']); ?></p>
-                        <p><strong>Type de Besoin :</strong> <?php echo htmlspecialchars($demande_data['type_besoin']); ?></p>
+                        <p><strong>Type de Besoin :</strong>
+                            <?php echo htmlspecialchars($demande_data['type_besoin']); ?></p>
                     </div>
                     <div class="col-md-6">
-                        <p><strong>Date de Création :</strong> <?php echo date('d/m/Y', strtotime($demande_data['date_creation'])); ?></p>
-                        <p><strong>Statut Actuel :</strong> <span class="badge bg-warning text-dark"><?php echo htmlspecialchars($demande_data['statut']); ?></span></p>
+                        <p><strong>Date de Création :</strong>
+                            <?php echo date('d/m/Y', strtotime($demande_data['date_creation'])); ?></p>
+                        <p><strong>Statut Actuel :</strong> <span
+                                class="badge bg-warning text-dark"><?php echo htmlspecialchars($demande_data['statut']); ?></span>
+                        </p>
                     </div>
                 </div>
                 <hr>
@@ -173,18 +179,19 @@ $csrfToken = generateCSRFToken();
                 Action Requise
             </div>
             <div class="card-body">
-                <form method="POST" action="action-demande.php?id=<?php echo $demande_id; ?>&action=<?php echo $action; ?>">
+                <form method="POST"
+                    action="action-demande.php?id=<?php echo $demande_id; ?>&action=<?php echo $action; ?>">
                     <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
                     <div class="mb-3">
                         <label for="raison" class="form-label fw-bold">
-                            Raison de la <?php echo $libelle_action; ?> 
+                            Raison de la <?php echo $libelle_action; ?>
                             <?php if ($action === 'rejeter'): ?>
-                                <span class="text-danger">* Obligatoire pour le rejet</span>
+                            <span class="text-danger">* Obligatoire pour le rejet</span>
                             <?php else: ?>
-                                <span class="text-muted">(Facultatif pour la validation)</span>
+                            <span class="text-muted">(Facultatif pour la validation)</span>
                             <?php endif; ?>
                         </label>
-                        <textarea class="form-control" id="raison" name="raison" rows="4" 
+                        <textarea class="form-control" id="raison" name="raison" rows="4"
                             placeholder="Veuillez fournir un commentaire concis pour justifier cette action."><?php echo htmlspecialchars($raison ?? ''); ?></textarea>
                     </div>
 
@@ -193,7 +200,7 @@ $csrfToken = generateCSRFToken();
                         <i class="bi bi-check-circle-fill me-2"></i>
                         Confirmer <?php echo $libelle_action; ?>
                     </button>
-                    
+
                     <a href="dashboard-validateur.php" class="btn btn-lg btn-outline-secondary ms-2">
                         <i class="bi bi-x-lg me-2"></i>Annuler
                     </a>
@@ -204,4 +211,5 @@ $csrfToken = generateCSRFToken();
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

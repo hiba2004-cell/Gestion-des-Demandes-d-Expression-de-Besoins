@@ -9,6 +9,8 @@ header("Location: /besoins/index.php");
 exit;
 }
 
+$error_message = "";
+
 // -------------------------
 // FONCTIONS UTILITAIRES
 // -------------------------
@@ -159,7 +161,7 @@ $_SESSION['action_result'] = null;
             <span class="badge bg-secondary ms-2"><?php echo $total_demandes; ?></span>
         </h2>
 
-        <?php if (isset($error_message)): ?>
+        <?php if (isset($error_message) && $error_message): ?>
         <div class="alert alert-danger" role="alert">
             <i class="bi bi-exclamation-triangle-fill me-2"></i>
             <?php echo htmlspecialchars($error_message); ?>

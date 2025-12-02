@@ -32,12 +32,13 @@ $serviceFilter = $isAdmin === 1 ? "" : " AND service_id = :uid";
 
 // Fetch notifications for the user
 $stmt = $pdo->prepare("
-    SELECT demande_id, created_at, d.*, n.id as notification_id,seen, message
+    SELECT demande_id, created_at, d.*, n.id as notification_id, seen, message, n.validateur_id
     FROM notifications n
     JOIN demandes d ON n.demande_id = d.id
     WHERE is_just_for_admin = :is_admin {$serviceFilter}
     ORDER BY created_at DESC
 ");
+
 
 $params = ['is_admin' => $isAdmin];
 if (!$isAdmin) {
@@ -64,8 +65,11 @@ $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <a href="#" class="btn btn-sm btn-outline-primary mt-2 d-inline-flex align-items-center"
                     data-bs-toggle="modal" data-bs-target="#chatModal"
                     data-demande-id="<?php echo $n['demande_id']; ?>">
-                    <i class="bi bi-chat-dots me-1"></i>
-                    Envoyer un message au validateur pour la demande #<?php echo $n['demande_id']; ?>
+                    <a href="../chat/chat_page.php?user_id=<?php echo $n['validateur_id']; ?>&message=<?php echo "Pourquoi cette demande {$n['demande_id']} est envoyer pour moi pour que je la valide?"; ?>"
+                        class=" btn btn-primary">
+                        <i class="bi bi-chat-dots me-1"></i>
+                        Envoyer un message au validateur pour la demande #<?php echo $n['demande_id']; ?>
+                    </a>
                 </a>
             </small>
             <?php endif; ?>
