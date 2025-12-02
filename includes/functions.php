@@ -432,6 +432,19 @@ function createNotification(int $demandeId, int $categorie,int $is_just_for_admi
 
 }
 
+function getUnreadMessages(int $user_id):int{
+    $pdo = getConnection();
+
+    $sql = "
+        SELECT COUNT(*) FROM Conversations 
+        WHERE receiver_id = :receiver_id AND is_read = 0;
+    ";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        "receiver_id"   => $user_id
+    ]);
+    return (int) $stmt->fetchColumn();
+}
 
 
 function getUnreadNotificationCount(int $serviceId,$isAdmin = 0): int {
