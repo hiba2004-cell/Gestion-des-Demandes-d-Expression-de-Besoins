@@ -576,6 +576,26 @@ function getSetence($key){
     }
 }
 
+function getLatestDemande(){
+    $conn = getConnection();
+    $query = "
+        SELECT d.*, t.libelle AS type_besoin, u.nom AS demandeur, u.email AS demandeur_email
+        FROM demandes d
+        LEFT JOIN types_besoins t ON d.type_besoin_id = t.id
+        LEFT JOIN users u ON d.user_id = u.id
+        LEFT JOIN validation v ON v.demande_id = d.id
+        WHERE v.demande_id IS NULL AND d.type_besoin_id = :service_id AND d.statut NOT IN ('Traitée')
+        ORDER BY date_creation DESC LIMIT 1;
+    ";
+    $stmt = $conn->prepare($query);
+    $params = [
+        "service_id" => $_SESSION['user_service'] ?? 1
+    ];
+
+    $stmt->execute($params);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+}
 /**
  * Met à jour un besoin
  */
