@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 01, 2025 at 09:31 PM
+-- Generation Time: Dec 02, 2025 at 08:41 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -55,6 +55,21 @@ INSERT INTO `available_material` (`id`, `type_besoin_id`, `titre`, `description`
 (10, 4, 'Webcam 4K Logitech Brio', 'Webcam professionnelle 4K HDR avec cadrage automatique et réduction de bruit.', 11, 'https://images.unsplash.com/photo-1587826080692-f439cd0b70da?w=400', '2025-12-01 14:56:47', 'Disponible'),
 (11, 4, 'Casque Audio Sony WH-1000XM5', 'Casque sans fil à réduction de bruit active, autonomie 30h, qualité audio Hi-Res.', 7, 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400', '2025-12-01 14:56:47', 'Disponible'),
 (12, 1, 'iPad Pro 12.9\" M2', 'Tablette Apple iPad Pro 12.9 pouces avec puce M2, 256Go, WiFi + Cellular.', 2, 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400', '2025-12-01 14:56:47', 'Réservé');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `conversations`
+--
+
+CREATE TABLE `conversations` (
+  `id` int(11) NOT NULL,
+  `sender_id` int(11) NOT NULL,
+  `receiver_id` int(11) NOT NULL,
+  `message` text NOT NULL,
+  `sent_time` timestamp NOT NULL DEFAULT current_timestamp(),
+  `is_read` tinyint(1) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -135,21 +150,6 @@ INSERT INTO `demandes` (`id`, `user_id`, `type_besoin_id`, `description`, `urgen
 (59, 1, 1, 'Demande pour: Souris Ergonomique MX Master 3', 'Faible', 'En attente', '2025-12-01 21:10:46'),
 (60, 1, 1, 'Demande pour: Souris Ergonomique MX Master 3', 'Faible', 'En attente', '2025-12-01 21:12:32'),
 (61, 4, 4, 'Demande pour: Webcam 4K Logitech Brio', 'Faible', 'En attente', '2025-12-01 21:16:09');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `messages`
---
-
-CREATE TABLE `messages` (
-  `id` int(11) NOT NULL,
-  `sender` varchar(50) NOT NULL,
-  `message` text NOT NULL,
-  `seen_by_admin` tinyint(1) DEFAULT 0,
-  `seen_by_validateur` tinyint(1) DEFAULT 0,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -337,18 +337,20 @@ ALTER TABLE `available_material`
   ADD KEY `fk_type_besoin` (`type_besoin_id`);
 
 --
+-- Indexes for table `conversations`
+--
+ALTER TABLE `conversations`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_sender` (`sender_id`),
+  ADD KEY `fk_receiver` (`receiver_id`);
+
+--
 -- Indexes for table `demandes`
 --
 ALTER TABLE `demandes`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `type_besoin_id` (`type_besoin_id`);
-
---
--- Indexes for table `messages`
---
-ALTER TABLE `messages`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `notifications`
@@ -398,16 +400,16 @@ ALTER TABLE `available_material`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
+-- AUTO_INCREMENT for table `conversations`
+--
+ALTER TABLE `conversations`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `demandes`
 --
 ALTER TABLE `demandes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
-
---
--- AUTO_INCREMENT for table `messages`
---
-ALTER TABLE `messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `notifications`
@@ -448,6 +450,13 @@ ALTER TABLE `validation`
 --
 ALTER TABLE `available_material`
   ADD CONSTRAINT `fk_available_type_besoin` FOREIGN KEY (`type_besoin_id`) REFERENCES `types_besoins` (`id`);
+
+--
+-- Constraints for table `conversations`
+--
+ALTER TABLE `conversations`
+  ADD CONSTRAINT `fk_receiver` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_sender` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `demandes`
