@@ -10,6 +10,8 @@ $unreadCount = getUnreadNotificationCount($_SESSION['user_service'] ?? 0,
     isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'Administrateur' ? 1 : 0
 );
 
+$unreadCountMessage = getUnreadMessages($_SESSION['user_id']);
+
 // call this before any output
 if (isset($_GET['lang'])) {
     $lang = $_GET['lang'];
@@ -395,6 +397,15 @@ if (isset($_GET['lang'])) {
                     <li class="nav-item position-relative">
                         <a class="nav-link" href="/besoins/chat/list_conversations.php">
                          <i class="bi bi-chat-dots me-2"></i>
+
+                          <?php if (!empty($unreadCountMessage) && $unreadCountMessage > 0): ?>
+                            <span
+                                class="position-absolute -top-2 start-1 translate-middle badge rounded-pill bg-danger">
+                                <?= $unreadCountMessage ?>
+                                <span class="visually-hidden">unread notifications</span>
+                            </span>
+                          <?php endif; ?>
+
                         </a>
                     </li>
                     <?php endif; ?>
