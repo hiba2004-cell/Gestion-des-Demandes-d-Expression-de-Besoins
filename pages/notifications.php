@@ -62,14 +62,11 @@ $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             <?php if ($isAdmin): ?>
             <small>
-                <a href="#" class="btn btn-sm btn-outline-primary mt-2 d-inline-flex align-items-center"
+                <a href="../chat/chat_page.php?user_id=<?php echo $n['validateur_id']; ?>&message=<?php echo "Pourquoi cette demande {$n['demande_id']} est envoyer pour moi pour que je la valide?"; ?>" class="btn btn-sm btn-outline-primary mt-2 d-inline-flex align-items-center"
                     data-bs-toggle="modal" data-bs-target="#chatModal"
                     data-demande-id="<?php echo $n['demande_id']; ?>">
-                    <a href="../chat/chat_page.php?user_id=<?php echo $n['validateur_id']; ?>&message=<?php echo "Pourquoi cette demande {$n['demande_id']} est envoyer pour moi pour que je la valide?"; ?>"
-                        class=" btn btn-primary">
-                        <i class="bi bi-chat-dots me-1"></i>
+                    <i class="bi bi-chat-dots me-1"></i>
                         Envoyer un message au validateur pour la demande #<?php echo $n['demande_id']; ?>
-                    </a>
                 </a>
             </small>
             <?php endif; ?>
