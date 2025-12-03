@@ -467,7 +467,6 @@ function processBesoinAction($demande_id,$validator_id,$raison,$action):array{
     $pdo = getConnection();
     $new_statut = ($action === 'valider') ? 'Validée' : 'Rejetée';
     try {
-            // Requête de mise à jour sécurisée avec la RAISON (ajout d'une colonne 'raison_validation' dans la DB)
             $insert_query = "
                 INSERT INTO validation(demande_id, validateur_id, commentaire,statut_validation,date_validation)
                 VALUES (?, ?, ?, ?, NOW())
