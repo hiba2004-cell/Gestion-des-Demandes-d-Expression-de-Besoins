@@ -1,16 +1,118 @@
-                </div>
-                </main>
-                </div>
-                </div>
+</div>
+</main>
+</div>
+</div>
 
-                <!-- Bootstrap JS -->
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Chat Toggle Button -->
+<button id="chatToggleBtn" class="btn btn-primary position-fixed" style="bottom: 20px; right: 20px; z-index: 1000; border-radius: 50%; width: 60px; height: 60px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+    <i class="fas fa-comments"></i>
+    <span class="badge bg-danger position-absolute top-0 start-100 translate-middle" id="chatBadge" style="display: none;">1</span>
+</button>
 
-                <!-- JavaScript personnalisé -->
-                <script src="assets/js/script.js"></script>
+<!-- Chat Container -->
+<div id="chatContainer" class="position-fixed z-10" style="bottom: 90px; right: 20px; display: none;">
+    <div class="card" style="width: 350px; height: 500px;">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h6 class="mb-0">Assistant Virtual</h6>
+            <button id="closeChatBtn" class="btn btn-sm btn-link text-white p-0">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="card-body p-0" style="height: calc(100% - 56px);">
+            <iframe
+                id="dialogflowIframe"
+                allow="microphone;"
+                width="100%"
+                height="100%"
+                style="border: none;"
+                src="https://console.dialogflow.com/api-client/demo/embedded/69e18598-4f7d-4d50-b21d-177c9adcfe12?userId=<?php echo urlencode($_SESSION['user_id'] ?? ''); ?>&userName=<?php echo urlencode($_SESSION['user_nom'] ?? ''); ?>">
+            </iframe>
+        </div>
+    </div>
+</div>
 
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-                <script>
+<!-- JavaScript personnalisé -->
+<script src="assets/js/script.js"></script>
+
+<script>
+// User session data from PHP
+const userData = {
+    userId: <?php echo json_encode($_SESSION['user_id'] ?? null); ?>,
+    userName: <?php echo json_encode($_SESSION['user_nom'] ?? null); ?>,
+    userRole: <?php echo json_encode($_SESSION['user_role'] ?? null); ?>,
+    userEmail: <?php echo json_encode($_SESSION['user_email'] ?? null); ?>
+};
+
+// Chat toggle functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const chatToggleBtn = document.getElementById('chatToggleBtn');
+    const chatContainer = document.getElementById('chatContainer');
+    const closeChatBtn = document.getElementById('closeChatBtn');
+    const chatBadge = document.getElementById('chatBadge');
+    const dialogflowIframe = document.getElementById('dialogflowIframe');
+    
+    let isChatOpen = false;
+    
+    // Toggle chat
+    chatToggleBtn.addEventListener('click', function() {
+        isChatOpen = !isChatOpen;
+        
+        if (isChatOpen) {
+            chatContainer.style.display = 'block';
+            chatToggleBtn.innerHTML = '<i class="fas fa-times"></i>';
+            chatBadge.style.display = 'none';
+            
+            // Send user data to Dialogflow via postMessage
+            setTimeout(() => {
+                sendUserDataToDialogflow();
+            }, 1000);
+        } else {
+            chatContainer.style.display = 'none';
+            chatToggleBtn.innerHTML = '<i class="fas fa-comments"></i>';
+        }
+    });
+    
+    // Close chat
+    closeChatBtn.addEventListener('click', function() {
+        chatContainer.style.display = 'none';
+        chatToggleBtn.innerHTML = '<i class="fas fa-comments"></i>';
+        isChatOpen = false;
+    });
+    
+    // Send user data to Dialogflow iframe
+    function sendUserDataToDialogflow() {
+        if (dialogflowIframe && dialogflowIframe.contentWindow) {
+            dialogflowIframe.contentWindow.postMessage({
+                type: 'USER_DATA',
+                data: userData
+            }, '*');
+        }
+    }
+    
+    // Listen for messages from Dialogflow iframe
+    window.addEventListener('message', function(event) {
+        // Handle messages from Dialogflow if needed
+        if (event.data && event.data.type === 'DIALOGFLOW_RESPONSE') {
+            console.log('Dialogflow response:', event.data);
+            
+            // Show notification badge when chat is closed
+            if (!isChatOpen) {
+                chatBadge.style.display = 'block';
+            }
+        }
+    });
+    
+    // Show notification badge after some time (simulated)
+    setTimeout(() => {
+        if (!isChatOpen) {
+            chatBadge.style.display = 'block';
+        }
+    }, 5000);
+});
+
 // Animation au chargement
 document.addEventListener('DOMContentLoaded', function() {
     // Animation des cartes

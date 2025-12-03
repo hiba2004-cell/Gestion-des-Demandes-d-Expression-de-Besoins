@@ -46,7 +46,7 @@ function Valider_demande($data, $session) {
         }
     }
 
-    processBesoinAction($demandeId, $_SESSION['user_nom'], "Le Validateur {$_SESSION['user_nom']} a {$action} cette demande {$demandeId}", $action);
+    processBesoinAction($demandeId, 2, "Le Validateur 2 a {$action} cette demande {$demandeId}", $action);
     
     $response = [
         'fulfillmentText' => "Please tell me the number you want to use: {$demandeId}"
@@ -79,4 +79,3 @@ function getLatestDemandeAPI($data, $session){
 
     exit;
 }
-
