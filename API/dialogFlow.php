@@ -36,7 +36,7 @@ if (isset($functions[$intent])) {
 function Valider_demande($data, $session) {
     // extract parameters
     $demandeId = $data['queryResult']['parameters']['number'] ?? null;
-    $action = $data['queryResult']['parameters']['action'][0] ?? '';
+    $action = $data['queryResult']['parameters']['action'] ?? [];
 
 
     if (!$demandeId) {
@@ -47,10 +47,19 @@ function Valider_demande($data, $session) {
         }
     }
 
-    $arr = processBesoinAction($demandeId, 2, "Le Validateur 2 a {$action} cette demande {$demandeId} via ChatBot", $action);
+    $fulfillmentText = "";
+    if (count($action) > 1 || $action[0] === "sent-to-admin"){
+        createNotification($demandeId,1,1,"validateur 2 a envoyé la demande #{$demandeId} à l'administrateur pour révision. Automatiqumenet par ChatBot",2);
+        $fulfillmentText = "Cette Demande etait envoyez a l'adminitrateur";
+    }else{
+        $action = $action[0];
+        $arr = processBesoinAction($demandeId, 2, "Le Validateur 2 a {$action} cette demande {$demandeId} via ChatBot", $action);
+        $fulfillmentText = $arr['success'] ?? $arr['error'];
+    }
+
     
     $response = [
-        'fulfillmentText' => $arr['success'] ?? $arr['error']
+        'fulfillmentText' => $fulfillmentText
     ];
     echo json_encode($response);
     exit;
