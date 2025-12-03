@@ -36,7 +36,8 @@ if (isset($functions[$intent])) {
 function Valider_demande($data, $session) {
     // extract parameters
     $demandeId = $data['queryResult']['parameters']['number'] ?? null;
-    $action = $data['queryResult']['parameters']['action'] ?? null;
+    $action = $data['queryResult']['parameters']['action'][0] ?? '';
+
 
     if (!$demandeId) {
         foreach ($data['queryResult']['outputContexts'] as $ctx) {
@@ -46,10 +47,10 @@ function Valider_demande($data, $session) {
         }
     }
 
-    processBesoinAction($demandeId, 2, "Le Validateur 2 a {$action} cette demande {$demandeId}", $action);
+    $arr = processBesoinAction($demandeId, 2, "Le Validateur 2 a {$action} cette demande {$demandeId} via ChatBot", $action);
     
     $response = [
-        'fulfillmentText' => "Please tell me the number you want to use: {$demandeId}"
+        'fulfillmentText' => $arr['success'] ?? $arr['error']
     ];
     echo json_encode($response);
     exit;
