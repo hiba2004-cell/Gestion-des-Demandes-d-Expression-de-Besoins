@@ -36,9 +36,8 @@ if (isset($functions[$intent])) {
 function Valider_demande($data, $session) {
     // extract parameters
     $demandeId = $data['queryResult']['parameters']['number'] ?? null;
+    $action = $data['queryResult']['parameters']['action'] ?? null;
 
-
-     // If user did NOT give a number → read context
     if (!$demandeId) {
         foreach ($data['queryResult']['outputContexts'] as $ctx) {
             if (strpos($ctx['name'], 'last_demande_context') !== false) {
@@ -47,6 +46,8 @@ function Valider_demande($data, $session) {
         }
     }
 
+    processBesoinAction($demandeId, $_SESSION['user_nom'], "Le Validateur {$_SESSION['user_nom']} a {$action} cette demande {$demandeId}", $action);
+    
     $response = [
         'fulfillmentText' => "Please tell me the number you want to use: {$demandeId}"
     ];
