@@ -10,6 +10,7 @@
 </button>
 
 <!-- Chat Container -->
+ <?php if($_SESSION['user_role'] != "Demandeur"):?>
 <div id="chatContainer" class="position-fixed z-10" style="bottom: 90px; right: 20px; display: none;">
     <div class="card" style="width: 350px; height: 500px;">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
@@ -30,6 +31,8 @@
         </div>
     </div>
 </div>
+ <?php endif; ?>
+
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
