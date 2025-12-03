@@ -35,20 +35,20 @@ if (isset($functions[$intent])) {
 
 function Valider_demande($data, $session) {
     // extract parameters
-    $number = $data['queryResult']['parameters']['number'] ?? null;
+    $demandeId = $data['queryResult']['parameters']['number'] ?? null;
 
 
      // If user did NOT give a number → read context
-    if (!$number) {
+    if (!$demandeId) {
         foreach ($data['queryResult']['outputContexts'] as $ctx) {
             if (strpos($ctx['name'], 'last_demande_context') !== false) {
-                $number = $ctx['parameters']['last_demande_id'] ?? null;
+                $demandeId = $ctx['parameters']['last_demande_id'] ?? null;
             }
         }
     }
 
     $response = [
-        'fulfillmentText' => "Please tell me the number you want to use: {$number}"
+        'fulfillmentText' => "Please tell me the number you want to use: {$demandeId}"
     ];
     echo json_encode($response);
     exit;
