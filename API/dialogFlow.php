@@ -28,8 +28,9 @@ if (isset($functions[$intent])) {
 function Valider_demande($data) {
     // extract parameters
     $number = $data['queryResult']['parameters']['number'] ?? null;
+    $action = $data['queryResult']['parameters']['action'] ?? null;
     $response = [
-        'fulfillmentText' => "Please tell me the number you want to use: $number"
+        'fulfillmentText' => "Please tell me the number you want to use: $number, $action"
     ];
     echo json_encode($response);
     exit;
