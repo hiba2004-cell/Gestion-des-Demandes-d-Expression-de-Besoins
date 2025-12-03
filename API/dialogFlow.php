@@ -36,11 +36,11 @@ if (isset($functions[$intent])) {
 function Valider_demande($data, $session) {
     // extract parameters
     $number = $data['queryResult']['parameters']['number'] ?? null;
-<<<<<<< HEAD
+
     $action = $data['queryResult']['parameters']['action'] ?? null;
     $response = [
         'fulfillmentText' => "Please tell me the number you want to use: $number, $action"
-=======
+
 
 
      // If user did NOT give a number → read context
@@ -54,7 +54,6 @@ function Valider_demande($data, $session) {
 
     $response = [
         'fulfillmentText' => "Please tell me the number you want to use: {$number}"
->>>>>>> 33d0e23c882572a86ac819b0c8d4e41961ee1de7
     ];
     echo json_encode($response);
     exit;
@@ -84,4 +83,3 @@ function getLatestDemandeAPI($data, $session){
 
     exit;
 }
-
