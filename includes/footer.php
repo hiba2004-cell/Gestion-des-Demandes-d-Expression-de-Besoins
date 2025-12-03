@@ -25,7 +25,7 @@
                 width="100%"
                 height="100%"
                 style="border: none;"
-                src="https://console.dialogflow.com/api-client/demo/embedded/69e18598-4f7d-4d50-b21d-177c9adcfe12?userId=<?php echo urlencode($_SESSION['user_id'] ?? ''); ?>&userName=<?php echo urlencode($_SESSION['user_nom'] ?? ''); ?>">
+                src="https://console.dialogflow.com/api-client/demo/embedded/69e18598-4f7d-4d50-b21d-177c9adcfe12">
             </iframe>
         </div>
     </div>
@@ -38,13 +38,6 @@
 <script src="assets/js/script.js"></script>
 
 <script>
-// User session data from PHP
-const userData = {
-    userId: <?php echo json_encode($_SESSION['user_id'] ?? null); ?>,
-    userName: <?php echo json_encode($_SESSION['user_nom'] ?? null); ?>,
-    userRole: <?php echo json_encode($_SESSION['user_role'] ?? null); ?>,
-    userEmail: <?php echo json_encode($_SESSION['user_email'] ?? null); ?>
-};
 
 // Chat toggle functionality
 document.addEventListener('DOMContentLoaded', function() {
@@ -65,10 +58,6 @@ document.addEventListener('DOMContentLoaded', function() {
             chatToggleBtn.innerHTML = '<i class="fas fa-times"></i>';
             chatBadge.style.display = 'none';
             
-            // Send user data to Dialogflow via postMessage
-            setTimeout(() => {
-                sendUserDataToDialogflow();
-            }, 1000);
         } else {
             chatContainer.style.display = 'none';
             chatToggleBtn.innerHTML = '<i class="fas fa-comments"></i>';
@@ -82,15 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
         isChatOpen = false;
     });
     
-    // Send user data to Dialogflow iframe
-    function sendUserDataToDialogflow() {
-        if (dialogflowIframe && dialogflowIframe.contentWindow) {
-            dialogflowIframe.contentWindow.postMessage({
-                type: 'USER_DATA',
-                data: userData
-            }, '*');
-        }
-    }
+    
     
     // Listen for messages from Dialogflow iframe
     window.addEventListener('message', function(event) {
