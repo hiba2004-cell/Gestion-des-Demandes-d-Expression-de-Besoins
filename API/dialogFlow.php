@@ -49,11 +49,11 @@ function Valider_demande($data, $session) {
 
     $fulfillmentText = "";
     if (count($action) > 1 || $action[0] === "sent-to-admin"){
-        createNotification($demandeId,1,1,"validateur 2 a envoyé la demande #{$demandeId} à l'administrateur pour révision. Automatiqumenet par ChatBot",2);
+        createNotification($demandeId,1,1,"validateur 2 a envoyé la demande #{$demandeId} à l'administrateur pour révision. Automatiqumenet par Maliiia",2);
         $fulfillmentText = "Cette Demande etait envoyez a l'adminitrateur";
     }else{
         $action = $action[0];
-        $arr = processBesoinAction($demandeId, 2, "Le Validateur 2 a {$action} cette demande {$demandeId} via ChatBot", $action);
+        $arr = processBesoinAction($demandeId, 2, "Le Validateur 2 a {$action} cette demande {$demandeId} via Maliiia", $action);
         $fulfillmentText = $arr['success'] ?? $arr['error'];
     }
 

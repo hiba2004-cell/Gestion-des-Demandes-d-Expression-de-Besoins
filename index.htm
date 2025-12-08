@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GestBesoins - Gestion des Demandes d'Expression de Besoins</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* 3D Card Effect */
+    .card-3d {
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+
+    .card-3d-inner {
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+
+    .card-3d:hover .card-3d-inner {
+      transform: rotateY(10deg) rotateX(5deg);
+    }
+
+    /* Floating Animation */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(2deg); }
+    }
+
+    @keyframes float-delayed {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(-2deg); }
+    }
+
+    @keyframes float-slow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .float { animation: float 6s ease-in-out infinite; }
+    .float-delayed { animation: float-delayed 7s ease-in-out infinite 1s; }
+    .float-slow { animation: float-slow 8s ease-in-out infinite 0.5s; }
+
+    /* Gradient Animation */
+    @keyframes gradient-shift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .animated-gradient {
+      background: linear-gradient(-45deg, #0ea5e9, #6366f1, #8b5cf6, #0ea5e9);
+      background-size: 400% 400%;
+      animation: gradient-shift 8s ease infinite;
+    }
+
+    /* Pulse Ring */
+    @keyframes pulse-ring {
+      0% { transform: scale(0.8); opacity: 1; }
+      100% { transform: scale(2); opacity: 0; }
+    }
+
+    .pulse-ring::before {
+      content: '';
+      position: absolute;
+      inset: -20px;
+      border: 2px solid #0ea5e9;
+      border-radius: 50%;
+      animation: pulse-ring 2s ease-out infinite;
+    }
+
+    /* 3D Cube */
+    .cube-container {
+      perspective: 800px;
+    }
+
+    .cube {
+      width: 80px;
+      height: 80px;
+      transform-style: preserve-3d;
+      animation: rotate-cube 12s linear infinite;
+    }
+
+    @keyframes rotate-cube {
+      0% { transform: rotateX(0deg) rotateY(0deg); }
+      100% { transform: rotateX(360deg) rotateY(360deg); }
+    }
+
+    .cube-face {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border: 2px solid rgba(99, 102, 241, 0.3);
+      background: rgba(99, 102, 241, 0.1);
+      backdrop-filter: blur(5px);
+    }
+
+    .cube-face.front { transform: translateZ(40px); }
+    .cube-face.back { transform: rotateY(180deg) translateZ(40px); }
+    .cube-face.right { transform: rotateY(90deg) translateZ(40px); }
+    .cube-face.left { transform: rotateY(-90deg) translateZ(40px); }
+    .cube-face.top { transform: rotateX(90deg) translateZ(40px); }
+    .cube-face.bottom { transform: rotateX(-90deg) translateZ(40px); }
+
+    /* Orbiting Elements */
+    @keyframes orbit {
+      0% { transform: rotate(0deg) translateX(120px) rotate(0deg); }
+      100% { transform: rotate(360deg) translateX(120px) rotate(-360deg); }
+    }
+
+    @keyframes orbit-reverse {
+      0% { transform: rotate(0deg) translateX(80px) rotate(0deg); }
+      100% { transform: rotate(-360deg) translateX(80px) rotate(360deg); }
+    }
+
+    .orbit { animation: orbit 20s linear infinite; }
+    .orbit-reverse { animation: orbit-reverse 15s linear infinite; }
+
+    /* Slide Up Animation */
+    @keyframes slide-up {
+      0% { opacity: 0; transform: translateY(60px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-up {
+      animation: slide-up 0.8s ease-out forwards;
+      opacity: 0;
+    }
+
+    .slide-up-delay-1 { animation-delay: 0.2s; }
+    .slide-up-delay-2 { animation-delay: 0.4s; }
+    .slide-up-delay-3 { animation-delay: 0.6s; }
+    .slide-up-delay-4 { animation-delay: 0.8s; }
+
+    /* Glow Effect */
+    .glow {
+      box-shadow: 0 0 60px rgba(99, 102, 241, 0.3), 0 0 100px rgba(14, 165, 233, 0.2);
+    }
+
+    /* Morphing Blob */
+    @keyframes morph {
+      0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+      25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+      50% { border-radius: 50% 60% 30% 60% / 30% 60% 70% 40%; }
+      75% { border-radius: 60% 40% 60% 30% / 70% 30% 50% 60%; }
+    }
+
+    .blob {
+      animation: morph 8s ease-in-out infinite;
+    }
+
+    /* Typewriter Effect */
+    @keyframes typewriter {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+
+    .typewriter {
+      overflow: hidden;
+      white-space: nowrap;
+      border-right: 3px solid #6366f1;
+      animation: typewriter 3s steps(40) 1s forwards, blink 0.75s step-end infinite;
+    }
+
+    /* Particle Effect */
+    @keyframes particle-float {
+      0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.5; }
+      25% { transform: translateY(-30px) translateX(10px) scale(1.1); opacity: 0.8; }
+      50% { transform: translateY(-60px) translateX(-10px) scale(1); opacity: 0.5; }
+      75% { transform: translateY(-30px) translateX(15px) scale(0.9); opacity: 0.7; }
+    }
+
+    .particle {
+      animation: particle-float 10s ease-in-out infinite;
+    }
+
+    /* 3D Button */
+    .btn-3d {
+      transform: translateY(0);
+      box-shadow: 0 6px 0 #4338ca, 0 10px 20px rgba(0,0,0,0.2);
+      transition: all 0.15s ease;
+    }
+
+    .btn-3d:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 0 #4338ca, 0 12px 25px rgba(0,0,0,0.25);
+    }
+
+    .btn-3d:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #4338ca, 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    /* Rotating Border */
+    @keyframes rotate-border {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .rotating-border::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      background: conic-gradient(from 0deg, #0ea5e9, #6366f1, #8b5cf6, #0ea5e9);
+      border-radius: inherit;
+      animation: rotate-border 4s linear infinite;
+      z-index: -1;
+    }
+
+    /* Scale on Scroll */
+    .scale-in {
+      transform: scale(0.9);
+      opacity: 0;
+      transition: all 0.6s ease-out;
+    }
+
+    .scale-in.visible {
+      transform: scale(1);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 overflow-x-hidden">
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl animated-gradient flex items-center justify-center">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+          </div>
+          <span class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-sky-500 bg-clip-text text-transparent">GestBesoins</span>
+        </div>
+        <div class="hidden md:flex items-center gap-8">
+          <a href="#features" class="text-slate-600 hover:text-indigo-600 transition-colors font-medium">Fonctionnalités</a>
+          <a href="#process" class="text-slate-600 hover:text-indigo-600 transition-colors font-medium">Processus</a>
+          <a href="#benefits" class="text-slate-600 hover:text-indigo-600 transition-colors font-medium">Avantages</a>
+          <button class="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-all hover:scale-105 shadow-lg shadow-indigo-500/30">
+            Connexion
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="min-h-screen pt-32 pb-20 relative overflow-hidden">
+    <!-- Background Elements -->
+    <div class="absolute inset-0 overflow-hidden">
+      <!-- Gradient Blobs -->
+      <div class="absolute top-20 left-10 w-96 h-96 bg-indigo-200/50 rounded-full blur-3xl blob"></div>
+      <div class="absolute bottom-20 right-10 w-80 h-80 bg-sky-200/50 rounded-full blur-3xl blob" style="animation-delay: -4s;"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-violet-100/30 rounded-full blur-3xl"></div>
+      
+      <!-- Floating Particles -->
+      <div class="particle absolute top-1/4 left-1/4 w-3 h-3 bg-indigo-400 rounded-full opacity-50"></div>
+      <div class="particle absolute top-1/3 right-1/4 w-2 h-2 bg-sky-400 rounded-full opacity-50" style="animation-delay: -3s;"></div>
+      <div class="particle absolute bottom-1/4 left-1/3 w-4 h-4 bg-violet-400 rounded-full opacity-50" style="animation-delay: -5s;"></div>
+      <div class="particle absolute top-2/3 right-1/3 w-2 h-2 bg-indigo-300 rounded-full opacity-50" style="animation-delay: -7s;"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 relative">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <!-- Left Content -->
+        <div class="space-y-8">
+          <div class="slide-up">
+            <span class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full text-sm font-semibold">
+              <span class="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></span>
+              Nouvelle Plateforme
+            </span>
+          </div>
+          
+          <h1 class="text-5xl lg:text-6xl font-extrabold leading-tight slide-up slide-up-delay-1">
+            <span class="text-slate-800">Gestion des</span><br>
+            <span class="bg-gradient-to-r from-indigo-600 via-violet-600 to-sky-500 bg-clip-text text-transparent">Demandes</span>
+            <span class="text-slate-800"> de</span><br>
+            <span class="bg-gradient-to-r from-sky-500 to-indigo-600 bg-clip-text text-transparent">Besoins</span>
+          </h1>
+          
+          <p class="text-xl text-slate-600 leading-relaxed max-w-lg slide-up slide-up-delay-2">
+            Digitalisez et optimisez le processus de gestion de vos demandes avec une solution moderne, intuitive et performante.
+          </p>
+          
+          <div class="flex flex-wrap gap-4 slide-up slide-up-delay-3">
+            <button class="btn-3d px-8 py-4 bg-indigo-600 text-white rounded-2xl font-bold text-lg">
+              Commencer Maintenant
+            </button>
+            <button class="px-8 py-4 bg-white text-slate-700 rounded-2xl font-bold text-lg border-2 border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 transition-all flex items-center gap-3 group">
+              <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
+                <svg class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </div>
+              Voir la Démo
+            </button>
+          </div>
+          
+          <div class="flex items-center gap-8 pt-4 slide-up slide-up-delay-4">
+            <div class="flex -space-x-3">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 border-2 border-white"></div>
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-sky-400 to-sky-600 border-2 border-white"></div>
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-violet-400 to-violet-600 border-2 border-white"></div>
+              <div class="w-10 h-10 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-xs font-bold text-slate-600">+50</div>
+            </div>
+            <p class="text-slate-600"><span class="font-bold text-slate-800">+500</span> utilisateurs actifs</p>
+          </div>
+        </div>
+        
+        <!-- Right Content - 3D Illustration -->
+        <div class="relative h-[500px] hidden lg:block">
+          <!-- Central 3D Element -->
+          <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <!-- Main Card -->
+            <div class="card-3d">
+              <div class="card-3d-inner w-72 h-96 bg-white rounded-3xl shadow-2xl p-6 glow">
+                <div class="h-full flex flex-col">
+                  <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 rounded-2xl animated-gradient"></div>
+                    <div>
+                      <div class="h-3 w-24 bg-slate-200 rounded-full"></div>
+                      <div class="h-2 w-16 bg-slate-100 rounded-full mt-2"></div>
+                    </div>
+                  </div>
+                  <div class="space-y-4 flex-1">
+                    <div class="p-4 bg-gradient-to-r from-indigo-50 to-sky-50 rounded-2xl border border-indigo-100">
+                      <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center">
+                          <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                          </svg>
+                        </div>
+                        <span class="text-sm font-medium text-slate-700">Demande approuvée</span>
+                      </div>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-2xl">
+                      <div class="h-2 w-full bg-slate-200 rounded-full"></div>
+                      <div class="h-2 w-3/4 bg-slate-100 rounded-full mt-2"></div>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-2xl">
+                      <div class="h-2 w-full bg-slate-200 rounded-full"></div>
+                      <div class="h-2 w-1/2 bg-slate-100 rounded-full mt-2"></div>
+                    </div>
+                  </div>
+                  <button class="w-full py-3 bg-indigo-600 text-white rounded-xl font-semibold mt-4">
+                    Voir détails
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Orbiting Elements -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-0 h-0">
+              <div class="orbit">
+                <div class="w-14 h-14 bg-white rounded-2xl shadow-xl flex items-center justify-center">
+                  <svg class="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-0 h-0">
+              <div class="orbit-reverse">
+                <div class="w-12 h-12 bg-gradient-to-br from-sky-400 to-sky-600 rounded-xl shadow-xl flex items-center justify-center">
+                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Floating Cards -->
+          <div class="absolute top-10 right-10 float">
+            <div class="w-48 bg-white rounded-2xl shadow-xl p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-500">Efficacité</p>
+                  <p class="text-lg font-bold text-slate-800">+85%</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="absolute bottom-20 left-0 float-delayed">
+            <div class="w-52 bg-white rounded-2xl shadow-xl p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-500">Temps de traitement</p>
+                  <p class="text-lg font-bold text-slate-800">-60%</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 3D Cube -->
+          <div class="absolute bottom-10 right-20 cube-container">
+            <div class="cube">
+              <div class="cube-face front"></div>
+              <div class="cube-face back"></div>
+              <div class="cube-face right"></div>
+              <div class="cube-face left"></div>
+              <div class="cube-face top"></div>
+              <div class="cube-face bottom"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+      <span class="text-sm text-slate-500">Défiler</span>
+      <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="py-24 bg-white relative">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <span class="inline-block px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full text-sm font-semibold mb-4">Fonctionnalités</span>
+        <h2 class="text-4xl lg:text-5xl font-extrabold text-slate-800 mb-6">
+          Tout ce dont vous avez <span class="bg-gradient-to-r from-indigo-600 to-sky-500 bg-clip-text text-transparent">besoin</span>
+        </h2>
+        <p class="text-xl text-slate-600 max-w-2xl mx-auto">
+          Une suite complète d'outils pour gérer efficacement toutes vos demandes d'expression de besoins.
+        </p>
+      </div>
+      
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="group p-8 bg-gradient-to-br from-slate-50 to-white rounded-3xl border border-slate-100 hover:border-indigo-200 transition-all hover:shadow-xl hover:-translate-y-2 duration-300">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-indigo-500/30">
+            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-slate-800 mb-3">Création Simplifiée</h3>
+          <p class="text-slate-600 leading-relaxed">Créez vos demandes en quelques clics grâce à une interface intuitive et des formulaires intelligents.</p>
+        </div>
+        
+        <!-- Feature 2 -->
+        <div class="group p-8 bg-gradient-to-br from-slate-50 to-white rounded-3xl border border-slate-100 hover:border-sky-200 transition-all hover:shadow-xl hover:-translate-y-2 duration-300">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-sky-500/30">
+            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-slate-800 mb-3">Suivi en Temps Réel</h3>
+          <p class="text-slate-600 leading-relaxed">Suivez l'avancement de vos demandes avec des mises à jour instantanées et des notifications.</p>
+        </div>
+        
+        <!-- Feature 3 -->
+        <div class="group p-8 bg-gradient-to-br from-slate-50 to-white rounded-3xl border border-slate-100 hover:border-violet-200 transition-all hover:shadow-xl hover:-translate-y-2 duration-300">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-violet-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-violet-500/30">
+            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-slate-800 mb-3">Tableaux de Bord</h3>
+          <p class="text-slate-600 leading-relaxed">Visualisez toutes vos données avec des tableaux de bord interactifs et personnalisables.</p>
+        </div>
+        
+        <!-- Feature 4 -->
+        <div class="group p-8 bg-gradient-to-br from-slate-50 to-white rounded-3xl border border-slate-100 hover:border-emerald-200 transition-all hover:shadow-xl hover:-translate-y-2 duration-300">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-emerald-500/30">
+            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-slate-800 mb-3">Sécurité Renforcée</h3>
+          <p class="text-slate-600 leading-relaxed">Protégez vos données avec un système d'authentification robuste et des permissions granulaires.</p>
+        </div>
+        
+        <!-- Feature 5 -->
+        <div class="group p-8 bg-gradient-to-br from-slate-50 to-white rounded-3xl border border-slate-100 hover:border-amber-200 transition-all hover:shadow-xl hover:-translate-y-2 duration-300">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-amber-500/30">
+            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-slate-800 mb-3">Notifications</h3>
+          <p class="text-slate-600 leading-relaxed">Restez informé avec des alertes personnalisées par email et sur la plateforme.</p>
+        </div>
+        
+        <!-- Feature 6 -->
+        <div class="group p-8 bg-gradient-to-br from-slate-50 to-white rounded-3xl border border-slate-100 hover:border-rose-200 transition-all hover:shadow-xl hover:-translate-y-2 duration-300">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-rose-500 to-rose-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-rose-500/30">
+            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-slate-800 mb-3">Gestion des Rôles</h3>
+          <p class="text-slate-600 leading-relaxed">Définissez les rôles et permissions pour chaque utilisateur selon leur fonction.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Section -->
+  <section id="process" class="py-24 bg-gradient-to-b from-slate-50 to-white relative overflow-hidden">
+    <!-- Background Decoration -->
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+      <div class="absolute -top-40 -right-40 w-80 h-80 bg-indigo-100 rounded-full blur-3xl opacity-50"></div>
+      <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-sky-100 rounded-full blur-3xl opacity-50"></div>
+    </div>
+    
+    <div class="max-w-7xl mx-auto px-6 relative">
+      <div class="text-center mb-16">
+        <span class="inline-block px-4 py-2 bg-sky-100 text-sky-700 rounded-full text-sm font-semibold mb-4">Processus</span>
+        <h2 class="text-4xl lg:text-5xl font-extrabold text-slate-800 mb-6">
+          Comment ça <span class="bg-gradient-to-r from-sky-500 to-indigo-600 bg-clip-text text-transparent">fonctionne</span>
+        </h2>
+        <p class="text-xl text-slate-600 max-w-2xl mx-auto">
+          Un processus simple et efficace en quatre étapes pour gérer vos demandes.
+        </p>
+      </div>
+      
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Step 1 -->
+        <div class="relative group">
+          <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-sky-500 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-300"></div>
+          <div class="relative bg-white rounded-3xl p-8 h-full">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center mb-6 text-2xl font-bold text-white shadow-lg">
+              1
+            </div>
+            <h3 class="text-xl font-bold text-slate-800 mb-3">Créer</h3>
+            <p class="text-slate-600">L'employé crée une nouvelle demande en remplissant le formulaire avec les détails du besoin.</p>
+          </div>
+          <!-- Arrow -->
+          <div class="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-10">
+            <svg class="w-8 h-8 text-indigo-300" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </div>
+        
+        <!-- Step 2 -->
+        <div class="relative group">
+          <div class="absolute -inset-1 bg-gradient-to-r from-sky-500 to-violet-500 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-300"></div>
+          <div class="relative bg-white rounded-3xl p-8 h-full">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-600 flex items-center justify-center mb-6 text-2xl font-bold text-white shadow-lg">
+              2
+            </div>
+            <h3 class="text-xl font-bold text-slate-800 mb-3">Valider</h3>
+            <p class="text-slate-600">Le responsable hiérarchique examine et valide ou rejette la demande soumise.</p>
+          </div>
+          <!-- Arrow -->
+          <div class="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-10">
+            <svg class="w-8 h-8 text-sky-300" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </div>
+        
+        <!-- Step 3 -->
+        <div class="relative group">
+          <div class="absolute -inset-1 bg-gradient-to-r from-violet-500 to-emerald-500 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-300"></div>
+          <div class="relative bg-white rounded-3xl p-8 h-full">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-violet-600 flex items-center justify-center mb-6 text-2xl font-bold text-white shadow-lg">
+              3
+            </div>
+            <h3 class="text-xl font-bold text-slate-800 mb-3">Traiter</h3>
+            <p class="text-slate-600">L'équipe concernée traite la demande et met à jour son statut en temps réel.</p>
+          </div>
+          <!-- Arrow -->
+          <div class="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-10">
+            <svg class="w-8 h-8 text-violet-300" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </div>
+        
+        <!-- Step 4 -->
+        <div class="relative group">
+          <div class="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-indigo-500 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-300"></div>
+          <div class="relative bg-white rounded-3xl p-8 h-full">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mb-6 text-2xl font-bold text-white shadow-lg">
+              4
+            </div>
+            <h3 class="text-xl font-bold text-slate-800 mb-3">Clôturer</h3>
+            <p class="text-slate-600">La demande est clôturée et archivée pour une traçabilité complète.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits Section -->
+  <section id="benefits" class="py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <div class="order-2 lg:order-1">
+          <div class="relative">
+            <!-- Main Stats Card -->
+            <div class="bg-gradient-to-br from-indigo-600 to-violet-600 rounded-3xl p-8 text-white shadow-2xl">
+              <h3 class="text-2xl font-bold mb-8">Impact sur votre organisation</h3>
+              <div class="grid grid-cols-2 gap-6">
+                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+                  <div class="text-4xl font-extrabold mb-2">85%</div>
+                  <div class="text-indigo-200">Réduction des erreurs</div>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+                  <div class="text-4xl font-extrabold mb-2">60%</div>
+                  <div class="text-indigo-200">Gain de temps</div>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+                  <div class="text-4xl font-extrabold mb-2">100%</div>
+                  <div class="text-indigo-200">Traçabilité</div>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+                  <div class="text-4xl font-extrabold mb-2">24/7</div>
+                  <div class="text-indigo-200">Accessibilité</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Floating Badge -->
+            <div class="absolute -top-6 -right-6 float">
+              <div class="bg-white rounded-2xl shadow-xl p-4 flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center">
+                  <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </div>
+                <div>
+                  <div class="text-sm text-slate-500">ROI Moyen</div>
+                  <div class="text-xl font-bold text-slate-800">+250%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="order-1 lg:order-2 space-y-8">
+          <span class="inline-block px-4 py-2 bg-emerald-100 text-emerald-700 rounded-full text-sm font-semibold">Avantages</span>
+          <h2 class="text-4xl lg:text-5xl font-extrabold text-slate-800">
+            Transformez votre <span class="bg-gradient-to-r from-emerald-500 to-sky-500 bg-clip-text text-transparent">productivité</span>
+          </h2>
+          
+          <div class="space-y-6">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center flex-shrink-0 mt-1">
+                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <div>
+                <h4 class="text-lg font-bold text-slate-800 mb-1">Élimination des pertes de demandes</h4>
+                <p class="text-slate-600">Chaque demande est enregistrée et suivie dans un système centralisé.</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center flex-shrink-0 mt-1">
+                <svg class="w-5 h-5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <div>
+                <h4 class="text-lg font-bold text-slate-800 mb-1">Réduction des délais de validation</h4>
+                <p class="text-slate-600">Workflow automatisé pour accélérer le processus d'approbation.</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center flex-shrink-0 mt-1">
+                <svg class="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <div>
+                <h4 class="text-lg font-bold text-slate-800 mb-1">Reporting et analyses avancés</h4>
+                <p class="text-slate-600">Générez des rapports détaillés pour une meilleure prise de décision.</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-1">
+                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <div>
+                <h4 class="text-lg font-bold text-slate-800 mb-1">Conformité et audit simplifiés</h4>
+                <p class="text-slate-600">Historique complet de toutes les actions pour faciliter les audits.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-24 relative overflow-hidden">
+    <div class="absolute inset-0 animated-gradient opacity-90"></div>
+    
+    <!-- Decorative Elements -->
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="absolute top-10 left-10 w-32 h-32 border border-white/20 rounded-full float"></div>
+      <div class="absolute bottom-10 right-10 w-48 h-48 border border-white/20 rounded-full float-delayed"></div>
+      <div class="absolute top-1/2 left-1/4 w-24 h-24 border border-white/10 rounded-lg rotate-45 float-slow"></div>
+    </div>
+    
+    <div class="max-w-4xl mx-auto px-6 text-center relative">
+      <h2 class="text-4xl lg:text-5xl font-extrabold text-white mb-6">
+        Prêt à transformer votre gestion des besoins ?
+      </h2>
+      <p class="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
+        Rejoignez les organisations qui ont déjà optimisé leur processus de gestion des demandes.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <button class="px-8 py-4 bg-white text-indigo-600 rounded-2xl font-bold text-lg hover:bg-slate-100 transition-all hover:scale-105 shadow-xl">
+          Démarrer Gratuitement
+        </button>
+        <button class="px-8 py-4 bg-transparent text-white rounded-2xl font-bold text-lg border-2 border-white/50 hover:bg-white/10 transition-all">
+          Demander une Démo
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 py-16">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid md:grid-cols-4 gap-12 mb-12">
+        <div class="space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl animated-gradient flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+            </div>
+            <span class="text-xl font-bold text-white">GestBesoins</span>
+          </div>
+          <p class="text-slate-500">La solution moderne pour la gestion de vos demandes d'expression de besoins.</p>
+        </div>
+        
+        <div>
+          <h4 class="text-white font-semibold mb-4">Produit</h4>
+          <ul class="space-y-3">
+            <li><a href="#" class="hover:text-white transition-colors">Fonctionnalités</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Tarification</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Documentation</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">API</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-white font-semibold mb-4">Entreprise</h4>
+          <ul class="space-y-3">
+            <li><a href="#" class="hover:text-white transition-colors">À propos</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Carrières</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-white font-semibold mb-4">Légal</h4>
+          <ul class="space-y-3">
+            <li><a href="#" class="hover:text-white transition-colors">Confidentialité</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Conditions</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Sécurité</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <p class="text-slate-500">&copy; 2025 GestBesoins. Tous droits réservés.</p>
+        <div class="flex gap-4">
+          <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-indigo-600 transition-colors">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+          </a>
+          <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-indigo-600 transition-colors">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          </a>
+          <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-indigo-600 transition-colors">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scroll Animation Script -->
+  <script>
+    // Intersection Observer for scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.scale-in').forEach(el => observer.observe(el));
+
+    // Smooth scroll for navigation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
+</html>
