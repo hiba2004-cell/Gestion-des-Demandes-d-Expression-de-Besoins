@@ -65,9 +65,9 @@ try {
     // Vérification de l'état avant toute action
     if (in_array($demande_data['statut'], ['Validée', 'Rejetée', 'Traitée'])) {
         // Si la demande est déjà finalisée, on redirige immédiatement
-        $_SESSION['action_result'] = [
-            'error' => "Cette demande a déjà été finalisée (Statut: {$demande_data['statut']}) et ne peut être modifiée."
-        ];
+        // $_SESSION['action_result'] = [
+        //     'error' => "Cette demande a déjà été finalisée (Statut: {$demande_data['statut']}) et ne peut être modifiée."
+        // ];
         header("Location: /besoins/dashboard-validateur.php");
         exit;
     }

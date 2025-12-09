@@ -28,71 +28,71 @@ $params = [];
 // Filtre statut
 $selected_statut = $_GET['statut'] ?? '';
 if (!empty($selected_statut)) {
-$where[] = "d.statut = ?";
-$params[] = $selected_statut;
+    $where[] = "d.statut = :statut";
+    $params['statut'] = $selected_statut;
 }
 
 // Filtre demandeur
 $selected_demandeur = $_GET['demandeur'] ?? '';
 if (!empty($selected_demandeur)) {
-$where[] = "u.nom LIKE ?";
-$params[] = "%" . $selected_demandeur . "%";
+    $where[] = "u.nom LIKE :demandeur";
+    $params['demandeur'] = "%" . $selected_demandeur . "%";
 }
 
 // Filtre date
 $selected_date = $_GET['date'] ?? '';
 if (!empty($selected_date)) {
-$where[] = "DATE(d.date_creation) = ?";
-$params[] = $selected_date;
+    $where[] = "DATE(d.date_creation) = :date_creation";
+    $params['date_creation'] = $selected_date;
 }
 
 // Requête de base
 $query = "
-SELECT d.*, t.libelle AS type_besoin, u.nom AS demandeur, u.email AS demandeur_email
-FROM demandes d
-LEFT JOIN types_besoins t ON d.type_besoin_id = t.id
-LEFT JOIN users u ON d.user_id = u.id
-LEFT JOIN validation v ON v.demande_id = d.id
-WHERE v.demande_id IS NULL AND d.type_besoin_id = :service_id AND d.statut NOT IN ('Traitée')
+    SELECT d.*, t.libelle AS type_besoin, u.nom AS demandeur, u.email AS demandeur_email
+    FROM demandes d
+    LEFT JOIN types_besoins t ON d.type_besoin_id = t.id
+    LEFT JOIN users u ON d.user_id = u.id
+    LEFT JOIN validation v ON v.demande_id = d.id
+    WHERE v.demande_id IS NULL
+      AND d.type_besoin_id = :service_id
+      AND d.statut NOT IN ('Traitée')
+";
+
+// Ajouter les filtres éventuels
+if ($where) {
+    $query .= " AND " . implode(" AND ", $where);
+}
+
+$query .= "
+    ORDER BY
+      CASE d.statut
+        WHEN 'En attente' THEN 1
+        WHEN 'En cours de validation' THEN 2
+        ELSE 3
+      END,
+    d.date_creation DESC
 ";
 
 $params['service_id'] = $_SESSION['user_service'];
 
-
-// Ajouter les filtres éventuels
-if ($where) {
-$query .= " AND " . implode(" AND ", $where);
-}
-
-// Tri par statut prioritaire puis date de création
-$query .= "
-ORDER BY
-CASE d.statut
-WHEN 'En attente' THEN 1
-WHEN 'En cours de validation' THEN 2
-ELSE 3
-END,
-d.date_creation DESC
-";
-
 try {
-$pdo = getConnection();
-$stmt = $pdo->prepare($query);
-$stmt->execute($params);
-$demandes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-$total_demandes = count($demandes);
+    $pdo = getConnection();
+    $stmt = $pdo->prepare($query);
+    $stmt->execute($params);
+    $demandes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $total_demandes = count($demandes);
 } catch (PDOException $e) {
-$demandes = [];
-$total_demandes = 0;
-$error_message = "Erreur de base de données : " . $e->getMessage();
+    $demandes = [];
+    $total_demandes = 0;
+    $error_message = "Erreur de base de données : " . $e->getMessage();
 }
 
 // Messages de succès / erreur depuis les actions précédentes
 $success_message = null;
-if(isset($_SESSION['action_result']['error'])){
-$error_message .= '<br>' . $_SESSION['action_result']['error'];
-} elseif(isset($_SESSION['action_result']['success'])){
-$success_message = $_SESSION['action_result']['success'];
+if (isset($_SESSION['action_result']['error'])) {
+    $error_message .= '<br>' . $_SESSION['action_result']['error'];
+} elseif (isset($_SESSION['action_result']['success'])) {
+    $success_message = $_SESSION['action_result']['success'];
 }
 $_SESSION['action_result'] = null;
 ?>
@@ -306,7 +306,9 @@ $_SESSION['action_result'] = null;
 
     </div>
 
+<?php require_once './includes/footer.php'; ?>
+<!-- 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
-</html>
+</html> -->

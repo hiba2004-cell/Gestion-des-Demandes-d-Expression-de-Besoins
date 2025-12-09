@@ -588,7 +588,7 @@ function getLatestDemande(){
     ";
     $stmt = $conn->prepare($query);
     $params = [
-        "service_id" => $_SESSION['user_service'] ?? 1
+        "service_id" => $_SESSION['user_service'] ?? 4
     ];
 
     $stmt->execute($params);
