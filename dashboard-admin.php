@@ -13,6 +13,12 @@ try {
     $recentBesoins = ['besoins' => [], 'total' => 0];
     setFlashMessage('error', 'Erreur de connexion à la base de données : ' . $e->getMessage());
 }
+try {
+    $budget = getBudgetStats();
+} catch (Exception $e) {
+    $budget = ['total' => 0, 'consomme' => 0, 'restant' => 0];
+}
+
 ?>
 <!-- Contenu principal -->
 <div class="pt-3 pb-2 mb-3">
@@ -106,6 +112,45 @@ try {
                         ?>
                     </h4>
                     <p class="card-text">Besoins Rejetée</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row mb-4">
+
+        <div class="col-md-4 mb-3">
+            <div class="card stats-card bg-dark text-white">
+                <div class="card-body text-center">
+                    <i class="bi bi-cash-coin display-4 mb-2 text-warning"></i>
+                    <h4 class="card-title">
+                        <?php echo number_format($budget['total'], 2, ',', ' '); ?> MAD
+                    </h4>
+                    <p class="card-text">Budget Total</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card stats-card bg-danger text-white">
+                <div class="card-body text-center">
+                    <i class="bi bi-arrow-up-circle display-4 mb-2 text-white"></i>
+                    <h4 class="card-title">
+                        <?php echo number_format($budget['consomme'], 2, ',', ' '); ?> MAD
+                    </h4>
+                    <p class="card-text">Budget Consommé</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card stats-card bg-success text-white">
+                <div class="card-body text-center">
+                    <i class="bi bi-piggy-bank display-4 mb-2 text-white"></i>
+                    <h4 class="card-title">
+                        <?php echo number_format($budget['restant'], 2, ',', ' '); ?> MAD
+                    </h4>
+                    <p class="card-text">Budget Restant</p>
                 </div>
             </div>
         </div>

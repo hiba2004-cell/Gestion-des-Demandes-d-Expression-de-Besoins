@@ -36,6 +36,15 @@ if($action==='send-to-admin'){
     // exit;
 }
 
+$budget = getBudgetStats();
+
+if ($demandes['prix'] > $budget['restant']) {
+    setFlashMessage('error', "Budget insuffisant pour accepter cette demande.");
+    header("Location: detail-besoin.php?id=" . $demandes['id']);
+    exit;
+}
+
+// sinon continuer la validation
 
 $validator_id = $_SESSION['user_id'];
 $libelle_action = ($action === 'valider') ? 'Valider' : 'Rejeter';

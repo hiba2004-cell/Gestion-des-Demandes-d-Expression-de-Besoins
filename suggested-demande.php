@@ -6,6 +6,9 @@ error_reporting(E_ALL);
 session_start();
 require_once 'config/database.php';
 
+function generateRandomPrice() {
+    return mt_rand(50, 5000) + (mt_rand(0, 99) / 100);
+}
 
 $pdo = getConnection();
 
@@ -18,33 +21,41 @@ $stmt = $pdo->query("
 ");
 $materials = $stmt->fetchAll();
 
+foreach ($materials as &$material) {
+    $material['prix_unitaire'] = generateRandomPrice();
+}
+unset($material);
+
 // Fetch types for filter
 $typesStmt = $pdo->query("SELECT * FROM types_besoins");
 $types = $typesStmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catalogue du Matériel Disponible | Expression des Besoins</title>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-    
+
     <!-- Animate.css -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <link href="assets/css/demande-style.css" rel="stylesheet">
-    
+
 </head>
+
 <body>
     <!-- Header -->
     <header class="main-header">
@@ -69,7 +80,7 @@ $types = $typesStmt->fetchAll();
             </div>
         </div>
     </header>
-    
+
     <main class="container py-4">
         <!-- Stats Section -->
         <section class="stats-section mb-4">
@@ -91,7 +102,8 @@ $types = $typesStmt->fetchAll();
                             <i class="bi bi-check-circle"></i>
                         </div>
                         <div class="stat-content">
-                            <h3><?php echo count(array_filter($materials, fn($m) => $m['statut'] === 'Disponible')); ?></h3>
+                            <h3><?php echo count(array_filter($materials, fn($m) => $m['statut'] === 'Disponible')); ?>
+                            </h3>
                             <p>En stock</p>
                         </div>
                     </div>
@@ -102,7 +114,8 @@ $types = $typesStmt->fetchAll();
                             <i class="bi bi-bookmark-star"></i>
                         </div>
                         <div class="stat-content">
-                            <h3><?php echo count(array_filter($materials, fn($m) => $m['statut'] === 'Réservé')); ?></h3>
+                            <h3><?php echo count(array_filter($materials, fn($m) => $m['statut'] === 'Réservé')); ?>
+                            </h3>
                             <p>Réservés</p>
                         </div>
                     </div>
@@ -120,7 +133,7 @@ $types = $typesStmt->fetchAll();
                 </div>
             </div>
         </section>
-        
+
         <!-- Filter Section -->
         <section class="filter-section animate__animated animate__fadeIn">
             <div class="row align-items-center">
@@ -141,11 +154,12 @@ $types = $typesStmt->fetchAll();
                     </div>
                 </div>
                 <div class="col-lg-4 mt-3 mt-lg-0">
-                    <input type="text" id="searchInput" class="form-control search-input" style="padding-left:3rem" placeholder="Rechercher un article...">
+                    <input type="text" id="searchInput" class="form-control search-input" style="padding-left:3rem"
+                        placeholder="Rechercher un article...">
                 </div>
             </div>
         </section>
-        
+
         <!-- Materials Grid -->
         <section class="materials-section">
             <div class="materials-grid" id="materialsGrid">
@@ -158,54 +172,64 @@ $types = $typesStmt->fetchAll();
                     <p>Il n'y a actuellement aucun matériel disponible dans le catalogue.</p>
                 </div>
                 <?php else: ?>
-                    <?php foreach ($materials as $index => $material): ?>
-                    <div class="material-card animate__animated animate__fadeInUp" 
-                         data-type="<?php echo $material['type_besoin_id']; ?>"
-                         data-title="<?php echo strtolower(htmlspecialchars($material['titre'])); ?>"
-                         style="animation-delay: <?php echo $index * 0.05; ?>s">
-                        <div class="material-image">
-                            <img src="<?php echo $material['image_url'] ?: 'https://via.placeholder.com/400x200/e2e8f0/64748b?text=Image'; ?>" 
-                                 alt="<?php echo htmlspecialchars($material['titre']); ?>"
-                                 loading="lazy">
-                            <span class="material-type-badge">
-                                <i class="bi bi-tag me-1"></i><?php echo htmlspecialchars($material['type_libelle']); ?>
-                            </span>
-                            <span class="material-badge <?php 
+                <?php foreach ($materials as $index => $material): ?>
+                <div class="material-card animate__animated animate__fadeInUp"
+                    data-type="<?php echo $material['type_besoin_id']; ?>"
+                    data-title="<?php echo strtolower(htmlspecialchars($material['titre'])); ?>"
+                    style="animation-delay: <?php echo $index * 0.05; ?>s">
+                    <div class="material-image">
+                        <img src="<?php echo $material['image_url'] ?: 'https://via.placeholder.com/400x200/e2e8f0/64748b?text=Image'; ?>"
+                            alt="<?php echo htmlspecialchars($material['titre']); ?>" loading="lazy">
+                        <span class="material-type-badge">
+                            <i class="bi bi-tag me-1"></i><?php echo htmlspecialchars($material['type_libelle']); ?>
+                        </span>
+                        <span class="material-price-badge">
+                            <i
+                                class="bi bi-tag-fill me-1"></i><?php echo number_format($material['prix_unitaire'], 2, ',', ' '); ?>
+                            DH
+                        </span>
+                        <span class="material-badge <?php 
                                 echo $material['statut'] === 'Disponible' ? 'disponible' : 
                                     ($material['statut'] === 'Réservé' ? 'reserve' : 'indisponible'); 
                             ?>">
-                                <?php echo $material['statut']; ?>
-                            </span>
+                            <?php echo $material['statut']; ?>
+                        </span>
+                    </div>
+                    <div class="material-content">
+                        <h3 class="material-title"><?php echo htmlspecialchars($material['titre']); ?></h3>
+                        <p class="material-description"><?php echo htmlspecialchars($material['description']); ?></p>
+                        <div class="material-price-section">
+                            <span class="price-label">Prix unitaire</span>
+                            <span
+                                class="price-value"><?php echo number_format($material['prix_unitaire'], 2, ',', ' '); ?>
+                                DH</span>
                         </div>
-                        <div class="material-content">
-                            <h3 class="material-title"><?php echo htmlspecialchars($material['titre']); ?></h3>
-                            <p class="material-description"><?php echo htmlspecialchars($material['description']); ?></p>
-                            <div class="material-meta">
-                                <div class="quantity-badge">
-                                    <i class="bi bi-boxes"></i>
-                                    <span><?php echo $material['quantite_disponible']; ?> disponible(s)</span>
-                                </div>
-                                <button class="btn-demand" 
-                                        data-id="<?php echo $material['id']; ?>"
-                                        data-title="<?php echo htmlspecialchars($material['titre']); ?>"
-                                        data-description="<?php echo htmlspecialchars($material['description']); ?>"
-                                        data-type="<?php echo $material['type_besoin_id']; ?>"
-                                        data-image="<?php echo $material['image_url']; ?>"
-                                        data-type-label="<?php echo htmlspecialchars($material['type_libelle']); ?>"
-                                        <?php echo $material['statut'] !== 'Disponible' ? 'disabled' : ''; ?>
-                                        <?php echo $material['statut'] === 'Disponible' ? 'data-bs-toggle="modal" data-bs-target="#demandModal"' : ''; ?>>
-                                    <i class="bi bi-send"></i>
-                                    Demander
-                                </button>
+                        <div class="material-meta">
+                            <div class="quantity-badge">
+                                <i class="bi bi-boxes"></i>
+                                <span><?php echo $material['quantite_disponible']; ?> disponible(s)</span>
                             </div>
+                            <button class="btn-demand" data-id="<?php echo $material['id']; ?>"
+                                data-title="<?php echo htmlspecialchars($material['titre']); ?>"
+                                data-description="<?php echo htmlspecialchars($material['description']); ?>"
+                                data-type="<?php echo $material['type_besoin_id']; ?>"
+                                data-image="<?php echo $material['image_url']; ?>"
+                                data-type-label="<?php echo htmlspecialchars($material['type_libelle']); ?>"
+                                data-price="<?php echo number_format($material['prix_unitaire'], 2, '.', ''); ?>"
+                                <?php echo $material['statut'] !== 'Disponible' ? 'disabled' : ''; ?>
+                                <?php echo $material['statut'] === 'Disponible' ? 'data-bs-toggle="modal" data-bs-target="#demandModal"' : ''; ?>>
+                                <i class="bi bi-send"></i>
+                                Demander
+                            </button>
                         </div>
                     </div>
-                    <?php endforeach; ?>
+                </div>
+                <?php endforeach; ?>
                 <?php endif; ?>
             </div>
         </section>
     </main>
-    
+
     <!-- Demand Modal -->
     <div class="modal fade" id="demandModal" tabindex="-1" aria-labelledby="demandModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -227,21 +251,23 @@ $types = $typesStmt->fetchAll();
                                 <h4 id="previewTitle"></h4>
                                 <p id="previewDescription"></p>
                                 <span class="material-preview-badge" id="previewType"></span>
+                                <span class="material-preview-price" id="previewPrice"></span>
                             </div>
                         </div>
-                        
+
                         <input type="hidden" id="materialId" name="material_id">
                         <input type="hidden" id="typeId" name="type_besoin_id">
-                        
+
                         <div class="mb-4">
                             <label class="form-label">
                                 <i class="bi bi-chat-left-text me-1"></i>
                                 Description de votre besoin
                             </label>
-                            <textarea class="form-control" id="description" name="description" rows="4" 
-                                      placeholder="Décrivez pourquoi vous avez besoin de ce matériel et comment vous comptez l'utiliser..." required></textarea>
+                            <textarea class="form-control" id="description" name="description" rows="4"
+                                placeholder="Décrivez pourquoi vous avez besoin de ce matériel et comment vous comptez l'utiliser..."
+                                required></textarea>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label class="form-label">
                                 <i class="bi bi-exclamation-triangle me-1"></i>
@@ -302,25 +328,25 @@ $types = $typesStmt->fetchAll();
             </div>
         </div>
     </div>
-    
+
     <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
-    
+
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
     $(document).ready(function() {
         // Filter functionality
         $('.filter-btn').on('click', function() {
             const filter = $(this).data('filter');
-            
+
             $('.filter-btn').removeClass('active');
             $(this).addClass('active');
-            
+
             if (filter === 'all') {
                 $('.material-card').fadeIn(300);
             } else {
@@ -333,11 +359,11 @@ $types = $typesStmt->fetchAll();
                 });
             }
         });
-        
+
         // Search functionality
         $('#searchInput').on('input', function() {
             const searchTerm = $(this).val().toLowerCase();
-            
+
             $('.material-card').each(function() {
                 const title = $(this).data('title');
                 if (title.includes(searchTerm)) {
@@ -347,42 +373,48 @@ $types = $typesStmt->fetchAll();
                 }
             });
         });
-        
+
         // Open demand modal and populate data
         $('.btn-demand').on('click', function() {
             if ($(this).is(':disabled')) return;
-            
+
             const id = $(this).data('id');
             const title = $(this).data('title');
             const description = $(this).data('description');
             const typeId = $(this).data('type');
             const typeLabel = $(this).data('type-label');
-            const image = $(this).data('image') || 'https://via.placeholder.com/120x120/e2e8f0/64748b?text=Image';
-            
+            const image = $(this).data('image') ||
+                'https://via.placeholder.com/120x120/e2e8f0/64748b?text=Image';
+            const price = $(this).data('price');
+
             $('#materialId').val(id);
             $('#typeId').val(typeId);
             $('#previewTitle').text(title);
             $('#previewDescription').text(description.substring(0, 100) + '...');
             $('#previewType').text(typeLabel);
             $('#previewImage').attr('src', image);
-            
+            $('#previewPrice').text('Prix: ' + parseFloat(price).toLocaleString('fr-FR', {
+                style: 'currency',
+                currency: 'USD'
+            }));
+
             // Pre-fill description
             $('#description').val('Demande pour: ' + title + '\n\n');
         });
-        
+
         // Form submission
         $('#demandForm').on('submit', function(e) {
             e.preventDefault();
-            
+
             const $submitBtn = $('#submitBtn');
             const $btnText = $submitBtn.find('.btn-text');
             const $spinner = $submitBtn.find('.loading-spinner');
-            
+
             // Show loading state
             $btnText.hide();
             $spinner.css('display', 'inline-block');
             $submitBtn.prop('disabled', true);
-            
+
             // Collect form data
             const formData = {
                 material_id: $('#materialId').val(),
@@ -390,7 +422,7 @@ $types = $typesStmt->fetchAll();
                 description: $('#description').val(),
                 urgence: $('input[name="urgence"]:checked').val()
             };
-            
+
             // AJAX request
             $.ajax({
                 url: 'ajax/submit_demand.php',
@@ -400,15 +432,17 @@ $types = $typesStmt->fetchAll();
                 success: function(response) {
                     // Close modal
                     $('#demandModal').modal('hide');
-                    
+
                     // Show success toast
-                    showToast('success', 'Demande envoyée!', 'Votre demande a été soumise avec succès.');
-                    
+                    showToast('success', 'Demande envoyée!',
+                        'Votre demande a été soumise avec succès.');
+
                     // Reset form
                     $('#demandForm')[0].reset();
                 },
                 error: function(xhr, status, error) {
-                    showToast('error', 'Erreur', 'Une erreur est survenue. Veuillez réessayer. ');
+                    showToast('error', 'Erreur',
+                        'Une erreur est survenue. Veuillez réessayer. ');
                 },
                 complete: function() {
                     // Reset button state
@@ -418,15 +452,15 @@ $types = $typesStmt->fetchAll();
                 }
             });
         });
-        
+
         // Toast notification function
         function showToast(type, title, message) {
             const iconClass = type === 'success' ? 'bi-check-lg' : 'bi-x-lg';
             const borderColor = type === 'success' ? 'var(--success)' : 'var(--danger)';
-            const bgColor = type === 'success' 
-                ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' 
-                : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
-            
+            const bgColor = type === 'success' ?
+                'linear-gradient(135deg, #10b981 0%, #059669 100%)' :
+                'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+
             const toast = $(`
                 <div class="custom-toast animate__animated animate__fadeInUp" style="border-left-color: ${borderColor}">
                     <div class="toast-icon" style="background: ${bgColor}">
@@ -438,9 +472,9 @@ $types = $typesStmt->fetchAll();
                     </div>
                 </div>
             `);
-            
+
             $('#toastContainer').append(toast);
-            
+
             // Auto remove after 5 seconds
             setTimeout(function() {
                 toast.addClass('animate__fadeOutDown');
@@ -449,7 +483,7 @@ $types = $typesStmt->fetchAll();
                 }, 500);
             }, 5000);
         }
-        
+
         // Reset modal on close
         $('#demandModal').on('hidden.bs.modal', function() {
             $('#demandForm')[0].reset();
@@ -457,4 +491,5 @@ $types = $typesStmt->fetchAll();
     });
     </script>
 </body>
+
 </html>

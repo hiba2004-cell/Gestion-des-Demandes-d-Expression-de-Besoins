@@ -77,4 +77,24 @@ function getConnection() {
     $database = getDatabase();
     return $database->getConnection();
 }
+function getBudgetStats() {
+    $db = getDatabase()->getConnection();
+
+    // Budget total (fixe ou provenant d’une table budget)
+    $budget_total = 500000; // Exemple : 500.000 MAD
+
+    // Somme des besoins validés
+    $query = $db->query("SELECT SUM(prix) AS total_valide FROM demandes WHERE statut = 'Traitée'");
+    $result = $query->fetch(PDO::FETCH_ASSOC);
+
+    $budget_consomme = $result['total_valide'] ?? 0;
+    $budget_restant = $budget_total - $budget_consomme;
+
+    return [
+        'total' => $budget_total,
+        'consomme' => $budget_consomme,
+        'restant' => $budget_restant
+    ];
+}
+
 ?>
