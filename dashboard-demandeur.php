@@ -75,7 +75,7 @@ $user_id = $_SESSION['user_id'];
                     </p>
                 </div>
                 <div class="card-footer text-end">
-                    <?php if (!in_array($besoin['statut'], ['Validée','Rejetée'])): ?>
+                    <?php if (!in_array($besoin['statut'], ['Validée','Rejetée','Traitée'])): ?>
                     <a href="modifier_demande.php?id=<?= $besoin['id'] ?>" class="btn btn-sm btn-warning">
                         <i class="bi bi-pencil-square me-1"></i> <?php echo getSetence('modify'); ?>
                     </a>
