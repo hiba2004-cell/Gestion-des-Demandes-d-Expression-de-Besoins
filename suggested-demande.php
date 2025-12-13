@@ -6,9 +6,6 @@ error_reporting(E_ALL);
 session_start();
 require_once 'config/database.php';
 
-function generateRandomPrice() {
-    return mt_rand(50, 5000) + (mt_rand(0, 99) / 100);
-}
 
 $pdo = getConnection();
 
@@ -21,9 +18,6 @@ $stmt = $pdo->query("
 ");
 $materials = $stmt->fetchAll();
 
-foreach ($materials as &$material) {
-    $material['prix_unitaire'] = generateRandomPrice();
-}
 unset($material);
 
 // Fetch types for filter
@@ -183,11 +177,7 @@ $types = $typesStmt->fetchAll();
                         <span class="material-type-badge">
                             <i class="bi bi-tag me-1"></i><?php echo htmlspecialchars($material['type_libelle']); ?>
                         </span>
-                        <span class="material-price-badge">
-                            <i
-                                class="bi bi-tag-fill me-1"></i><?php echo number_format($material['prix_unitaire'], 2, ',', ' '); ?>
-                            DH
-                        </span>
+
                         <span class="material-badge <?php 
                                 echo $material['statut'] === 'Disponible' ? 'disponible' : 
                                     ($material['statut'] === 'Réservé' ? 'reserve' : 'indisponible'); 
@@ -198,12 +188,6 @@ $types = $typesStmt->fetchAll();
                     <div class="material-content">
                         <h3 class="material-title"><?php echo htmlspecialchars($material['titre']); ?></h3>
                         <p class="material-description"><?php echo htmlspecialchars($material['description']); ?></p>
-                        <div class="material-price-section">
-                            <span class="price-label">Prix unitaire</span>
-                            <span
-                                class="price-value"><?php echo number_format($material['prix_unitaire'], 2, ',', ' '); ?>
-                                DH</span>
-                        </div>
                         <div class="material-meta">
                             <div class="quantity-badge">
                                 <i class="bi bi-boxes"></i>
@@ -215,7 +199,6 @@ $types = $typesStmt->fetchAll();
                                 data-type="<?php echo $material['type_besoin_id']; ?>"
                                 data-image="<?php echo $material['image_url']; ?>"
                                 data-type-label="<?php echo htmlspecialchars($material['type_libelle']); ?>"
-                                data-price="<?php echo number_format($material['prix_unitaire'], 2, '.', ''); ?>"
                                 <?php echo $material['statut'] !== 'Disponible' ? 'disabled' : ''; ?>
                                 <?php echo $material['statut'] === 'Disponible' ? 'data-bs-toggle="modal" data-bs-target="#demandModal"' : ''; ?>>
                                 <i class="bi bi-send"></i>
@@ -393,11 +376,6 @@ $types = $typesStmt->fetchAll();
             $('#previewDescription').text(description.substring(0, 100) + '...');
             $('#previewType').text(typeLabel);
             $('#previewImage').attr('src', image);
-            $('#previewPrice').text('Prix: ' + parseFloat(price).toLocaleString('fr-FR', {
-                style: 'currency',
-                currency: 'USD'
-            }));
-
             // Pre-fill description
             $('#description').val('Demande pour: ' + title + '\n\n');
         });
