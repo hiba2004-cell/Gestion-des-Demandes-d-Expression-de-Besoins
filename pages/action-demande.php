@@ -35,14 +35,7 @@ if($action==='send-to-admin'){
     // header("Location: /besoins/dashboard-validateur.php");
     // exit;
 }
-
-$budget = getBudgetStats();
-
-if ($demandes['prix'] > $budget['restant']) {
-    setFlashMessage('error', "Budget insuffisant pour accepter cette demande.");
-    header("Location: detail-besoin.php?id=" . $demandes['id']);
-    exit;
-}
+ 
 
 // sinon continuer la validation
 
@@ -211,7 +204,7 @@ $csrfToken = generateCSRFToken();
                         Confirmer <?php echo $libelle_action; ?>
                     </button>
 
-                    <a href="dashboard-validateur.php" class="btn btn-lg btn-outline-secondary ms-2">
+                    <a href="../dashboard-validateur.php" class="btn btn-lg btn-outline-secondary ms-2">
                         <i class="bi bi-x-lg me-2"></i>Annuler
                     </a>
                 </form>

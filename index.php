@@ -1,3 +1,28 @@
+<?php 
+require_once 'config/auth.php';
+
+$auth = new Auth();
+
+// Si déjà connecté, rediriger
+// if ($auth->isLoggedIn()) {
+//     $user = $auth->getCurrentUser();
+//     header("Location: " . redirectByRole($user['role']));
+//     exit();
+// }
+if ($auth->isLoggedIn()) {
+    $user = $auth->getCurrentUser();
+    $redirectUrl = redirectByRole($user['role']);
+    
+    if ($redirectUrl) {
+        header("Location: $redirectUrl");
+        exit();
+    } else {
+        // echo "Rôle inconnu. Contactez l’administrateur.";
+        print_r($auth->get_current_user());
+        exit();
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
